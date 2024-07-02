@@ -6,3 +6,4 @@
 !.yarn/sdks
 !.yarn/versions
 node_modules
+safety-web/lib/*
