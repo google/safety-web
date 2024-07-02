@@ -1,5 +1,7 @@
 {
   "private": true,
+  "license": "Apache-2.0",
+  "author": "Google ISE Web Team",
   "workspaces": [
     "safety-web"
   ]
