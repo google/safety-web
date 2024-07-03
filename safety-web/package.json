@@ -4,7 +4,8 @@
     "license": "Apache-2.0",
     "author": "Google ISE Web Team",
     "scripts": {
-        "build": "tsc -b ./tsconfig.json",
+        "clean": "yarn rimraf ./lib",
+        "build": "yarn clean && tsc -b ./tsconfig.json",
         "test": "mocha"
     },
     "dependencies": {
