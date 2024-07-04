@@ -31,17 +31,24 @@ export const trustedTypesChecks = createRule({
         },
         messages: {
             // TODO: add the list of rules
-            unknown_rule_triggered: 'trusted-types-checks reported a violation that could not be mapped to a known violation id: {{ tsecMessage }}',
+            unknown_rule_triggered: 'trusted-types-checks reported a violation that could not be mapped to a known violation id.',
         },
         schema: [],
     },
     defaultOptions: [],
     create(context) {
         return {
-            // Naming corresponds to ESTree node type
-            // tslint:disable-next-line:enforce-name-casing
-            Program(node) {
+            Identifier(node) {
                 // TODO: implement me
+                if (node.name === 'foo') {
+                    context.report({
+                        node,
+                        messageId: 'unknown_rule_triggered',
+                        data: {
+                            name: 'foo',
+                        }
+                    });
+                }
             },
         };
     }

@@ -12,11 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { assert } from 'chai';
+// import { assert } from 'chai';
 
-describe("Calculator Tests", () => {
-    it("should return 5 when 2 is added to 3", () => {
-    const result = 2 + 3;
-    assert.equal(result, 5);
- });
-});
+// describe("Calculator Tests", () => {
+//     it("should return 5 when 2 is added to 3", () => {
+//         const result = 2 + 3;
+//         assert.equal(result, 5);
+//     });
+// });
+
+import { RuleTester } from '@typescript-eslint/rule-tester';
+import * as mocha from 'mocha';
+import { trustedTypesChecks } from '../src/trusted_types_checks';
+
+RuleTester.afterAll = mocha.after;
+const ruleTester = new RuleTester();
+
+ruleTester.run('trusted-types-checks', trustedTypesChecks,
+    {
+        valid: [
+            'const x = 1;',
+        ],
+        invalid: [
+            {
+                code: 'const foo = 1;',
+                errors: [
+                    {
+                        messageId: 'unknown_rule_triggered',
+                    },
+                ],
+            },
+        ],
+    });
