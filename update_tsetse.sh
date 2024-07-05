@@ -15,7 +15,7 @@
 #!/bin/bash
 
 SAFETY_WEB_GIT_ROOT="$(dirname $0)"
-LOG_FILE="${SAFETY_WEB_GIT_ROOT}/safety-web/tsetse_update_logs.txt"
+LOG_FILE="${SAFETY_WEB_GIT_ROOT}/safety-web/update_tsetse_logs.txt"
 
 ## Update the vendored copy of tsetse, from the latest tsec commit.
 TMPDIR="$(mktemp -d)"

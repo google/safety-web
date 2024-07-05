@@ -1,4 +1,4 @@
-Last run of update_tsetse.sh: Fri Jul  5 08:46:33 AM UTC 2024
+Most recent run of update_tsetse.sh: Fri Jul  5 08:54:26 AM UTC 2024
 ---
 Most recent tsetse commit (from https://github.com/google/tsec.git):
 commit bc0317c711b2d9afe008b4ecb21e85759232a7f0
