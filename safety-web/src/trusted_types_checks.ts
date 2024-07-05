@@ -13,43 +13,81 @@
 // limitations under the License.
 
 import { ESLintUtils, ParserServicesWithTypeInformation } from '@typescript-eslint/utils';
+import { getConfiguredChecker } from './common/configured_checker';
+import { Checker } from './common/third_party/tsetse/checker';
+import * as ts from 'typescript';
 
 const createRule = ESLintUtils.RuleCreator(
-    () => 'safety-web',
+  () => 'safety-web',
 );
 
+// Cached checker instantiated only once.
+let checker: Checker;
+
 /**
- * Rule to check Trusted Types compliance
- */
+* Rule to check Trusted Types compliance
+*/
 export const trustedTypesChecks = createRule({
-    name: 'trusted-types-checks',
-    meta: {
-        type: 'problem',
-        docs: {
-            description: 'Checks Trusted Types compliance',
-            recommended: 'strict',
-        },
-        messages: {
-            // TODO: add the list of rules
-            unknown_rule_triggered: 'trusted-types-checks reported a violation that could not be mapped to a known violation id.',
-        },
-        schema: [],
+  name: 'trusted-types-checks',
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Checks Trusted Types compliance',
+      recommended: 'strict',
     },
-    defaultOptions: [],
-    create(context) {
-        return {
-            Identifier(node) {
-                // TODO: implement me
-                if (node.name === 'foo') {
-                    context.report({
-                        node,
-                        messageId: 'unknown_rule_triggered',
-                        data: {
-                            name: 'foo',
-                        }
-                    });
-                }
-            },
-        };
+    messages: {
+      // TODO: add the list of rules
+      unknown_rule_triggered: 'trusted-types-checks reported a violation that could not be mapped to a known violation id.',
+    },
+    schema: [],
+  },
+  defaultOptions: [],
+  create(context) {
+    // Skip checking declaration files
+    if (context.filename.endsWith('.d.ts')) {
+      return {};
     }
+
+    const parserServices = ESLintUtils.getParserServices(context);
+    if (!checker) {
+      checker = getConfiguredChecker(
+        parserServices.program,
+        ts.createCompilerHost(parserServices.program.getCompilerOptions()),
+      ).checker;
+    }
+    return {
+      Program(node) {
+        const parserServices = ESLintUtils.getParserServices(context);
+        const rootNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+
+        // Run all enabled checks
+        const { failures } = checker.execute(rootNode, true);
+
+        // Report the detected errors
+        for (const failure of failures) {
+          const diagnostic = failure.toDiagnostic();
+          const start = ts.getLineAndCharacterOfPosition(
+            rootNode,
+            diagnostic.start!,
+          );
+          const end = ts.getLineAndCharacterOfPosition(
+            rootNode,
+            diagnostic.end,
+          );
+
+          context.report({
+            loc: {
+              start: { line: start.line + 1, column: start.character },
+              end: { line: end.line + 1, column: end.character },
+            },
+            // TODO: create a messageId from the tsetse violation.
+            messageId: 'unknown_rule_triggered',
+            data: {
+              tsecMessage: diagnostic.messageText
+            }
+          });
+        }
+      },
+    };
+  }
 });

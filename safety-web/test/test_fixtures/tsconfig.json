@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+  },
+  "include": [
+    "file.ts",
+    "react.tsx"
+  ]
+}

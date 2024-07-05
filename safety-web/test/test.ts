@@ -12,35 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// import { assert } from 'chai';
-
-// describe("Calculator Tests", () => {
-//     it("should return 5 when 2 is added to 3", () => {
-//         const result = 2 + 3;
-//         assert.equal(result, 5);
-//     });
-// });
-
 import { RuleTester } from '@typescript-eslint/rule-tester';
 import * as mocha from 'mocha';
 import { trustedTypesChecks } from '../src/trusted_types_checks';
 
 RuleTester.afterAll = mocha.after;
-const ruleTester = new RuleTester();
+const ruleTester = new RuleTester(
+  {
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+      project: "./tsconfig.json",
+      tsconfigRootDir: __dirname + "/test_fixtures",
+      // Required for the DOM APIs to typecheck correctly.
+      lib: ['dom'],
+    },
+  }
+);
 
 ruleTester.run('trusted-types-checks', trustedTypesChecks,
-    {
-        valid: [
-            'const x = 1;',
+  {
+    valid: [
+      'const x = 1;',
+    ],
+    invalid: [
+      {
+        code: `document.createElement('script').innerHTML = 'foo';`,
+        errors: [
+          {
+            messageId: 'unknown_rule_triggered',
+          },
         ],
-        invalid: [
-            {
-                code: 'const foo = 1;',
-                errors: [
-                    {
-                        messageId: 'unknown_rule_triggered',
-                    },
-                ],
-            },
-        ],
-    });
+      },
+    ],
+  });
