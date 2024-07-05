@@ -15,6 +15,7 @@
 #!/bin/bash
 
 SAFETY_WEB_GIT_ROOT="$(dirname $0)"
+LOG_FILE="${SAFETY_WEB_GIT_ROOT}/safety-web/tsetse_update_logs.txt"
 
 ## Update the vendored copy of tsetse, from the latest tsec commit.
 TMPDIR="$(mktemp -d)"
@@ -22,3 +23,9 @@ trap 'rm -rf -- "$TMPDIR"' EXIT
 git clone https://github.com/google/tsec.git "${TMPDIR}"
 rm -rf "${SAFETY_WEB_GIT_ROOT}/safety-web/src/common"
 cp -r "${TMPDIR}/common/" "${SAFETY_WEB_GIT_ROOT}/safety-web/src/"
+
+echo \
+"Most recent run of update_tsetse.sh: $(date)
+---
+Most recent tsetse commit (from https://github.com/google/tsec.git):" > $LOG_FILE
+git -C "${TMPDIR}/" log -n 1 >> $LOG_FILE
