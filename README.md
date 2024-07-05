@@ -18,3 +18,13 @@ yarn workspace safety-web build
 ```
 yarn workspace safety-web test
 ```
+
+## Updating tsetse
+
+The core logic behind this plugin is re-used from [tsec](https://github.com/google/tsec). The [`common`](https://github.com/google/tsec/tree/main/common) directory of tsec is mirrored in `safety-web/src/common`, as vendored dependency.
+
+Run tsetse_update.sh to pull the latest version of tsetse in:
+
+```bash
+bash update_tsetse.sh
+```
