@@ -1,0 +1,13 @@
+{
+  "name": "expect-violations",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "chai": "^5.1.1"
+  },
+  "bin": "./bin/index.js",
+  "scripts": {
+    "build": "tsc"
+  }
+}

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint",
     "build": "tsc",
-    "test": "yarn lint | grep '15:1  error  trusted-types-checks reported a violation' || false"
+    "test": "yarn --silent lint --format json | npx expect-violations ./expected_violations.json"
   },
   "devDependencies": {
     "eslint": "^9.6.0",

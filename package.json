@@ -4,7 +4,8 @@
   "author": "Google ISE Web Team",
   "workspaces": [
     "safety-web",
-    "tests/*"
+    "tests/*",
+    "test-helpers/*"
   ],
   "scripts": {
     "unit_tests": "yarn workspace eslint-plugin-safety-web test",

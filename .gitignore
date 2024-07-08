@@ -7,3 +7,4 @@
 !.yarn/versions
 node_modules
 safety-web/lib/*
+test-helpers/expect-violations/bin/*
