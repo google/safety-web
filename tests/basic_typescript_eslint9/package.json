@@ -1,0 +1,17 @@
+{
+  "name": "basic-typescript-eslint9",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint",
+    "build": "tsc",
+    "test": "yarn lint | grep '15:1  error  trusted-types-checks reported a violation' || false"
+  },
+  "devDependencies": {
+    "eslint": "^9.6.0",
+    "eslint-plugin-safety-web": "0.1.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0"
+  }
+}

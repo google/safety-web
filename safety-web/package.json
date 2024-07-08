@@ -1,8 +1,9 @@
 {
-    "name": "safety-web",
+    "name": "eslint-plugin-safety-web",
     "version": "0.1.0",
     "license": "Apache-2.0",
     "author": "Google ISE Web Team",
+    "main": "lib/index.js",
     "scripts": {
         "clean": "yarn rimraf ./lib",
         "build": "yarn clean && tsc -b ./tsconfig.json",
