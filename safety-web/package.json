@@ -24,6 +24,7 @@
         "@typescript-eslint/rule-tester": "^7.15.0",
         "chai": "^5.1.1",
         "mocha": "^10.6.0",
-        "tsx": "^4.16.2"
+        "tsx": "^4.16.2",
+        "typescript-eslint": "^7.16.0"
     }
 }
