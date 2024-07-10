@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "license": "Apache-2.0",
     "author": "Google ISE Web Team",
-    "main": "lib/index.js",
+    "main": "lib/src/index.js",
     "scripts": {
         "clean": "yarn rimraf ./lib",
         "build": "yarn clean && tsc -b ./tsconfig.json",
