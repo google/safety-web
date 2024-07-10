@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ESLintUtils, ParserServicesWithTypeInformation } from '@typescript-eslint/utils';
+import { ESLintUtils } from '@typescript-eslint/utils';
 import { getConfiguredChecker } from './common/configured_checker';
 import { Checker } from './common/third_party/tsetse/checker';
 import * as ts from 'typescript';
@@ -68,7 +68,7 @@ export const trustedTypesChecks = createRule({
           const diagnostic = failure.toDiagnostic();
           const start = ts.getLineAndCharacterOfPosition(
             rootNode,
-            diagnostic.start!,
+            diagnostic.start,
           );
           const end = ts.getLineAndCharacterOfPosition(
             rootNode,
