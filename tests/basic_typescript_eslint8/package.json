@@ -1,0 +1,17 @@
+{
+  "name": "basic-typescript-eslint8",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src/",
+    "build": "tsc",
+    "test": "yarn --silent lint --format json | npx expect-violations ./expected_violations.json"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-plugin-safety-web": "0.1.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.16.0"
+  }
+}
