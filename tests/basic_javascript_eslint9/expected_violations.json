@@ -4,10 +4,10 @@
     "messages": [
       {
         "ruleId": "safety-web/trusted-types-checks",
-        "message": "trusted-types-checks reported a violation that could not be mapped to a known violation id.",
+        "message": "[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.",
         "line": 15,
         "column": 1,
-        "messageId": "unknown_rule_triggered",
+        "messageId": "ban_element_innerhtml_assignments",
         "endLine": 15,
         "endColumn": 51
       }

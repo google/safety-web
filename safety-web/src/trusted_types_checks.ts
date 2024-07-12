@@ -16,6 +16,7 @@ import { ESLintUtils } from '@typescript-eslint/utils';
 import { getConfiguredChecker } from './common/configured_checker';
 import { Checker } from './common/third_party/tsetse/checker';
 import * as ts from 'typescript';
+import { tsetseMessageToMessageId, messageIdMap } from './tsetse_compat';
 
 const createRule = ESLintUtils.RuleCreator(
   () => 'safety-web',
@@ -36,7 +37,7 @@ export const trustedTypesChecks = createRule({
       recommended: 'strict',
     },
     messages: {
-      // TODO: add the list of rules
+      ...messageIdMap,
       unknown_rule_triggered: 'trusted-types-checks reported a violation that could not be mapped to a known violation id.',
     },
     schema: [],
@@ -80,10 +81,11 @@ export const trustedTypesChecks = createRule({
               start: { line: start.line + 1, column: start.character },
               end: { line: end.line + 1, column: end.character },
             },
-            // TODO: create a messageId from the tsetse violation.
-            messageId: 'unknown_rule_triggered',
+            messageId: tsetseMessageToMessageId(
+              // TODO: refine `toDiagnostic` to refine type and remove this cast.
+              diagnostic.messageText as string) || 'unknown_rule_triggered',
             data: {
-              tsecMessage: diagnostic.messageText
+              tsetseMessage: diagnostic.messageText
             }
           });
         }

@@ -39,7 +39,7 @@ ruleTester.run('trusted-types-checks', trustedTypesChecks,
         code: `document.createElement('script').innerHTML = 'foo';`,
         errors: [
           {
-            messageId: 'unknown_rule_triggered',
+            messageId: 'ban_element_innerhtml_assignments',
           },
         ],
       },
