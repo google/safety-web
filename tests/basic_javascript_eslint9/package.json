@@ -7,7 +7,8 @@
     "clean": ":",
     "build": ":",
     "lint": "echo skip lint script for integration test case",
-    "test": "eslint --format json | yarn run expect-violations ./expected_violations.json"
+    "test": "eslint --format json | yarn run expect-violations test ./expected_violations.json",
+    "update": "eslint --format json | yarn run expect-violations update ./expected_violations.json"
   },
   "devDependencies": {
     "eslint": "^9.6.0",

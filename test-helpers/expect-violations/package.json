@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "chai": "^5.1.1"
+    "chai": "^5.1.1",
+    "yargs": "^17.7.2"
   },
   "bin": "./bin/index.js",
   "scripts": {
@@ -13,5 +14,7 @@
     "lint": "echo TODO",
     "test": "echo TODO"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/yargs": "^17.0.32"
+  }
 }
