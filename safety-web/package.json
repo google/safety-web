@@ -11,7 +11,8 @@
         "clean": "tsc --build --clean",
         "build": "tsc -b ./tsconfig.json",
         "lint": "eslint",
-        "test": "mocha"
+        "test": "mocha",
+        "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
     },
     "dependencies": {
         "@typescript-eslint/parser": "^7.15.0",
@@ -28,6 +29,7 @@
         "@typescript-eslint/rule-tester": "^7.15.0",
         "chai": "^5.1.1",
         "mocha": "^10.6.0",
+        "ts-node": "^10.9.2",
         "tsx": "^4.16.2",
         "typescript-eslint": "^7.16.0"
     }
