@@ -8,6 +8,10 @@
   },
   "bin": "./bin/index.js",
   "scripts": {
-    "build": "tsc"
-  }
+    "clean": "tsc --build --clean",
+    "build": "tsc",
+    "lint": "echo TODO",
+    "test": "echo TODO"
+  },
+  "devDependencies": {}
 }

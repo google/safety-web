@@ -10,6 +10,6 @@
   "scripts": {
     "unit_tests": "yarn workspace eslint-plugin-safety-web test",
     "integration_tests": "yarn workspace basic-typescript-eslint9 test && yarn workspace basic-typescript-eslint8 test && yarn workspace basic-javascript-eslint9 test",
-    "test": "yarn run unit_tests && yarn run integration_tests"
+    "test": "yarn workspaces run test"
 }
 }

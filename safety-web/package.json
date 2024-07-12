@@ -8,8 +8,9 @@
         "lib/src/"
     ],
     "scripts": {
-        "clean": "yarn rimraf ./lib",
-        "build": "yarn clean && tsc -b ./tsconfig.json",
+        "clean": "tsc --build --clean",
+        "build": "tsc -b ./tsconfig.json",
+        "lint": "eslint",
         "test": "mocha"
     },
     "dependencies": {
