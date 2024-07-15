@@ -10,7 +10,7 @@
   "bin": "./bin/index.js",
   "scripts": {
     "clean": "tsc --build --clean",
-    "build": "tsc",
+    "build": "tsc && chmod +x bin/index.js",
     "lint": "echo TODO",
     "test": "echo TODO"
   },
