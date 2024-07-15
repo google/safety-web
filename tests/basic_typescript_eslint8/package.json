@@ -7,7 +7,7 @@
     "clean": "tsc --build --clean",
     "build": "tsc",
     "lint": "echo skip lint script for integration test case",
-    "test": "node_modules/.bin/eslint src/ --format json | yarn run expect-violations test ./expected_violations.json",
+    "test": "eslint=node_modules/.bin/eslint eslint --version | grep 'v8' && eslint src/ --format json | yarn run expect-violations test ./expected_violations.json",
     "update": "node_modules/.bin/eslint src/ --format json | yarn run expect-violations update ./expected_violations.json"
   },
   "devDependencies": {
