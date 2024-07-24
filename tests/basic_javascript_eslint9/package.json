@@ -12,8 +12,8 @@
   },
   "devDependencies": {
     "eslint": "^9.6.0",
-    "eslint-plugin-safety-web": "0.1.0",
-    "expect-violations": "^0.0.1",
-    "typescript-eslint": "^7.16.0"
+    "eslint-plugin-safety-web": "workspace:^",
+    "expect-violations": "workspace:^",
+    "typescript-eslint": "^7.17.0"
   }
 }

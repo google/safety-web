@@ -8,29 +8,29 @@ safety-web is an ESLint plugin that works on TypeScript and JavaScript projects 
 
 ## Development
 
-This project uses yarn "classic" (Yarn 1) with workspaces. To install the dependencies for all [workspaces](https://classic.yarnpkg.com/en/docs/workspaces/):
+This project uses yarn "modern" Berry (Yarn 4) with workspaces. To install the dependencies for all [workspaces](https://yarnpkg.com/features/workspaces):
 
-```
-yarn install
+```bash
+yarn
 ```
 
 The commands `clean`, `build`, `lint`, `test` are defined in all workspaces. This makes it possible to run them in all workspaces:
 
-```
+```bash
 # Build all workspaces
-yarn workspaces run build
+yarn workspaces foreach --all run build
 ```
 
 ## safety-web unit testing
 
-```
-yarn workspaces safety-web test
+```bash
+yarn workspace eslint-plugin-safety-web run test
 ```
 
 ## unit tests + integrations tests
 
-```
-yarn run tests
+```bash
+yarn run unit_tests
 ```
 
 ## Updating tsetse

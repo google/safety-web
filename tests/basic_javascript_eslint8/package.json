@@ -6,13 +6,13 @@
     "clean": ":",
     "build": ":",
     "lint": "echo skip lint script for integration test case",
-    "test": "eslint=node_modules/.bin/eslint eslint --version | grep 'v8' && eslint index.js --format json | yarn run expect-violations test ./expected_violations.json",
-    "update": "eslint=node_modules/.bin/eslint eslint index.js --format json | yarn run expect-violations update ./expected_violations.json"
+    "test": "eslint --version | grep 'v8' && eslint index.js --format json | yarn run expect-violations test ./expected_violations.json",
+    "update": "eslint index.js --format json | yarn run expect-violations update ./expected_violations.json"
   },
   "devDependencies": {
     "eslint": "^8.0.0",
-    "eslint-plugin-safety-web": "0.1.0",
-    "expect-violations": "^0.0.1",
-    "typescript-eslint": "^7.16.0"
+    "eslint-plugin-safety-web": "workspace:^",
+    "expect-violations": "workspace:^",
+    "typescript-eslint": "^7.17.0"
   }
 }

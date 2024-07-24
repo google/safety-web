@@ -2,6 +2,6 @@
 
 Usage:
 
-```
-yarn --silent eslint --format json | npx expected-violations  <path/to/expectations.json>
+```bash
+yarn --silent eslint --format json | npx expected-violations <path/to/expectations.json>
 ```
