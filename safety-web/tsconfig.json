@@ -3,7 +3,8 @@
       "module": "NodeNext",
       "moduleResolution": "nodenext",
       "target": "ES2015",
-      "outDir": "lib"
+      "outDir": "lib",
+      "sourceMap": true
     },
     "include": [
       "src/**/*.ts",
