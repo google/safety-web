@@ -12,6 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-document.createElement('script').innerHTML = 'foo';
+document.createElement('p').innerHTML = 'foo';
 const divEl = document.createElement('div');
-divEl.innerHTML = 'string_value';
+divEl.innerHTML = 'bar';
