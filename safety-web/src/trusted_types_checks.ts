@@ -17,7 +17,9 @@ import {getConfiguredChecker} from './common/configured_checker';
 import {Checker} from './common/third_party/tsetse/checker';
 import * as ts from 'typescript';
 import {tsetseMessageToMessageId, messageIdMap} from './tsetse_compat';
+import debug from 'debug';
 
+const logDebug = debug('safety-web:trusted_types_checks');
 const createRule = ESLintUtils.RuleCreator(() => 'safety-web');
 
 // Cached checker instantiated only once per compilation unit.
@@ -62,6 +64,7 @@ export const trustedTypesChecks = createRule({
           ts.createCompilerHost(parserServices.program.getCompilerOptions()),
         ).checker,
       );
+      logDebugNewProgram(context.filename, programForCurrentFile);
     }
     const checker = checkers.get(programForCurrentFile);
     return {
@@ -103,3 +106,16 @@ export const trustedTypesChecks = createRule({
     };
   },
 });
+
+function logDebugNewProgram(fileName: string, program: ts.Program) {
+  const configFilePath = program.getCompilerOptions().configFilePath as string;
+  if (configFilePath) {
+    logDebug(
+      `New program used for processing ${fileName} from config at ${configFilePath}`,
+    );
+  } else {
+    logDebug(
+      `New program used for processing ${fileName} using default project`,
+    );
+  }
+}

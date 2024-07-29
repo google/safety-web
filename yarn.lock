@@ -420,10 +420,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/debug@npm:^4.1.12":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
+  dependencies:
+    "@types/ms": "npm:*"
+  checksum: 10c0/5dcd465edbb5a7f226e9a5efd1f399c6172407ef5840686b73e3608ce135eeca54ae8037dcd9f16bdb2768ac74925b820a8b9ecc588a58ca09eca6acabe33e2f
+  languageName: node
+  linkType: hard
+
 "@types/mocha@npm:^10.0.7":
   version: 10.0.7
   resolution: "@types/mocha@npm:10.0.7"
   checksum: 10c0/48a2df4dd02b6e66a11129dca6a23cf0cc3995faf8525286eb851043685bd8b7444780f4bb29a1c42df7559ed63294e5308bfce3a6b862ad2e0359cb21c21329
+  languageName: node
+  linkType: hard
+
+"@types/ms@npm:*":
+  version: 0.7.34
+  resolution: "@types/ms@npm:0.7.34"
+  checksum: 10c0/ac80bd90012116ceb2d188fde62d96830ca847823e8ca71255616bc73991aa7d9f057b8bfab79e8ee44ffefb031ddd1bcce63ea82f9e66f7c31ec02d2d823ccc
   languageName: node
   linkType: hard
 
@@ -1010,6 +1026,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:^4.3.6":
+  version: 4.3.6
+  resolution: "debug@npm:4.3.6"
+  dependencies:
+    ms: "npm:2.1.2"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10c0/3293416bff072389c101697d4611c402a6bacd1900ac20c0492f61a9cdd6b3b29750fc7f5e299f8058469ef60ff8fb79b86395a30374fbd2490113c1c7112285
+  languageName: node
+  linkType: hard
+
 "decamelize@npm:^4.0.0":
   version: 4.0.0
   resolution: "decamelize@npm:4.0.0"
@@ -1207,12 +1235,14 @@ __metadata:
   dependencies:
     "@eslint/eslintrc": "npm:^3.1.0"
     "@types/chai": "npm:^4.3.16"
+    "@types/debug": "npm:^4.1.12"
     "@types/mocha": "npm:^10.0.7"
     "@types/node": "npm:^20.14.9"
     "@typescript-eslint/parser": "npm:^7.17.0"
     "@typescript-eslint/rule-tester": "npm:^7.17.0"
     "@typescript-eslint/utils": "npm:^7.17.0"
     chai: "npm:^5.1.1"
+    debug: "npm:^4.3.6"
     eslint: "npm:^8.56.0 <9.0.0"
     mocha: "npm:^10.6.0"
     ts-node: "npm:^10.9.2"
