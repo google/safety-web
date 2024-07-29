@@ -22,8 +22,8 @@ const createRule = ESLintUtils.RuleCreator(
   () => 'safety-web',
 );
 
-// Cached checker instantiated only once.
-let checker: Checker;
+// Cached checker instantiated only once per compilation unit.
+const checkers: Map<ts.Program, Checker> = new Map();
 
 /**
 * Rule to check Trusted Types compliance
@@ -50,12 +50,18 @@ export const trustedTypesChecks = createRule({
     }
 
     const parserServices = ESLintUtils.getParserServices(context);
-    if (!checker) {
-      checker = getConfiguredChecker(
+
+    // When a repository is split into different projects (several tsconfig.json) or when no tsconfig.json is specified, different ts programs (and associated ts.TypeChecker) will be returned by the TS service.
+    // A new tsetse checker should be created for every different typechecker, so we cache tsetse per ts.Program.
+    // In well set up projects, the number of checker instances should remain low. In the worst case when no tsconfig is defined, eslint will complain when more than 8 files fall in inferred projects.
+    const programForCurrentFile = parserServices.program;
+    if (!checkers.get(programForCurrentFile)) {
+      checkers.set(programForCurrentFile, getConfiguredChecker(
         parserServices.program,
         ts.createCompilerHost(parserServices.program.getCompilerOptions()),
-      ).checker;
+      ).checker);
     }
+    const checker = checkers.get(programForCurrentFile);
     return {
       Program(node) {
         const parserServices = ESLintUtils.getParserServices(context);

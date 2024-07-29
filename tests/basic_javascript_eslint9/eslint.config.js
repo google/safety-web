@@ -10,6 +10,7 @@ export default [
       "safety-web/trusted-types-checks": "error"
     },
     files: ["**/*.ts", "**/*.js"],
+    ignores: ["eslint.config.js"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {

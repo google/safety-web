@@ -10,6 +10,38 @@
         "messageId": "ban_element_innerhtml_assignments",
         "endLine": 15,
         "endColumn": 51
+      },
+      {
+        "ruleId": "safety-web/trusted-types-checks",
+        "message": "[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.",
+        "line": 17,
+        "column": 1,
+        "messageId": "ban_element_innerhtml_assignments",
+        "endLine": 17,
+        "endColumn": 33
+      }
+    ]
+  },
+  {
+    "filePath": "[...]/other_file.js",
+    "messages": [
+      {
+        "ruleId": "safety-web/trusted-types-checks",
+        "message": "[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.",
+        "line": 15,
+        "column": 1,
+        "messageId": "ban_element_innerhtml_assignments",
+        "endLine": 15,
+        "endColumn": 46
+      },
+      {
+        "ruleId": "safety-web/trusted-types-checks",
+        "message": "[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.",
+        "line": 17,
+        "column": 1,
+        "messageId": "ban_element_innerhtml_assignments",
+        "endLine": 17,
+        "endColumn": 24
       }
     ]
   }
