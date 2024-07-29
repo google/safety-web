@@ -11,7 +11,11 @@
     "unit_tests": "yarn workspace eslint-plugin-safety-web test",
     "integration_tests": "yarn workspace basic-typescript-eslint9 test && yarn workspace basic-typescript-eslint8 test && yarn workspace basic-javascript-eslint9 test && yarn workspace basic-javascript-eslint8 test",
     "update_integration_tests": "yarn workspace basic-typescript-eslint9 update && yarn workspace basic-typescript-eslint8 update && yarn workspace basic-javascript-eslint9 update && yarn workspace basic-javascript-eslint8 update",
-    "test": "yarn workspaces foreach --all run test"
+    "test": "yarn workspaces foreach --all run test",
+    "format": "prettier . --write"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.3.1",
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
 }

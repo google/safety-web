@@ -14,10 +14,10 @@ We value diverse opinions, but we value respectful behavior more.
 
 Respectful behavior includes:
 
-*   Being considerate, kind, constructive, and helpful.
-*   Not engaging in demeaning, discriminatory, harassing, hateful, sexualized,
-    or physically threatening behavior, speech, and imagery.
-*   Not engaging in unwanted physical contact.
+- Being considerate, kind, constructive, and helpful.
+- Not engaging in demeaning, discriminatory, harassing, hateful, sexualized,
+  or physically threatening behavior, speech, and imagery.
+- Not engaging in unwanted physical contact.
 
 Some Google open source projects [may adopt][] an explicit project code of
 conduct, which may have additional detailed expectations for participants. Most
@@ -56,7 +56,7 @@ The identity of the reporter will be omitted from the details of the report
 supplied to the accused. In potentially harmful situations, such as ongoing
 harassment or threats to anyone's safety, we may take action without notice.
 
-*This document was adapted from the [IndieWeb Code of Conduct][] and can also be
-found at <https://opensource.google/conduct/>.*
+_This document was adapted from the [IndieWeb Code of Conduct][] and can also be
+found at <https://opensource.google/conduct/>._
 
 [IndieWeb Code of Conduct]: https://indieweb.org/code-of-conduct

@@ -14,16 +14,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { expect } from 'chai';
+import {expect} from 'chai';
 import fs from 'node:fs';
-import type { ViolationReport } from './violations.js';
+import type {ViolationReport} from './violations.js';
 import * as path from 'path';
 import yargs from 'yargs';
 
 function main() {
   const options = yargs(process.argv.slice(2))
     .scriptName('expect-violations')
-    .command('update <expected_file_json>', 'Updates the expected violation file')
+    .command(
+      'update <expected_file_json>',
+      'Updates the expected violation file',
+    )
     .command('test <expected_file_json>', 'Test the expected violation file')
     .demandCommand()
     .parseSync();
@@ -31,27 +34,44 @@ function main() {
   const command = options._[0] as 'update' | 'test';
   const expectatedViolationReportPath = options.expected_file_json as string;
 
-  const expectedViolationReport = getExpectedViolations(expectatedViolationReportPath) as ViolationReport;
-  const actualESLintReport = JSON.parse(fs.readFileSync(0).toString()) as ViolationReport; // STDIN_FILENO = 0
+  const expectedViolationReport = getExpectedViolations(
+    expectatedViolationReportPath,
+  ) as ViolationReport;
+  const actualESLintReport = JSON.parse(
+    fs.readFileSync(0).toString(),
+  ) as ViolationReport; // STDIN_FILENO = 0
   const canonicalizedReport = canonicalizeViolationReport(actualESLintReport);
   switch (command) {
     case 'test':
       test(canonicalizedReport, expectedViolationReport);
       break;
     case 'update':
-      update(canonicalizedReport, expectedViolationReport, expectatedViolationReportPath);
+      update(
+        canonicalizedReport,
+        expectedViolationReport,
+        expectatedViolationReportPath,
+      );
       break;
   }
 }
 
-function test(canonicalizedReport: ViolationReport, expectedViolationReport: ViolationReport) {
+function test(
+  canonicalizedReport: ViolationReport,
+  expectedViolationReport: ViolationReport,
+) {
   expect(canonicalizedReport).to.deep.equal(expectedViolationReport);
 }
 
-function update(canonicalizedReport: ViolationReport, expectedViolationReport: ViolationReport, filePath: string) {
+function update(
+  canonicalizedReport: ViolationReport,
+  expectedViolationReport: ViolationReport,
+  filePath: string,
+) {
   let isEqual = true;
   try {
-    expect(JSON.parse(JSON.stringify(canonicalizedReport, null, 2))).to.deep.equal(expectedViolationReport);
+    expect(
+      JSON.parse(JSON.stringify(canonicalizedReport, null, 2)),
+    ).to.deep.equal(expectedViolationReport);
   } catch {
     isEqual = false;
   }
@@ -69,7 +89,17 @@ function canonicalizeViolationReport(report: ViolationReport): ViolationReport {
     if (fileEntry.messages.length !== 0) {
       canonicalizedReport.push({
         filePath: canonicalizePath(fileEntry.filePath),
-        messages: fileEntry.messages.map(({ ruleId, message, line, column, messageId, endLine, endColumn, }) => ({ ruleId, message, line, column, messageId, endLine, endColumn, }))
+        messages: fileEntry.messages.map(
+          ({ruleId, message, line, column, messageId, endLine, endColumn}) => ({
+            ruleId,
+            message,
+            line,
+            column,
+            messageId,
+            endLine,
+            endColumn,
+          }),
+        ),
       });
     }
   }

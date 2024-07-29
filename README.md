@@ -21,6 +21,13 @@ The commands `clean`, `build`, `lint`, `test` are defined in all workspaces. Thi
 yarn workspaces foreach --all run build
 ```
 
+To format the repository:
+
+```bash
+yarn format
+# prettier . --write
+```
+
 ## safety-web unit testing
 
 ```bash

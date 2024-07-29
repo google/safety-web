@@ -12,22 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ESLintUtils } from '@typescript-eslint/utils';
-import { getConfiguredChecker } from './common/configured_checker';
-import { Checker } from './common/third_party/tsetse/checker';
+import {ESLintUtils} from '@typescript-eslint/utils';
+import {getConfiguredChecker} from './common/configured_checker';
+import {Checker} from './common/third_party/tsetse/checker';
 import * as ts from 'typescript';
-import { tsetseMessageToMessageId, messageIdMap } from './tsetse_compat';
+import {tsetseMessageToMessageId, messageIdMap} from './tsetse_compat';
 
-const createRule = ESLintUtils.RuleCreator(
-  () => 'safety-web',
-);
+const createRule = ESLintUtils.RuleCreator(() => 'safety-web');
 
 // Cached checker instantiated only once per compilation unit.
 const checkers: Map<ts.Program, Checker> = new Map();
 
 /**
-* Rule to check Trusted Types compliance
-*/
+ * Rule to check Trusted Types compliance
+ */
 export const trustedTypesChecks = createRule({
   name: 'trusted-types-checks',
   meta: {
@@ -38,7 +36,8 @@ export const trustedTypesChecks = createRule({
     },
     messages: {
       ...messageIdMap,
-      unknown_rule_triggered: 'trusted-types-checks reported a violation that could not be mapped to a known violation id.',
+      unknown_rule_triggered:
+        'trusted-types-checks reported a violation that could not be mapped to a known violation id.',
     },
     schema: [],
   },
@@ -56,10 +55,13 @@ export const trustedTypesChecks = createRule({
     // In well set up projects, the number of checker instances should remain low. In the worst case when no tsconfig is defined, eslint will complain when more than 8 files fall in inferred projects.
     const programForCurrentFile = parserServices.program;
     if (!checkers.get(programForCurrentFile)) {
-      checkers.set(programForCurrentFile, getConfiguredChecker(
-        parserServices.program,
-        ts.createCompilerHost(parserServices.program.getCompilerOptions()),
-      ).checker);
+      checkers.set(
+        programForCurrentFile,
+        getConfiguredChecker(
+          parserServices.program,
+          ts.createCompilerHost(parserServices.program.getCompilerOptions()),
+        ).checker,
+      );
     }
     const checker = checkers.get(programForCurrentFile);
     return {
@@ -68,7 +70,7 @@ export const trustedTypesChecks = createRule({
         const rootNode = parserServices.esTreeNodeToTSNodeMap.get(node);
 
         // Run all enabled checks
-        const { failures } = checker.execute(rootNode, true);
+        const {failures} = checker.execute(rootNode, true);
 
         // Report the detected errors
         for (const failure of failures) {
@@ -84,18 +86,20 @@ export const trustedTypesChecks = createRule({
 
           context.report({
             loc: {
-              start: { line: start.line + 1, column: start.character },
-              end: { line: end.line + 1, column: end.character },
+              start: {line: start.line + 1, column: start.character},
+              end: {line: end.line + 1, column: end.character},
             },
-            messageId: tsetseMessageToMessageId(
-              // TODO: refine `toDiagnostic` to refine type and remove this cast.
-              diagnostic.messageText as string) || 'unknown_rule_triggered',
+            messageId:
+              tsetseMessageToMessageId(
+                // TODO: refine `toDiagnostic` to refine type and remove this cast.
+                diagnostic.messageText as string,
+              ) || 'unknown_rule_triggered',
             data: {
-              tsetseMessage: diagnostic.messageText
-            }
+              tsetseMessage: diagnostic.messageText,
+            },
           });
         }
       },
     };
-  }
+  },
 });

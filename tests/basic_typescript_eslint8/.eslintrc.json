@@ -1,19 +1,11 @@
 {
   "root": true, // Tell eslint to not look for config file up the hierarchy
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json"]
   },
-  "plugins": [
-    "@typescript-eslint",
-    "eslint-plugin-safety-web"
-  ],
+  "plugins": ["@typescript-eslint", "eslint-plugin-safety-web"],
   "rules": {
     "safety-web/trusted-types-checks": "error"
   }

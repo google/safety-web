@@ -1,12 +1,9 @@
 {
-    "compilerOptions": {
-      "module": "NodeNext",
-      "moduleResolution": "nodenext",
-      "target": "ES2015",
-      "outDir": "bin"
-    },
-    "include": [
-      "src/**/*.ts",
-    ],
-  }
-  
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "ES2015",
+    "outDir": "bin"
+  },
+  "include": ["src/**/*.ts"]
+}

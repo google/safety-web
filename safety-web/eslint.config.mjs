@@ -8,11 +8,11 @@ export default tseslint.config(
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: "tsconfig.json",  // Indicates to find the closest tsconfig.json for each source file (see https://typescript-eslint.io/packages/parser#project).
+        project: 'tsconfig.json', // Indicates to find the closest tsconfig.json for each source file (see https://typescript-eslint.io/packages/parser#project).
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    files: ["**/*.ts"],
+    files: ['**/*.ts'],
   },
   {
     rules: {
@@ -23,12 +23,12 @@ export default tseslint.config(
   },
   {
     ignores: [
-      "**/*.js",
-      "**/*.mjs",
-      "test/test_fixtures/",
-      "lib/",
-      "node_modules/",
-      "src/common/",  // tsetse folder is linted internally.
-    ]
+      '**/*.js',
+      '**/*.mjs',
+      'test/test_fixtures/',
+      'lib/',
+      'node_modules/',
+      'src/common/', // tsetse folder is linted internally.
+    ],
   },
 );

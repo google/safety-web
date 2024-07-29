@@ -4,11 +4,7 @@
     "moduleResolution": "nodenext",
     "target": "ES2015",
     "outDir": "lib",
-    "lib": [
-      "DOM"
-    ],
+    "lib": ["DOM"]
   },
-  "include": [
-    "src/**/*.ts",
-  ],
+  "include": ["src/**/*.ts"]
 }

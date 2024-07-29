@@ -4,18 +4,18 @@ import safetyWeb from 'eslint-plugin-safety-web';
 export default [
   {
     plugins: {
-      "safety-web": safetyWeb
+      'safety-web': safetyWeb,
     },
     rules: {
-      "safety-web/trusted-types-checks": "error"
+      'safety-web/trusted-types-checks': 'error',
     },
-    files: ["**/*.ts", "**/*.js"],
-    ignores: ["eslint.config.js"],
+    files: ['**/*.ts', '**/*.js'],
+    ignores: ['eslint.config.js'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
         EXPERIMENTAL_useProjectService: true,
-      }
-    }
-  }
+      },
+    },
+  },
 ];

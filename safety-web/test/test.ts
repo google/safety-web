@@ -12,36 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RuleTester } from '@typescript-eslint/rule-tester';
+import {RuleTester} from '@typescript-eslint/rule-tester';
 import * as mocha from 'mocha';
-import { trustedTypesChecks } from '../src/trusted_types_checks';
+import {trustedTypesChecks} from '../src/trusted_types_checks';
 
 RuleTester.afterAll = mocha.after;
-const ruleTester = new RuleTester(
-  {
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-      project: "./tsconfig.json",
-      tsconfigRootDir: __dirname + "/test_fixtures",
-      // Required for the DOM APIs to typecheck correctly.
-      lib: ['dom'],
-    },
-  }
-);
+const ruleTester = new RuleTester({
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname + '/test_fixtures',
+    // Required for the DOM APIs to typecheck correctly.
+    lib: ['dom'],
+  },
+});
 
-ruleTester.run('trusted-types-checks', trustedTypesChecks,
-  {
-    valid: [
-      'const x = 1;',
-    ],
-    invalid: [
-      {
-        code: `document.createElement('script').innerHTML = 'foo';`,
-        errors: [
-          {
-            messageId: 'ban_element_innerhtml_assignments',
-          },
-        ],
-      },
-    ],
-  });
+ruleTester.run('trusted-types-checks', trustedTypesChecks, {
+  valid: ['const x = 1;'],
+  invalid: [
+    {
+      code: `document.createElement('script').innerHTML = 'foo';`,
+      errors: [
+        {
+          messageId: 'ban_element_innerhtml_assignments',
+        },
+      ],
+    },
+  ],
+});
