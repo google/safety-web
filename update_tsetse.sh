@@ -15,14 +15,14 @@
 #!/bin/bash
 
 SAFETY_WEB_GIT_ROOT="$(dirname $0)"
-LOG_FILE="${SAFETY_WEB_GIT_ROOT}/safety-web/update_tsetse_logs.txt"
+LOG_FILE="${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin-safety-web/update_tsetse_logs.txt"
 
 ## Update the vendored copy of tsetse, from the latest tsec commit.
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf -- "$TMPDIR"' EXIT
 git clone https://github.com/google/tsec.git "${TMPDIR}"
-rm -rf "${SAFETY_WEB_GIT_ROOT}/safety-web/src/common"
-cp -r "${TMPDIR}/common/" "${SAFETY_WEB_GIT_ROOT}/safety-web/src/"
+rm -rf "${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin-safety-web/src/common"
+cp -r "${TMPDIR}/common/" "${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin-safety-web/src/"
 
 echo \
 "Most recent run of update_tsetse.sh: $(date)

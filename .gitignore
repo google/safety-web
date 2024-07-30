@@ -6,6 +6,6 @@
 !.yarn/sdks
 !.yarn/versions
 node_modules
-safety-web/lib/*
-test-helpers/expect-violations/bin/*
-tests/*/lib/*
+packages/eslint-plugin-safety-web/lib/*
+packages/test-helpers/expect-violations/bin/*
+packages/tests/*/lib/*

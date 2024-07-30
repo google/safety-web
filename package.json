@@ -3,9 +3,7 @@
   "license": "Apache-2.0",
   "author": "Google ISE Web Team",
   "workspaces": [
-    "safety-web",
-    "tests/*",
-    "test-helpers/*"
+    "packages/**/*"
   ],
   "scripts": {
     "unit_tests": "yarn workspace eslint-plugin-safety-web test",
