@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "author": "Google ISE Web Team",
+  "repository": "https://github.com/google/safety-web",
   "main": "lib/src/index.js",
   "files": [
     "lib/src/"
