@@ -1335,7 +1335,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.6.0":
+"eslint@npm:^9.0.0, eslint@npm:^9.6.0":
   version: 9.8.0
   resolution: "eslint@npm:9.8.0"
   dependencies:
@@ -2570,6 +2570,20 @@ __metadata:
   checksum: 10c0/200b5ab25b5b8b7113f9901bfe3afc347e19bb7475b267d55ad0eb86a62a46d77510cb0f232507c9e5d497ebda569a08a9867d0d14f57a82ad5564d991588b39
   languageName: node
   linkType: hard
+
+"runner-safety-web@workspace:packages/runner-safety-web":
+  version: 0.0.0-use.local
+  resolution: "runner-safety-web@workspace:packages/runner-safety-web"
+  dependencies:
+    "@types/yargs": "npm:^17.0.32"
+    eslint: "npm:^9.0.0"
+    eslint-plugin-safety-web: "workspace:^"
+    typescript-eslint: "npm:^7.17.0"
+    yargs: "npm:^17.7.2"
+  bin:
+    runner-safety-web: ./bin/index.js
+  languageName: unknown
+  linkType: soft
 
 "safe-buffer@npm:^5.1.0":
   version: 5.2.1

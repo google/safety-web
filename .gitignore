@@ -7,5 +7,6 @@
 !.yarn/versions
 node_modules
 packages/eslint-plugin-safety-web/lib/*
+packages/runner-safety-web/bin/*
 packages/test-helpers/expect-violations/bin/*
 packages/tests/*/lib/*
