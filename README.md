@@ -5,7 +5,10 @@
 **This project is under development and is not ready for production yet.**
 
 safety-web is an ESLint plugin that works on TypeScript and JavaScript projects
-and surfaces security issues like Trusted Types violations statically.
+and surfaces security issues like Trusted Types violations statically. This
+repository contains several packages. Refer to the package specific READMEs for
+more information. The eslint-plugin sources live in
+[`safety-web/`](./safety-web).
 
 ## Development
 
