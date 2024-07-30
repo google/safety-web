@@ -12,7 +12,7 @@
     "clean": "tsc --build --clean",
     "build": "tsc -b ./tsconfig.json",
     "build:watch": "tsc -b ./tsconfig.json --watch",
-    "lint": "eslint",
+    "lint": "eslint .",
     "test": "mocha",
     "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
   },

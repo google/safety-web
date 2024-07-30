@@ -1229,6 +1229,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-header@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "eslint-plugin-header@npm:3.1.1"
+  peerDependencies:
+    eslint: ">=7.7.0"
+  checksum: 10c0/2eb70acd8efe2b72a7bff3e3958a637871c6d0ed4166effea8b68e79b9ba291b6a33182e7f0e31ca7de717fc5b2cf2e42dcc0a07db1a37ae6941bbb6a8eda731
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-safety-web@workspace:^, eslint-plugin-safety-web@workspace:packages/eslint-plugin-safety-web":
   version: 0.0.0-use.local
   resolution: "eslint-plugin-safety-web@workspace:packages/eslint-plugin-safety-web"
@@ -2558,6 +2567,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    eslint-plugin-header: "npm:^3.1.1"
     prettier: "npm:^3.3.3"
   languageName: unknown
   linkType: soft
