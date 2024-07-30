@@ -15,16 +15,17 @@ We value diverse opinions, but we value respectful behavior more.
 Respectful behavior includes:
 
 - Being considerate, kind, constructive, and helpful.
-- Not engaging in demeaning, discriminatory, harassing, hateful, sexualized,
-  or physically threatening behavior, speech, and imagery.
+- Not engaging in demeaning, discriminatory, harassing, hateful, sexualized, or
+  physically threatening behavior, speech, and imagery.
 - Not engaging in unwanted physical contact.
 
-Some Google open source projects [may adopt][] an explicit project code of
-conduct, which may have additional detailed expectations for participants. Most
-of those projects will use our [modified Contributor Covenant][].
+Some Google open source projects [may adopt][] an explicit project code of conduct,
+which may have additional detailed expectations for participants. Most of those projects
+will use our [modified Contributor Covenant][].
 
 [may adopt]: https://opensource.google/docs/releasing/preparing/#conduct
-[modified Contributor Covenant]: https://opensource.google/docs/releasing/template/CODE_OF_CONDUCT/
+[modified Contributor Covenant]:
+  https://opensource.google/docs/releasing/template/CODE_OF_CONDUCT/
 
 ## Resolve peacefully
 

@@ -9,4 +9,5 @@ export default {
   trailingComma: 'all',
   arrowParens: 'always',
   embeddedLanguageFormatting: 'off',
+  proseWrap: 'always', // For Markdown
 };
