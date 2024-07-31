@@ -1296,7 +1296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.0.0, eslint@npm:^8.56.0 <9.0.0":
+"eslint@npm:^8.0.0, eslint@npm:^8.56.0, eslint@npm:^8.56.0 <9.0.0":
   version: 8.57.0
   resolution: "eslint@npm:8.57.0"
   dependencies:
@@ -1344,7 +1344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.0.0, eslint@npm:^9.6.0":
+"eslint@npm:^9.6.0":
   version: 9.8.0
   resolution: "eslint@npm:9.8.0"
   dependencies:
@@ -1457,6 +1457,7 @@ __metadata:
   dependencies:
     "@types/yargs": "npm:^17.0.32"
     chai: "npm:^5.1.1"
+    eslint: "npm:^8.56.0"
     yargs: "npm:^17.7.2"
   bin:
     expect-violations: ./bin/index.js
@@ -2586,7 +2587,7 @@ __metadata:
   resolution: "runner-safety-web@workspace:packages/runner-safety-web"
   dependencies:
     "@types/yargs": "npm:^17.0.32"
-    eslint: "npm:^9.0.0"
+    eslint: "npm:^8.56.0"
     eslint-plugin-safety-web: "workspace:^"
     typescript-eslint: "npm:^7.17.0"
     yargs: "npm:^17.7.2"

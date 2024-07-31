@@ -10,7 +10,8 @@
     "integration_tests": "yarn workspace basic-typescript-eslint9 test && yarn workspace basic-typescript-eslint8 test && yarn workspace basic-javascript-eslint9 test && yarn workspace basic-javascript-eslint8 test",
     "update_integration_tests": "yarn workspace basic-typescript-eslint9 update && yarn workspace basic-typescript-eslint8 update && yarn workspace basic-javascript-eslint9 update && yarn workspace basic-javascript-eslint8 update",
     "test": "yarn workspaces foreach --all run test",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "lint": "yarn workspaces foreach --all run lint"
   },
   "packageManager": "yarn@4.3.1",
   "devDependencies": {
