@@ -14,9 +14,54 @@
 // limitations under the License.
 
 import yargs from 'yargs';
+import {ESLint} from 'eslint';
+import * as nodePath from 'node:path';
+import * as fs from 'fs/promises';
 
-function main() {
-  yargs(process.argv.slice(2)).scriptName('runner-safety-web').showHelp();
+async function resolvePath(path: string): Promise<string> | undefined {
+  const resolvedPath = nodePath.resolve(path);
+  try {
+    await fs.access(resolvedPath);
+    return resolvedPath;
+  } catch (e) {
+    console.error(
+      `Error: path '${path}' could not be resolved. Does it exist?`,
+    );
+  }
+  return;
 }
 
-main();
+async function main() {
+  const parsedCommand = await yargs(process.argv.slice(2))
+    .scriptName('runner-safety-web')
+    .option('rootDir', {
+      demandOption: false,
+      default: './',
+      describe: 'Root directory to check',
+      type: 'string',
+    })
+    .command('run', 'run safety-web and report the violations')
+    .demandCommand()
+    .parse();
+
+  const resolvedRootDir = await resolvePath(parsedCommand.rootDir);
+  if (resolvedRootDir === undefined) {
+    throw new Error('Could not resolved the root directory. Aborting...');
+  }
+  const eslint = new ESLint({
+    cwd: resolvedRootDir,
+    errorOnUnmatchedPattern: false
+  });
+
+  const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);
+
+  const formatter = await eslint.loadFormatter('stylish');
+  const resultText = formatter.format(results, undefined /** context */);
+
+  console.log(resultText);
+}
+
+main().catch((error) => {
+  process.exitCode = 1;
+  console.error(error);
+});

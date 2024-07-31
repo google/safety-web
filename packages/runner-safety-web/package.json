@@ -16,6 +16,7 @@
     "test": "echo TODO"
   },
   "devDependencies": {
+    "@types/eslint": "^9.6.0",
     "@types/yargs": "^17.0.32"
   }
 }
