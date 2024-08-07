@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
-    "eslint": "^8.56.0",
+    "eslint": "^9.6.0",
     "eslint-plugin-safety-web": "workspace:^",
     "typescript-eslint": "^7.17.0",
     "yargs": "^17.7.2"

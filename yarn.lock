@@ -2613,7 +2613,7 @@ __metadata:
   dependencies:
     "@types/eslint": "npm:^9.6.0"
     "@types/yargs": "npm:^17.0.32"
-    eslint: "npm:^8.56.0"
+    eslint: "npm:^9.6.0"
     eslint-plugin-safety-web: "workspace:^"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.5.4"

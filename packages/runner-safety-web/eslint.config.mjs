@@ -5,7 +5,8 @@ import {commonMonorepoConfig} from '../../eslint-common.config.mjs';
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  commonMonorepoConfig,
+  // Disabled until the header plugin is compatible with ESLint 9
+  // commonMonorepoConfig,
   {
     languageOptions: {
       parser: tseslint.parser,
