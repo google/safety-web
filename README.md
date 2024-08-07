@@ -28,6 +28,11 @@ This makes it possible to run them in all workspaces:
 yarn workspaces foreach --all run build
 ```
 
+```bash
+# Build-watch all TypeScript workspaces in parallel
+yarn workspaces foreach -Ap run build:watch
+```
+
 To format the repository:
 
 ```bash

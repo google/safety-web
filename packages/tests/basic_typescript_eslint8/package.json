@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "tsc --build --clean",
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "lint": "echo skip lint script for integration test case",
     "test": "eslint --version | grep 'v8' && eslint src/ --format json | yarn run expect-violations test ./expected_violations.json",
     "update": "eslint src/ --format json | yarn run expect-violations update ./expected_violations.json"
