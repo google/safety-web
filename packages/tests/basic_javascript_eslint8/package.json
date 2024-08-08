@@ -13,6 +13,6 @@
     "eslint": "^8.0.0",
     "eslint-plugin-safety-web": "workspace:^",
     "expect-violations": "workspace:^",
-    "typescript-eslint": "^7.17.0"
+    "typescript-eslint": "^8.0.0"
   }
 }

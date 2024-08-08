@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "noEmit": true,
+    "lib": ["DOM"],
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": ["**/*.js", "**/*.ts"]
+}

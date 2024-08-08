@@ -20,7 +20,11 @@ import {tsetseMessageToMessageId, messageIdMap} from './tsetse_compat';
 import debug from 'debug';
 
 const logDebug = debug('safety-web:trusted_types_checks');
-const createRule = ESLintUtils.RuleCreator(() => 'safety-web');
+
+interface SafetyWebDocs {
+  recommended: boolean;
+}
+const createRule = ESLintUtils.RuleCreator<SafetyWebDocs>(() => 'safety-web');
 
 // Cached checker instantiated only once per compilation unit.
 const checkers: Map<ts.Program, Checker> = new Map();
@@ -34,7 +38,7 @@ export const trustedTypesChecks = createRule({
     type: 'problem',
     docs: {
       description: 'Checks Trusted Types compliance',
-      recommended: 'strict',
+      recommended: true,
     },
     messages: {
       ...messageIdMap,

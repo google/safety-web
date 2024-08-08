@@ -7,8 +7,7 @@ export default tseslint.config(
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: true, // Indicates to find the closest tsconfig.json for each source file (see https://typescript-eslint.io/packages/parser#project).
-        tsconfigRootDir: import.meta.dirname,
+        projectService: true, // Indicates to find the closest tsconfig.json for each source file (see https://typescript-eslint.io/packages/parser#project).
       },
     },
     files: ['src/**/*.ts'],

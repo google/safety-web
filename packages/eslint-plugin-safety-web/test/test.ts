@@ -15,15 +15,18 @@
 import {RuleTester} from '@typescript-eslint/rule-tester';
 import * as mocha from 'mocha';
 import {trustedTypesChecks} from '../src/trusted_types_checks';
+import typescriptESLintParser from '@typescript-eslint/parser';
 
 RuleTester.afterAll = mocha.after;
 const ruleTester = new RuleTester({
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: './tsconfig.json',
-    tsconfigRootDir: __dirname + '/test_fixtures',
-    // Required for the DOM APIs to typecheck correctly.
-    lib: ['dom'],
+  languageOptions: {
+    parser: typescriptESLintParser,
+    parserOptions: {
+      project: './tsconfig.json',
+      tsconfigRootDir: __dirname + '/test_fixtures',
+      // Required for the DOM APIs to typecheck correctly.
+      lib: ['dom'],
+    },
   },
 });
 

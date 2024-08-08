@@ -17,6 +17,8 @@ import yargs from 'yargs';
 import {ESLint} from 'eslint';
 import * as nodePath from 'node:path';
 import * as fs from 'fs/promises';
+import safetyWeb from 'eslint-plugin-safety-web';
+import typescriptESLintParser from '@typescript-eslint/parser';
 
 async function resolvePath(path: string): Promise<string> | undefined {
   const resolvedPath = nodePath.resolve(path);
@@ -48,11 +50,44 @@ async function main() {
   if (resolvedRootDir === undefined) {
     throw new Error('Could not resolved the root directory. Aborting...');
   }
-  const eslint = new ESLint({
-    cwd: resolvedRootDir,
-    errorOnUnmatchedPattern: false
-  });
 
+  const options: ESLint.Options = {
+    cwd: resolvedRootDir,
+    allowInlineConfig: true,
+    cache: false,
+    // cacheLocation: ".eslintcache",
+    // cacheStrategy: "metadata",
+    errorOnUnmatchedPattern: false,
+    ignore: false, // Maybe generate a list of files to ignore (e.g. node_modules, eslint.confing.js, ...)
+    overrideConfigFile: true, // Ignore an existing config file if it exists.
+    stats: false,
+    warnIgnored: true,
+    overrideConfig: [
+      {
+        name: 'runner-safety-web override',
+        files: ['**/*js', '**/*.ts'],
+        languageOptions: {
+          ecmaVersion: 'latest', // | 2015 | 2020 | ...
+          // sourceType: 'module',  // | 'commonjs' | 'script'
+          // globals: {...globals.browser},
+          parser: typescriptESLintParser,
+          parserOptions: {
+            projectService: {
+              allowDefaultProject: ['*.js'],
+            },
+          },
+        },
+        rules: {
+          'safety-web/trusted-types-checks': 'error',
+        },
+      },
+    ],
+    plugins: {
+      'safety-web': safetyWeb,
+    },
+  };
+
+  const eslint = new ESLint(options);
   const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);
 
   const formatter = await eslint.loadFormatter('stylish');

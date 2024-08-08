@@ -14,7 +14,8 @@ export default [
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        EXPERIMENTAL_useProjectService: true,
+        projectService: true,
+        allowDefaultProject: ['**/*.js'],
       },
     },
   },

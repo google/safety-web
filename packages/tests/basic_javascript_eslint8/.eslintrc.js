@@ -6,7 +6,9 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    EXPERIMENTAL_useProjectService: true,
+    projectService: {
+      allowDefaultProject: ['*.js'],
+    },
   },
   plugins: [
     // "@typescript-eslint",

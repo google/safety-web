@@ -15,7 +15,7 @@
     "eslint": "^9.6.0",
     "eslint-plugin-safety-web": "workspace:^",
     "expect-violations": "workspace:^",
-    "typescript": "^5.4.3 <5.5.0",
-    "typescript-eslint": "^7.17.0"
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.0.0"
   }
 }
