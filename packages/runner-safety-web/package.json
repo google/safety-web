@@ -8,18 +8,23 @@
     "typescript-eslint": "^8.0.0",
     "yargs": "^17.7.2"
   },
-  "bin": "./bin/index.js",
+  "bin": "./bin/src/index.js",
   "scripts": {
     "clean": "tsc --build --clean",
-    "build": "tsc && chmod +x bin/index.js",
+    "build": "tsc && chmod +x bin/src/index.js",
     "build:watch": "tsc --watch",
     "lint": "eslint .",
-    "test": "echo TODO"
+    "test": "mocha",
+    "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.16",
     "@types/eslint": "^9.6.0",
+    "@types/mocha": "^10.0.7",
     "@types/node": "^22.1.0",
     "@types/yargs": "^17.0.32",
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }

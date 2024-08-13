@@ -17,8 +17,10 @@ import yargs from 'yargs';
 import {ESLint} from 'eslint';
 import * as nodePath from 'node:path';
 import * as fs from 'fs/promises';
-import safetyWeb from 'eslint-plugin-safety-web';
-import typescriptESLintParser from '@typescript-eslint/parser';
+import {generateESLintOptions} from './eslint_config.js';
+import {generateTSConfig} from './ts_config.js';
+
+const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
 
 async function resolvePath(path: string): Promise<string> | undefined {
   const resolvedPath = nodePath.resolve(path);
@@ -33,8 +35,8 @@ async function resolvePath(path: string): Promise<string> | undefined {
   return;
 }
 
-async function main() {
-  const parsedCommand = await yargs(process.argv.slice(2))
+async function parseCli() {
+  return yargs(process.argv.slice(2))
     .scriptName('runner-safety-web')
     .option('rootDir', {
       demandOption: false,
@@ -42,50 +44,42 @@ async function main() {
       describe: 'Root directory to check',
       type: 'string',
     })
+    .option('useDefaultTSConfig', {
+      demandOption: false,
+      default: false,
+      describe: `Try to use an existing tsconfig.json in the project instead of creating/using the custom ${SAFETY_WEB_TSCONFIG_FILENAME} one`,
+      type: 'boolean',
+    })
     .command('run', 'run safety-web and report the violations')
     .demandCommand()
     .parse();
+}
+
+async function writeConfig(tsconfig: object, path: string) {
+  await fs.writeFile(path, JSON.stringify(tsconfig, null, 2));
+}
+
+async function main() {
+  const parsedCommand = await parseCli();
 
   const resolvedRootDir = await resolvePath(parsedCommand.rootDir);
   if (resolvedRootDir === undefined) {
-    throw new Error('Could not resolved the root directory. Aborting...');
+    throw new Error('Could not resolve the root directory. Aborting...');
   }
 
-  const options: ESLint.Options = {
-    cwd: resolvedRootDir,
-    allowInlineConfig: true,
-    cache: false,
-    // cacheLocation: ".eslintcache",
-    // cacheStrategy: "metadata",
-    errorOnUnmatchedPattern: false,
-    ignore: false, // Maybe generate a list of files to ignore (e.g. node_modules, eslint.confing.js, ...)
-    overrideConfigFile: true, // Ignore an existing config file if it exists.
-    stats: false,
-    warnIgnored: true,
-    overrideConfig: [
-      {
-        name: 'runner-safety-web override',
-        files: ['**/*js', '**/*.ts'],
-        languageOptions: {
-          ecmaVersion: 'latest', // | 2015 | 2020 | ...
-          // sourceType: 'module',  // | 'commonjs' | 'script'
-          // globals: {...globals.browser},
-          parser: typescriptESLintParser,
-          parserOptions: {
-            projectService: {
-              allowDefaultProject: ['*.js'],
-            },
-          },
-        },
-        rules: {
-          'safety-web/trusted-types-checks': 'error',
-        },
-      },
-    ],
-    plugins: {
-      'safety-web': safetyWeb,
-    },
-  };
+  let tsConfigPath: string = undefined;
+  if (!parsedCommand.useDefaultTSConfig) {
+    tsConfigPath = nodePath.resolve(
+      resolvedRootDir,
+      SAFETY_WEB_TSCONFIG_FILENAME,
+    );
+    await writeConfig(generateTSConfig(), tsConfigPath);
+  }
+
+  const options: ESLint.Options = generateESLintOptions(
+    resolvedRootDir,
+    tsConfigPath,
+  );
 
   const eslint = new ESLint(options);
   const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);

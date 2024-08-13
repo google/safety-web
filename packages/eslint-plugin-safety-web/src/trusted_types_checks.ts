@@ -21,10 +21,9 @@ import debug from 'debug';
 
 const logDebug = debug('safety-web:trusted_types_checks');
 
-interface SafetyWebDocs {
+const createRule = ESLintUtils.RuleCreator<{
   recommended: boolean;
-}
-const createRule = ESLintUtils.RuleCreator<SafetyWebDocs>(() => 'safety-web');
+}>(() => 'safety-web');
 
 // Cached checker instantiated only once per compilation unit.
 const checkers: Map<ts.Program, Checker> = new Map();

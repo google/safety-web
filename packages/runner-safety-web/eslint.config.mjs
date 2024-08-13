@@ -36,6 +36,6 @@ export default tseslint.config(
     files: ['**/*.ts'],
   },
   {
-    ignores: ['**/*.js', '**/*.mjs', 'bin/', 'node_modules/'],
+    ignores: ['**/*.js', '**/*.cjs', '**/*.mjs', 'bin/', 'node_modules/'],
   },
 );
