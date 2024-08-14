@@ -21,6 +21,15 @@ export default tseslint.config(
   },
   {
     rules: {
+      // Ignores unused variables named "_"
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          'argsIgnorePattern': '_',
+          'varsIgnorePattern': '_',
+          'caughtErrorsIgnorePattern': '_',
+        },
+      ],
       'no-undef': 'off',
       'no-dupe-class-members': 'off',
     },

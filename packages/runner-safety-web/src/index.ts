@@ -25,7 +25,7 @@ async function resolvePath(path: string): Promise<string> | undefined {
   try {
     await fs.access(resolvedPath);
     return resolvedPath;
-  } catch (e) {
+  } catch (_) {
     console.error(
       `Error: path '${path}' could not be resolved. Does it exist?`,
     );
