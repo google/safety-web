@@ -15,9 +15,18 @@
 import * as ts from 'typescript';
 
 /**
- * Helper functions to be used in the debugging console. Registered globally
+ * A tree representation of a type. Used in the debugging console.
  */
-function getTypeTree(inspectedType: ts.Type) {
+interface TypeTree {
+  name: string;
+  symbol: ts.Symbol;
+  baseTypes: Array<TypeTree>;
+}
+
+/**
+ * Helper functions to be used in the debugging console. Registered globally.
+ */
+function getTypeTree(inspectedType: ts.Type): TypeTree {
   const res = {
     name: inspectedType.getSymbol()?.getName(),
     symbol: inspectedType.getSymbol(),

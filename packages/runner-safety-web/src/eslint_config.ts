@@ -53,7 +53,7 @@ function generateESLintConfigOverride(
 
 /**
  * @param rootDir The absolute path for the project to lint
- * @param explicitTSConfig when defined, used to type check the source. 
+ * @param explicitTSConfig when defined, used to type check the source.
  *     If undefined, defer to the project service which looks for existing
  *     tsconfig.
  * @returns ESLint options to run safety-web on the project living in rootDir.

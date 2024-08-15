@@ -35,7 +35,7 @@ function main() {
 
   const expectedViolationReport = getExpectedViolations(
     expectatedViolationReportPath,
-  ) as ViolationReport;
+  );
   const actualESLintReport = JSON.parse(
     fs.readFileSync(0).toString(),
   ) as ViolationReport; // STDIN_FILENO = 0
@@ -83,7 +83,7 @@ function update(
 }
 
 function canonicalizeViolationReport(report: ViolationReport): ViolationReport {
-  const canonicalizedReport = [];
+  const canonicalizedReport: ViolationReport = [];
   for (const fileEntry of report) {
     if (fileEntry.messages.length !== 0) {
       canonicalizedReport.push({
@@ -110,10 +110,10 @@ function canonicalizePath(filePath: string): string {
   return `[...]/${path.basename(filePath)}`;
 }
 
-function getExpectedViolations(path: string) {
+function getExpectedViolations(path: string): ViolationReport {
   try {
     const jsonViolations = fs.readFileSync(path, 'utf8');
-    return JSON.parse(jsonViolations);
+    return JSON.parse(jsonViolations) as ViolationReport;
   } catch (err) {
     console.error(err);
   }
