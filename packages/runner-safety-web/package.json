@@ -4,6 +4,7 @@
   "type": "module",
   "dependencies": {
     "eslint": "^9.6.0",
+    "eslint-formatter-safety-web": "workspace:^",
     "eslint-plugin-safety-web": "workspace:^",
     "typescript-eslint": "^8.0.0",
     "yargs": "^17.7.2"

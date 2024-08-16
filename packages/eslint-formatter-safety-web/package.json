@@ -1,0 +1,37 @@
+{
+  "name": "eslint-formatter-safety-web",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "author": "Google ISE Web Team",
+  "repository": "https://github.com/google/safety-web",
+  "main": "lib/src/index.js",
+  "files": [
+    "lib/src/"
+  ],
+  "scripts": {
+    "clean": "tsc --build --clean",
+    "build": "tsc -b ./tsconfig.json",
+    "build:watch": "tsc -b ./tsconfig.json --watch",
+    "lint": "eslint .",
+    "test": "mocha",
+    "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
+  },
+  "dependencies": {
+    "debug": "^4.3.6",
+    "eslint": "^8.56.0 <9.0.0",
+    "typescript": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.16",
+    "@types/debug": "^4.1.12",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.9",
+    "chai": "^5.1.1",
+    "mocha": "^10.6.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.16.2"
+  },
+  "peerDependencies": {
+    "eslint-plugin-safety-web": "*"
+  }
+}

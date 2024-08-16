@@ -19,6 +19,7 @@ import * as nodePath from 'node:path';
 import * as fs from 'fs/promises';
 import {generateESLintOptions} from './eslint_config.js';
 import {generateTSConfig} from './ts_config.js';
+import * as safetyWebFormatter from 'eslint-formatter-safety-web';
 
 const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
 
@@ -83,9 +84,11 @@ async function main() {
 
   const eslint = new ESLint(options);
   const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);
-
-  const formatter = await eslint.loadFormatter('stylish');
-  const resultText = formatter.format(results, undefined /** context */);
+  const formatter = safetyWebFormatter as ESLint.Formatter;
+  const resultText = formatter.format(results, {
+    cwd: options.cwd,
+    rulesMeta: undefined,
+  });
 
   console.log(resultText);
 }
