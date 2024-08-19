@@ -7,7 +7,10 @@
   "main": "lib/src/index.js",
   "files": [
     "lib/src/"
-  ],
+],
+  "engines": {
+    "node": "^20.11.0 || >21.2.0"
+  },
   "scripts": {
     "clean": "tsc --build --clean",
     "build": "tsc -b ./tsconfig.json",

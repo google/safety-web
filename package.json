@@ -5,6 +5,9 @@
   "workspaces": [
     "packages/**/*"
   ],
+  "engines": {
+    "node": "^20.11.0 || >21.2.0"
+  },
   "scripts": {
     "unit_tests": "yarn workspace eslint-plugin-safety-web test",
     "integration_tests": "yarn workspace basic-typescript-eslint9 test && yarn workspace basic-typescript-eslint8 test && yarn workspace basic-javascript-eslint9 test && yarn workspace basic-javascript-eslint8 test",

@@ -9,6 +9,9 @@
     "typescript-eslint": "^8.0.0",
     "yargs": "^17.7.2"
   },
+  "engines": {
+    "node": "^20.11.0 || >21.2.0"
+  },
   "bin": "./bin/src/index.js",
   "scripts": {
     "clean": "tsc --build --clean",

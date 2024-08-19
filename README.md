@@ -13,8 +13,9 @@ sources live in
 
 ## Development
 
-This project uses yarn "modern" Berry (Yarn 4) with workspaces. To install the
-dependencies for all [workspaces](https://yarnpkg.com/features/workspaces):
+This project uses yarn "modern" Berry (Yarn 4) with workspaces, and Node
+`"^20.11.0 || >21.2.0"`. To install the dependencies for all
+[workspaces](https://yarnpkg.com/features/workspaces):
 
 ```bash
 yarn
