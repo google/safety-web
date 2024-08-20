@@ -7,12 +7,16 @@
     "eslint-formatter-safety-web": "workspace:^",
     "eslint-plugin-safety-web": "workspace:^",
     "typescript-eslint": "^8.0.0",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "zx": "^8.1.4"
+  },
+  "bin": {
+    "pipeline": "./bin/src/pipeline.js",
+    "runner-safety-web": "./bin/src/index.js"
   },
   "engines": {
     "node": "^20.11.0 || >21.2.0"
   },
-  "bin": "./bin/src/index.js",
   "scripts": {
     "clean": "tsc --build --clean",
     "build": "tsc && chmod +x bin/src/index.js",
@@ -24,10 +28,12 @@
   "devDependencies": {
     "@types/chai": "^4.3.16",
     "@types/eslint": "^9.6.0",
+    "@types/minimist": "^1",
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.1.0",
     "@types/yargs": "^17.0.32",
     "chai": "^5.1.1",
+    "minimist": "^1.2.8",
     "mocha": "^10.7.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
