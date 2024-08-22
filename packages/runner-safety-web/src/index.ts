@@ -14,27 +14,7 @@
 // limitations under the License.
 
 import yargs from 'yargs';
-import {ESLint} from 'eslint';
-import * as nodePath from 'node:path';
-import * as fs from 'fs/promises';
-import {generateESLintOptions} from './eslint_config.js';
-import {generateTSConfig} from './ts_config.js';
-import * as safetyWebFormatter from 'eslint-formatter-safety-web';
-
-const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
-
-async function resolvePath(path: string): Promise<string> | undefined {
-  const resolvedPath = nodePath.resolve(path);
-  try {
-    await fs.access(resolvedPath);
-    return resolvedPath;
-  } catch (_) {
-    console.error(
-      `Error: path '${path}' could not be resolved. Does it exist?`,
-    );
-  }
-  return;
-}
+import {run, SAFETY_WEB_TSCONFIG_FILENAME} from './runner.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -56,41 +36,10 @@ async function parseCli() {
     .parse();
 }
 
-async function writeConfig(tsconfig: object, path: string) {
-  await fs.writeFile(path, JSON.stringify(tsconfig, null, 2));
-}
-
 async function main() {
-  const parsedCommand = await parseCli();
-
-  const resolvedRootDir = await resolvePath(parsedCommand.rootDir);
-  if (resolvedRootDir === undefined) {
-    throw new Error('Could not resolve the root directory. Aborting...');
-  }
-
-  let tsConfigPath: string = undefined;
-  if (!parsedCommand.useDefaultTSConfig) {
-    tsConfigPath = nodePath.resolve(
-      resolvedRootDir,
-      SAFETY_WEB_TSCONFIG_FILENAME,
-    );
-    await writeConfig(generateTSConfig(), tsConfigPath);
-  }
-
-  const options: ESLint.Options = generateESLintOptions(
-    resolvedRootDir,
-    tsConfigPath,
-  );
-
-  const eslint = new ESLint(options);
-  const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);
-  const formatter = safetyWebFormatter as ESLint.Formatter;
-  const resultText = formatter.format(results, {
-    cwd: options.cwd,
-    rulesMeta: undefined,
-  });
-
-  console.log(resultText);
+  const args = await parseCli();
+  const summary = await run(args.rootDir, args.useDefaultTSConfig);
+  console.log(JSON.stringify(summary, null, 2));
 }
 
 main().catch((error) => {
