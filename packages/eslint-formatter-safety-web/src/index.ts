@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {ESLint} from 'eslint';
+import {ESLint, Linter} from 'eslint';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
 
@@ -20,6 +20,8 @@ export interface SafetyWebSummary {
   cwd: string;
   violations: Array<Violation>;
   silencedViolations: Array<Violation>;
+  otherErrors: Array<Violation>;
+  otherWarnings: Array<Violation>;
   safetyWebViolations: number;
   safetyWebSilencedViolations: number;
   warnings: number;
@@ -64,6 +66,8 @@ export const formatToObject = function (
     cwd: context?.cwd,
     violations: [],
     silencedViolations: [],
+    otherErrors: [],
+    otherWarnings: [],
     safetyWebViolations: 0,
     safetyWebSilencedViolations: 0,
     warnings: 0,
@@ -72,47 +76,22 @@ export const formatToObject = function (
 
   for (const fileResult of results) {
     for (const lintMessage of fileResult.messages) {
+      const violation = createViolation(lintMessage, fileResult.filePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
-        safetyWebSummary.violations.push({
-          message: lintMessage.message,
-          ruleId: lintMessage.ruleId,
-          filePath: fileResult.filePath,
-          line: lintMessage.line,
-          column: lintMessage.column,
-          endLine: lintMessage.endLine,
-          endColumn: lintMessage.endColumn,
-          link: formatFileLink(
-            fileResult.filePath,
-            lintMessage.line,
-            lintMessage.column,
-          ),
-          snippet: 'TODO',
-        });
+        safetyWebSummary.violations.push(violation);
         safetyWebSummary.safetyWebViolations += 1;
+      } else {
+        safetyWebSummary.otherErrors.push(violation);
       }
     }
     for (const lintMessage of fileResult.suppressedMessages) {
+      const violation = createViolation(lintMessage, fileResult.filePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
-        safetyWebSummary.silencedViolations.push({
-          message: lintMessage.message,
-          ruleId: lintMessage.ruleId,
-          filePath: fileResult.filePath,
-          line: lintMessage.line,
-          column: lintMessage.column,
-          endLine: lintMessage.endLine,
-          endColumn: lintMessage.endColumn,
-          link: formatFileLink(
-            fileResult.filePath,
-            lintMessage.line,
-            lintMessage.column,
-          ),
-          justification:
-            lintMessage.suppressions.map((e) => e.justification).join(' | ') ||
-            'NO JUSTIFICATION',
-          snippet: 'TODO',
-        });
+        safetyWebSummary.silencedViolations.push(violation);
+        safetyWebSummary.safetyWebSilencedViolations += 1;
+      } else {
+        safetyWebSummary.otherErrors.push(violation);
       }
-      safetyWebSummary.safetyWebSilencedViolations += 1;
     }
     safetyWebSummary.warnings += fileResult.warningCount;
     safetyWebSummary.errors += fileResult.errorCount;
@@ -120,3 +99,32 @@ export const formatToObject = function (
 
   return safetyWebSummary;
 };
+
+function createViolation(
+  lintMessage: Linter.LintMessage | Linter.SuppressedLintMessage,
+  path: string,
+): Violation {
+  const violation: Violation = {
+    message: lintMessage.message,
+    ruleId: lintMessage.ruleId,
+    filePath: path,
+    line: lintMessage.line,
+    column: lintMessage.column,
+    endLine: lintMessage.endLine,
+    endColumn: lintMessage.endColumn,
+    link: formatFileLink(path, lintMessage.line, lintMessage.column),
+    snippet: 'TODO',
+  };
+  if (isSuppressedLintMessage(lintMessage)) {
+    violation.justification =
+      lintMessage.suppressions.map((e) => e.justification).join(' | ') ||
+      'NO JUSTIFICATION';
+  }
+  return violation;
+}
+
+function isSuppressedLintMessage(
+  message: Linter.LintMessage | Linter.SuppressedLintMessage,
+): message is Linter.SuppressedLintMessage {
+  return Array.isArray((message as Linter.SuppressedLintMessage).suppressions);
+}

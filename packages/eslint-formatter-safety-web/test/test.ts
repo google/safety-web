@@ -112,6 +112,28 @@ describe('eslint-formatter-safety-web', () => {
         "const foo = 'hello world';\nconst myDiv = document.createElement('div');\nmyDiv.innerHTML = foo;\n// eslint-disable-next-line safety-web/trusted-types-checks -- This is a legacy violation.\nmyDiv.outerHTML = 'ciao';\n",
       usedDeprecatedRules: [],
     },
+    {
+      filePath: '/path/to/file_with_other_errors.ts',
+      messages: [
+        {
+          ruleId: null,
+          severity: 2,
+          message: 'Parsing error: X was not found by the project service.',
+          line: undefined,
+          column: undefined,
+          fatal: true,
+          nodeType: null,
+        },
+      ],
+      suppressedMessages: [],
+      errorCount: 1,
+      fatalErrorCount: 1,
+      warningCount: 0,
+      fixableErrorCount: 0,
+      fixableWarningCount: 0,
+      source: 'something();',
+      usedDeprecatedRules: [],
+    },
   ];
 
   const formattedResults = safetyWebFormatter.formatToObject(
@@ -133,6 +155,16 @@ describe('eslint-formatter-safety-web', () => {
     );
     expect(formattedResults.silencedViolations[0].justification).equals(
       'This is a legacy violation.',
+    );
+  });
+
+  it('lists other errors in a separate list', () => {
+    expect(formattedResults.otherErrors).has.length(1);
+    expect(formattedResults.otherErrors[0].filePath).equals(
+      '/path/to/file_with_other_errors.ts',
+    );
+    expect(formattedResults.otherErrors[0].message).equals(
+      'Parsing error: X was not found by the project service.',
     );
   });
 });
