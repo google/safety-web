@@ -14,20 +14,10 @@
 // limitations under the License.
 
 import yargs from 'yargs';
-import {$} from 'zx';
 import * as nodePath from 'node:path';
-
-interface Repository {
-  url: string;
-  clonePath: string;
-  packages: Array<Package>;
-}
-
-interface Package {
-  name: string;
-  version: string;
-  summary: object;
-}
+import {runCommand} from './command.js';
+import {cloneRepository} from './clone.js';
+import {logAndRecord} from './logger.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -54,44 +44,46 @@ async function parseCli() {
     .parse();
 }
 
+/**
+ * Main entry point for the pipeline that runs safety-web on a set of
+ * repositories.
+ */
 async function main() {
   const parsedCommand = await parseCli();
-  const repositoryMap: Map<string, Repository> = new Map();
-  const cloneDir = nodePath.resolve(parsedCommand.cloneDir);
+  const baseCloneDir = nodePath.resolve(parsedCommand.cloneDir);
   if (parsedCommand.clean) {
-    console.log(`Deleting ${cloneDir} and its content`);
-    await $`rm -rf ${cloneDir}`;
+    await runCommand`rm -rf ${baseCloneDir}`;
   }
-  await $`mkdir -p ${cloneDir}`;
-  let id = 1;
+  await runCommand`mkdir -p ${baseCloneDir}`;
   for (const url of parsedCommand.repositories as string[]) {
-    const repoDirectoryPath = nodePath.resolve(
-      cloneDir,
-      generateDirectoryName(url, id),
-    );
-    await $`git clone ${url} ${repoDirectoryPath}`;
-    console.log(`Cloned ${url} in ${String(repoDirectoryPath)}`);
-    repositoryMap.set(repoDirectoryPath, {
-      url: url,
-      clonePath: repoDirectoryPath,
-      packages: [],
-    });
-    id += 1;
+    // Clone the repository sources
+    const repoDirectory = await cloneRepository(url, baseCloneDir);
+    if (repoDirectory instanceof Error) {
+      logAndRecord(repoDirectory.message);
+      logAndRecord(`Skipping repository ${url} ...`);
+      continue;
+    }
+
+    // TODO: implement next steps
+    // Search the repository structure to look for the preferred package manager, sub packages, etc
+    // const repository = exploreRepository(repoDirectory);
+    // repositoryMap.set(repoDirectoryPath, repository);
+
+    // Install the dependencies for the repository
+    // installRepository(repository);
+
+    // for (const package in repository) {
+    //   runSafetyWeb(package);
+    // }
   }
 }
 
-function generateDirectoryName(url: string, id: number): string {
-  const githubMatcher = new RegExp(
-    '^https://github[.]com/(?<user>[a-zA-Z-_0-9]+)/(?<name>[a-zA-Z-_0-9]+)[.]git$',
-  );
-  const match = url.match(githubMatcher);
-  if (match) {
-    return `${id}-${match.groups.user}:${match.groups.name}`;
-  }
-  return `unknown-name:${id}`;
-}
-
-main().catch((error) => {
-  process.exitCode = 1;
-  console.error(error);
-});
+main()
+  .catch((error) => {
+    process.exitCode = 1;
+    logAndRecord(`Pipeline top-level error: ${error}`);
+  })
+  .finally(() => {
+    logAndRecord('');
+    logAndRecord('### Done ###');
+  });

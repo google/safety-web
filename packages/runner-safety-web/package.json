@@ -11,7 +11,7 @@
     "zx": "^8.1.4"
   },
   "bin": {
-    "pipeline": "./bin/src/pipeline.js",
+    "pipeline": "./bin/src/pipeline/pipeline.js",
     "runner-safety-web": "./bin/src/index.js"
   },
   "engines": {

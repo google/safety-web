@@ -2732,7 +2732,7 @@ __metadata:
     yargs: "npm:^17.7.2"
     zx: "npm:^8.1.4"
   bin:
-    pipeline: ./bin/src/pipeline.js
+    pipeline: ./bin/src/pipeline/pipeline.js
     runner-safety-web: ./bin/src/index.js
   languageName: unknown
   linkType: soft
