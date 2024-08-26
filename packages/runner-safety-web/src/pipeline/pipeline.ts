@@ -18,6 +18,8 @@ import * as nodePath from 'node:path';
 import {runCommand} from './command.js';
 import {cloneRepository} from './clone.js';
 import {logAndRecord} from './logger.js';
+import {exploreRepository, Repository} from './repository.js';
+import {readJsonFile} from './reader.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -60,15 +62,26 @@ async function main() {
     const repoDirectory = await cloneRepository(url, baseCloneDir);
     if (repoDirectory instanceof Error) {
       logAndRecord(repoDirectory.message);
-      logAndRecord(`Skipping repository ${url} ...`);
+      logAndRecord(`Error while cloning ${url}. Skipping ...`);
       continue;
     }
 
-    // TODO: implement next steps
-    // Search the repository structure to look for the preferred package manager, sub packages, etc
-    // const repository = exploreRepository(repoDirectory);
-    // repositoryMap.set(repoDirectoryPath, repository);
+    const repositoryMap = new Map<string, Repository>();
 
+    // Search the repository structure to look for the preferred package
+    // manager, sub packages, etc
+    const repository = await exploreRepository(repoDirectory, {readJsonFile});
+    if (repository instanceof Error) {
+      logAndRecord(repository.message);
+      logAndRecord(
+        `Error while exploring ${url} in ${repoDirectory}. Skipping ...`,
+      );
+      continue;
+    }
+    repository.url = url;
+    repositoryMap.set(url, repository);
+
+    // TODO: implement next steps
     // Install the dependencies for the repository
     // installRepository(repository);
 

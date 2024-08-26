@@ -22,7 +22,7 @@
     "build": "tsc && chmod +x bin/src/index.js",
     "build:watch": "tsc --watch",
     "lint": "eslint .",
-    "test": "mocha",
+    "test": "mocha test/**/*.ts",
     "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
   },
   "devDependencies": {
