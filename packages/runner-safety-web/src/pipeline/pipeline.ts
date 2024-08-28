@@ -24,6 +24,7 @@ import {
   Repository,
 } from './repository.js';
 import {readJsonFile} from './reader.js';
+import { run } from '../runner.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -94,9 +95,10 @@ async function main() {
       continue;
     }
 
-    // for (const package in repository) {
-    //   runSafetyWeb(package);
-    // }
+    // TODO run safety-web per sub-package instead of at the root.
+    const summary = run(repoDirectory);
+    logAndRecord(`Safety-web summary for ${url}:`);
+    logAndRecord(JSON.stringify(summary, null, 2));
   }
 }
 
