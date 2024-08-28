@@ -18,7 +18,11 @@ import * as nodePath from 'node:path';
 import {runCommand} from './command.js';
 import {cloneRepository} from './clone.js';
 import {logAndRecord} from './logger.js';
-import {exploreRepository, Repository} from './repository.js';
+import {
+  exploreRepository,
+  installRepository,
+  Repository,
+} from './repository.js';
 import {readJsonFile} from './reader.js';
 
 async function parseCli() {
@@ -81,9 +85,14 @@ async function main() {
     repository.url = url;
     repositoryMap.set(url, repository);
 
-    // TODO: implement next steps
     // Install the dependencies for the repository
-    // installRepository(repository);
+    const error = await installRepository(repository);
+    if (error !== undefined) {
+      logAndRecord(
+        `Error while installing ${url} in ${repoDirectory}. Skipping ...`,
+      );
+      continue;
+    }
 
     // for (const package in repository) {
     //   runSafetyWeb(package);

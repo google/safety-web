@@ -520,6 +520,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/semver@npm:^7":
+  version: 7.5.8
+  resolution: "@types/semver@npm:7.5.8"
+  checksum: 10c0/8663ff927234d1c5fcc04b33062cb2b9fcfbe0f5f351ed26c4d1e1581657deebd506b41ff7fdf89e787e3d33ce05854bc01686379b89e9c49b564c4cfa988efa
+  languageName: node
+  linkType: hard
+
 "@types/yargs-parser@npm:*":
   version: 21.0.3
   resolution: "@types/yargs-parser@npm:21.0.3"
@@ -2719,6 +2726,7 @@ __metadata:
     "@types/minimist": "npm:^1"
     "@types/mocha": "npm:^10.0.7"
     "@types/node": "npm:^22.1.0"
+    "@types/semver": "npm:^7"
     "@types/yargs": "npm:^17.0.32"
     chai: "npm:^5.1.1"
     eslint: "npm:^9.6.0"
@@ -2726,6 +2734,7 @@ __metadata:
     eslint-plugin-safety-web: "workspace:^"
     minimist: "npm:^1.2.8"
     mocha: "npm:^10.7.3"
+    semver: "npm:^7.6.3"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.5.4"
     typescript-eslint: "npm:^8.0.0"
@@ -2751,7 +2760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5":
+"semver@npm:^7.3.5, semver@npm:^7.6.3":
   version: 7.6.3
   resolution: "semver@npm:7.6.3"
   bin:
