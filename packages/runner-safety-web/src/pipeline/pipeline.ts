@@ -21,6 +21,7 @@ import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
 import {run} from '../runner.js';
 import {Repository} from 'types-safety-web';
+import * as fs from 'node:fs/promises';
 
 const logger = new Logger('pipeline:main');
 const commandRunner = new CommandRunner(logger);
@@ -45,6 +46,11 @@ async function parseCli() {
       describe: `List of URLs of repositories to clone`,
       type: 'array',
     })
+    .option('outputDir', {
+      default: './pipelineResult/',
+      describe: 'Directory path where to write the results of the pipeline',
+      type: 'string',
+    })
     .command('run', 'run the pipeline and report the violations')
     .demandCommand()
     .parse();
@@ -57,10 +63,11 @@ async function parseCli() {
 async function main() {
   const parsedCommand = await parseCli();
   const baseCloneDir = nodePath.resolve(parsedCommand.cloneDir);
+  const outputDir = nodePath.resolve(parsedCommand.outputDir);
   if (parsedCommand.clean) {
-    await commandRunner.run`rm -rf ${baseCloneDir}`;
+    await commandRunner.run`rm -rf ${baseCloneDir} ${outputDir}`;
   }
-  await commandRunner.run`mkdir -p ${baseCloneDir}`;
+  await commandRunner.run`mkdir -p ${baseCloneDir} ${outputDir}`;
   for (const url of parsedCommand.repositories as string[]) {
     const repository = new RepositoryImpl(
       url,
@@ -98,17 +105,32 @@ async function main() {
 
     // TODO run safety-web per sub-package instead of at the root.
     const summary = await run(repository.rootPath);
-    logger.log(`Safety-web summary for ${url}:`);
-    logger.log(JSON.stringify(summary, null, 2));
 
-    console.log(Repository.toJsonString(Repository.create(repository)));
+    // TODO: populate the real packages
+    repository.packages.push({
+      name: '<default>',
+      relativePath: './',
+      version: undefined,
+      safetyWebSummary: summary,
+    });
+
+    const repositoryProto = Repository.toBinary(Repository.create(repository));
+    const outputFile = nodePath.resolve(
+      outputDir,
+      `${nodePath.basename(repository.rootPath)}.pb`,
+    );
+    await fs.writeFile(outputFile, repositoryProto);
+    logger.log(`Wrote serialized proto to ${outputFile}`);
+    logger.log(
+      Repository.toJsonString(Repository.create(repository), {prettySpaces: 2}),
+    );
   }
 }
 
 main()
-  .catch((error) => {
+  .catch((error: Error) => {
     process.exitCode = 1;
-    logger.log(`Pipeline top-level error: ${error}`);
+    logger.log(`Pipeline top-level error: ${error.message} -- ${error.stack}`);
   })
   .finally(() => {
     logger.log('');
