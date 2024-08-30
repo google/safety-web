@@ -19,9 +19,10 @@ import {CommandRunner} from './command.js';
 import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
-import {run} from '../runner.js';
-import {Repository} from 'types-safety-web';
+import {Repository, Summary} from 'types-safety-web';
 import * as fs from 'node:fs/promises';
+import {Worker} from 'node:worker_threads';
+import {WorkerSuccess, WorkerError} from './worker.js';
 
 const logger = new Logger('pipeline:main');
 const commandRunner = new CommandRunner(logger);
@@ -104,7 +105,29 @@ async function main() {
     }
 
     // TODO run safety-web per sub-package instead of at the root.
-    const summary = await run(repository.rootPath);
+    const repoWorker = new Worker(
+      nodePath.resolve(import.meta.dirname, 'worker.js'),
+      {workerData: {rootDir: repository.rootPath}},
+    );
+    const workerPromise = new Promise((resolve) => {
+      repoWorker.on('exit', (code) => {
+        resolve(code);
+      });
+      repoWorker.on('error', (code) => {
+        resolve(code);
+      });
+    });
+    let summary: Summary;
+    repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
+      if (message.type === 'success') {
+        summary = message.summary;
+        // summary.outcome = 'SUCCESS';
+      } else {
+        summary = Summary.create({cwd: message.rootDir});
+        // summary.outcome = 'FAILURE';
+      }
+    });
+    await workerPromise;
 
     // TODO: populate the real packages
     repository.packages.push({
