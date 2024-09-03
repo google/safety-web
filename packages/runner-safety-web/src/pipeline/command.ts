@@ -13,7 +13,9 @@
 // limitations under the License.
 
 import {$, ProcessOutput} from 'zx';
-import {logAndRecord, recordLog} from './logger.js';
+import {Logger} from './logger.js';
+
+const logger = new Logger('pipeline:command');
 
 /**
  * Small wrapper around zx's $ that also logs the result of the command and not
@@ -28,15 +30,15 @@ export async function runCommand(
   for (let i = 0; i < rest.length; i += 1) {
     command += rest[i] + templateObj[i + 1];
   }
-  logAndRecord(command);
+  logger.log(command);
   // Use .pipe to stream the command output to stdout in real time.
   const output = await $(templateObj, rest).pipe(process.stdout).nothrow();
   const textOutput = output.text();
   if (!hasSucceeded(output)) {
-    logAndRecord(`Failed! exit code: ${output.exitCode}`);
+    logger.log(`Failed! exit code: ${output.exitCode}`);
   }
   if (textOutput.length !== 0) {
-    recordLog(textOutput);
+    logger.log(textOutput, {silent: true});
   }
   return output;
 }

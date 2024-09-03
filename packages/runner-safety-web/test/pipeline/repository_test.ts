@@ -14,6 +14,7 @@
 
 import {expect} from 'chai';
 import {RepositoryImpl} from '../../src/pipeline/repository.js';
+import {Logger} from '../../src/pipeline/logger.js';
 
 describe('exploreRepository', () => {
   it('uses the packageManager field to determine the package manager', async () => {
@@ -27,6 +28,7 @@ describe('exploreRepository', () => {
       'https://foo.com/bar',
       '/path/to/repo/',
       reader,
+      new Logger('test'),
     );
     await repo.explore();
     expect(repo.packageManagerFound.kind).to.equal('yarn');
@@ -47,6 +49,7 @@ describe('exploreRepository', () => {
       'https://foo.com/bar',
       '/path/to/repo/',
       reader,
+      new Logger('test'),
     );
     await repo.explore();
     expect(repo.packageManagerFound.kind).to.equal('npm');
@@ -65,6 +68,7 @@ describe('exploreRepository', () => {
       'https://foo.com/bar',
       '/path/to/repo/',
       reader,
+      new Logger('test'),
     );
     await repo.explore();
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions

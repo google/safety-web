@@ -12,19 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const logs: string[] = [];
+import debug from 'debug';
 
-/**
- * Record a log in the global log table.
- */
-export function recordLog(log: string) {
-  logs.push(log);
-}
+export class Logger {
+  private history: string[] = [];
+  private debugLogger: debug.Debugger;
 
-/**
- * console.log a log and record it in the global log table.
- */
-export function logAndRecord(log: string) {
-  recordLog(log);
-  console.log(log);
+  constructor(name: string) {
+    this.debugLogger = debug(name);
+  }
+
+  log(text: string, options: {silent?: boolean} = {}) {
+    this.history.push(text);
+    if (!options.silent) {
+      this.debugLogger(text);
+    }
+  }
+
+  get() {
+    return this.history;
+  }
 }

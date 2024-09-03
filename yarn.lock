@@ -2774,6 +2774,7 @@ __metadata:
   dependencies:
     "@protobuf-ts/plugin": "npm:^2.9.4"
     "@types/chai": "npm:^4.3.16"
+    "@types/debug": "npm:^4.1.12"
     "@types/eslint": "npm:^9.6.0"
     "@types/minimist": "npm:^1"
     "@types/mocha": "npm:^10.0.7"
@@ -2781,6 +2782,7 @@ __metadata:
     "@types/semver": "npm:^7"
     "@types/yargs": "npm:^17.0.32"
     chai: "npm:^5.1.1"
+    debug: "npm:^4.3.6"
     eslint: "npm:^9.6.0"
     eslint-formatter-safety-web: "workspace:^"
     eslint-plugin-safety-web: "workspace:^"

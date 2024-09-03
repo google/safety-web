@@ -17,11 +17,13 @@ import yargs from 'yargs';
 import * as nodePath from 'node:path';
 import {runCommand} from './command.js';
 import {cloneRepository} from './clone.js';
-import {logAndRecord} from './logger.js';
+import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
 import {run} from '../runner.js';
 import {Repository} from '../protos/pipeline.js';
+
+const logger = new Logger('pipeline:main');
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -63,13 +65,13 @@ async function main() {
     // Clone the repository sources
     const repoDirectoryPath = await cloneRepository(url, baseCloneDir);
     if (repoDirectoryPath instanceof Error) {
-      logAndRecord(repoDirectoryPath.message);
-      logAndRecord(`Error while cloning ${url}. Skipping ...`);
+      logger.log(repoDirectoryPath.message);
+      logger.log(`Error while cloning ${url}. Skipping ...`);
       continue;
     }
     const repository = new RepositoryImpl(url, repoDirectoryPath, {
       readJsonFile,
-    });
+    }, new Logger(`pipeline:repository:${url}`));
 
     const repositoryMap = new Map<string, Repository>();
 
@@ -77,8 +79,8 @@ async function main() {
     // manager, sub packages, etc
     const exploreError = await repository.explore();
     if (exploreError !== undefined) {
-      logAndRecord(exploreError.message);
-      logAndRecord(
+      logger.log(exploreError.message);
+      logger.log(
         `Error while exploring ${url} in ${repoDirectoryPath}. Skipping ...`,
       );
       continue;
@@ -88,7 +90,7 @@ async function main() {
     // Install the dependencies for the repository
     const installError = await repository.install();
     if (installError !== undefined) {
-      logAndRecord(
+      logger.log(
         `Error while installing ${url} in ${repoDirectoryPath}. Skipping ...`,
       );
       continue;
@@ -96,17 +98,19 @@ async function main() {
 
     // TODO run safety-web per sub-package instead of at the root.
     const summary = await run(repoDirectoryPath);
-    logAndRecord(`Safety-web summary for ${url}:`);
-    logAndRecord(JSON.stringify(summary, null, 2));
+    logger.log(`Safety-web summary for ${url}:`);
+    logger.log(JSON.stringify(summary, null, 2));
+
+    console.log(Repository.toJsonString(Repository.create(repository)));
   }
 }
 
 main()
   .catch((error) => {
     process.exitCode = 1;
-    logAndRecord(`Pipeline top-level error: ${error}`);
+    logger.log(`Pipeline top-level error: ${error}`);
   })
   .finally(() => {
-    logAndRecord('');
-    logAndRecord('### Done ###');
+    logger.log('');
+    logger.log('### Done ###');
   });
