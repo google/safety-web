@@ -18,7 +18,7 @@ import * as nodePath from 'node:path';
 import {runCommand} from './command.js';
 import {cloneRepository} from './clone.js';
 import {logAndRecord} from './logger.js';
-import {exploreRepository, installRepository} from './repository.js';
+import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
 import {run} from '../runner.js';
 import {Repository} from '../protos/pipeline.js';
@@ -60,7 +60,6 @@ async function main() {
   }
   await runCommand`mkdir -p ${baseCloneDir}`;
   for (const url of parsedCommand.repositories as string[]) {
-    const repository: Repository = {url, packages: [], logs: ''};
     // Clone the repository sources
     const repoDirectoryPath = await cloneRepository(url, baseCloneDir);
     if (repoDirectoryPath instanceof Error) {
@@ -68,16 +67,15 @@ async function main() {
       logAndRecord(`Error while cloning ${url}. Skipping ...`);
       continue;
     }
+    const repository = new RepositoryImpl(url, repoDirectoryPath, {
+      readJsonFile,
+    });
 
     const repositoryMap = new Map<string, Repository>();
 
     // Populate the repository structure. Look for the preferred package
     // manager, sub packages, etc
-    const exploreError = await exploreRepository(
-      repository,
-      repoDirectoryPath,
-      {readJsonFile},
-    );
+    const exploreError = await repository.explore();
     if (exploreError !== undefined) {
       logAndRecord(exploreError.message);
       logAndRecord(
@@ -85,12 +83,11 @@ async function main() {
       );
       continue;
     }
-    repository.url = url;
     repositoryMap.set(url, repository);
 
     // Install the dependencies for the repository
-    const error = await installRepository(repository, repoDirectoryPath);
-    if (error !== undefined) {
+    const installError = await repository.install();
+    if (installError !== undefined) {
       logAndRecord(
         `Error while installing ${url} in ${repoDirectoryPath}. Skipping ...`,
       );
@@ -98,7 +95,7 @@ async function main() {
     }
 
     // TODO run safety-web per sub-package instead of at the root.
-    const summary = run(repoDirectoryPath);
+    const summary = await run(repoDirectoryPath);
     logAndRecord(`Safety-web summary for ${url}:`);
     logAndRecord(JSON.stringify(summary, null, 2));
   }

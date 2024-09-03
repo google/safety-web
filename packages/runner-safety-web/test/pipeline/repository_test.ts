@@ -13,8 +13,7 @@
 // limitations under the License.
 
 import {expect} from 'chai';
-import {exploreRepository} from '../../src/pipeline/repository.js';
-import {Repository} from '../../src/protos/pipeline.js';
+import {RepositoryImpl} from '../../src/pipeline/repository.js';
 
 describe('exploreRepository', () => {
   it('uses the packageManager field to determine the package manager', async () => {
@@ -24,13 +23,12 @@ describe('exploreRepository', () => {
           packageManager: 'yarn@3.2.3',
         }),
     };
-    const repo: Repository = {
-      url: 'https://foo.com/bar',
-      packages: [],
-      logs: '',
-    };
-
-    await exploreRepository(repo, '/path/to/repo/', reader);
+    const repo = new RepositoryImpl(
+      'https://foo.com/bar',
+      '/path/to/repo/',
+      reader,
+    );
+    await repo.explore();
     expect(repo.packageManagerFound.kind).to.equal('yarn');
     expect(repo.packageManagerFound.version).to.equal('3.2.3');
   });
@@ -45,12 +43,12 @@ describe('exploreRepository', () => {
           },
         }),
     };
-    const repo: Repository = {
-      url: 'https://foo.com/bar',
-      packages: [],
-      logs: '',
-    };
-    await exploreRepository(repo, '/path/to/repo/', reader);
+    const repo = new RepositoryImpl(
+      'https://foo.com/bar',
+      '/path/to/repo/',
+      reader,
+    );
+    await repo.explore();
     expect(repo.packageManagerFound.kind).to.equal('npm');
     expect(repo.packageManagerFound.version).to.equal('~1.0.20');
   });
@@ -63,12 +61,12 @@ describe('exploreRepository', () => {
           packageManager: 'superLitManager@13.3.7',
         }),
     };
-    const repo: Repository = {
-      url: 'https://foo.com/bar',
-      packages: [],
-      logs: '',
-    };
-    await exploreRepository(repo, '/path/to/repo/', reader);
+    const repo = new RepositoryImpl(
+      'https://foo.com/bar',
+      '/path/to/repo/',
+      reader,
+    );
+    await repo.explore();
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(repo.packageManagerFound.kind).to.be.undefined;
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
