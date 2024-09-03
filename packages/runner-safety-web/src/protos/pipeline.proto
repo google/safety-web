@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package safety_web;
+
+// These messages are not stable and may still be changed in a breaking way
+// while we figure out what's useful.
+
+message Violation {
+  string message = 1;
+  string rule_id = 2;
+  string file_path = 3;
+  int64 line = 4;
+  int64 column = 5;
+  int64 end_line = 6;
+  int64 end_column = 7;
+  string justification = 8;
+  // A clickable URL that opens the file in e.g. VSCode
+  string filesystem_url = 9;
+  // A clickable URL that opens the file in e.g. GitHub in the browser
+  string web_url = 10;
+  string snippet = 11;
+}
+
+// Return value of safety-web formatted with eslint-formatter-safety-web
+message Summary {
+  string cwd = 1;
+  repeated Violation safety_web_violations = 2;
+  repeated Violation safety_web_silenced_violations = 3;
+  // ESLint violations not related to the safety-web plugin
+  repeated Violation other_violations = 4;
+  repeated Violation other_silenced_violations = 5;
+}
+
+message Package {
+  string name = 1;
+  string relative_path = 2;
+  string version = 3;
+  Summary safety_web_summary = 4;
+}
+
+message PackageManager {
+  string kind = 1;
+  string version = 2;
+}
+
+// An invocation of the pipeline on 1 repository. Captures characteristics found
+// while analyzing and installing the repository.
+message Repository {
+  string url = 1;
+  PackageManager package_manager_found = 3;
+  PackageManager package_manager_used = 4;
+  repeated Package packages = 5;
+  string logs = 6;
+}

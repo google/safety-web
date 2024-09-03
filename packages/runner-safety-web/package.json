@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
+    "@protobuf-ts/plugin": "^2.9.4",
     "eslint": "^9.6.0",
     "eslint-formatter-safety-web": "workspace:^",
     "eslint-plugin-safety-web": "workspace:^",

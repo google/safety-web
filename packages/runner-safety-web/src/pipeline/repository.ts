@@ -19,26 +19,10 @@ import {Reader} from './reader.js';
 import * as semver from 'semver';
 import {$, cd, ProcessOutput} from 'zx';
 import {hasSucceeded} from './command.js';
-
-export interface Repository {
-  url?: string;
-  clonePath: string;
-  packageManager: PackageManager;
-  packages: Array<Package>;
-}
-
-export interface Package {
-  name: string;
-  path: string;
-  version: string;
-}
+import {Repository, PackageManager} from '../protos/pipeline.js';
 
 const knownPackageManagerKinds = ['npm', 'yarn', 'pnpm'] as const;
 type KnownPackageManagerKinds = (typeof knownPackageManagerKinds)[number];
-interface PackageManager {
-  kind?: KnownPackageManagerKinds;
-  semver?: string;
-}
 
 /**
  * A subset of versions that we know exist. These are either the latest versions
@@ -50,51 +34,56 @@ const knownPackageManagerVersions = {
   pnpm: ['8.15.9', '9.9.0'],
 };
 
+/**
+ * Explore the repository and try to determine the package manager used.
+ * @param repository the repository to explore
+ * @param rootPath the path where the repository is cloned
+ * @param reader a reader to read files from the repository
+ * @returns an error if the repository could not be explored, undefined if
+ * otherwise successful.
+ */
 export async function exploreRepository(
-  root: string,
+  repository: Repository,
+  rootPath: string,
   reader: Reader,
-): Promise<Repository | Error> {
+): Promise<Error | undefined> {
   const rootPackageJson = await reader.readJsonFile(
-    nodePath.resolve(root, 'package.json'),
+    nodePath.resolve(rootPath, 'package.json'),
   );
   if (rootPackageJson instanceof Error) {
     return rootPackageJson;
   }
-  const packageManager = getPackageManager(rootPackageJson as PackageJson);
-  return {
-    clonePath: root,
-    packageManager: packageManager,
-    packages: [],
-  };
+  repository.packageManagerFound = getPackageManager(
+    rootPackageJson as PackageJson,
+  );
 }
 
 /** Sets of heuristics to determine the package manager used */
 function getPackageManager(packageJson: PackageJson): PackageManager {
   if (packageJson.packageManager) {
-    const [packageManagerKind, semver] = packageJson.packageManager.split(
+    const [packageManagerKind, version] = packageJson.packageManager.split(
       '@',
     ) as [KnownPackageManagerKinds | undefined, string];
     if (!knownPackageManagerKinds.includes(packageManagerKind)) {
       logAndRecord(`Found unknown package manager "${packageManagerKind}".`);
-      return {kind: undefined, semver: undefined};
+      return {kind: undefined, version: undefined};
     } else {
-      return {kind: packageManagerKind, semver};
+      return {kind: packageManagerKind, version};
     }
   }
 
   if (packageJson['engines']) {
     const engines = packageJson['engines'];
     if (engines['npm']) {
-      return {kind: 'npm', semver: engines['npm']};
+      return {kind: 'npm', version: engines['npm']};
     } else if (engines['yarn']) {
-      return {kind: 'yarn', semver: engines['yarn']};
+      return {kind: 'yarn', version: engines['yarn']};
     } else if (engines['pnpm']) {
-      return {kind: 'yarn', semver: engines['yarn']};
+      return {kind: 'yarn', version: engines['yarn']};
     }
   }
 
-  // Default to NPM.
-  return {kind: undefined, semver: undefined};
+  return {kind: undefined, version: undefined};
 }
 
 /**
@@ -105,10 +94,11 @@ function getPackageManager(packageJson: PackageJson): PackageManager {
  */
 export async function installRepository(
   repository: Repository,
+  rootPath: string,
 ): Promise<Error | undefined> {
-  const manager = repository.packageManager;
+  const manager = repository.packageManagerFound;
   const version = tryGetPackageManagerVersion(manager);
-  cd(repository.clonePath);
+  cd(rootPath);
   $.verbose = true;
   let installOutput: ProcessOutput;
   switch (manager.kind) {
@@ -117,7 +107,7 @@ export async function installRepository(
     case 'npm':
       if (version === undefined) {
         logAndRecord(
-          `Could not determine a package manager version for ${manager.kind} with '${manager.semver}'. Defaulting to latest...`,
+          `Could not determine a package manager version for ${manager.kind} with '${manager.version}'. Defaulting to latest...`,
         );
         installOutput = await $`corepack use ${manager.kind}@latest`.nothrow();
       } else {
@@ -147,12 +137,15 @@ const SEMVER_STRING_REGEX =
  * @returns the version to use if successful, undefined otherwise.
  */
 function tryGetPackageManagerVersion(manager: PackageManager): string {
-  if (manager.semver?.match(SEMVER_STRING_REGEX)) {
-    return semver.clean(manager.semver);
+  // Matches a well formed and well defined semver version
+  if (manager.version?.match(SEMVER_STRING_REGEX)) {
+    return semver.clean(manager.version);
   }
+
+  // Otherwise we assume it's a version range that we need to resolve
   const maxVersion = semver.maxSatisfying(
-    knownPackageManagerVersions[manager.kind],
-    manager.semver,
+    knownPackageManagerVersions[manager.kind as KnownPackageManagerKinds],
+    manager.version,
   );
   return maxVersion || undefined;
 }

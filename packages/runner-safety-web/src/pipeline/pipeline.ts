@@ -18,13 +18,10 @@ import * as nodePath from 'node:path';
 import {runCommand} from './command.js';
 import {cloneRepository} from './clone.js';
 import {logAndRecord} from './logger.js';
-import {
-  exploreRepository,
-  installRepository,
-  Repository,
-} from './repository.js';
+import {exploreRepository, installRepository} from './repository.js';
 import {readJsonFile} from './reader.js';
-import { run } from '../runner.js';
+import {run} from '../runner.js';
+import {Repository} from '../protos/pipeline.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -63,23 +60,28 @@ async function main() {
   }
   await runCommand`mkdir -p ${baseCloneDir}`;
   for (const url of parsedCommand.repositories as string[]) {
+    const repository: Repository = {url, packages: [], logs: ''};
     // Clone the repository sources
-    const repoDirectory = await cloneRepository(url, baseCloneDir);
-    if (repoDirectory instanceof Error) {
-      logAndRecord(repoDirectory.message);
+    const repoDirectoryPath = await cloneRepository(url, baseCloneDir);
+    if (repoDirectoryPath instanceof Error) {
+      logAndRecord(repoDirectoryPath.message);
       logAndRecord(`Error while cloning ${url}. Skipping ...`);
       continue;
     }
 
     const repositoryMap = new Map<string, Repository>();
 
-    // Search the repository structure to look for the preferred package
+    // Populate the repository structure. Look for the preferred package
     // manager, sub packages, etc
-    const repository = await exploreRepository(repoDirectory, {readJsonFile});
-    if (repository instanceof Error) {
-      logAndRecord(repository.message);
+    const exploreError = await exploreRepository(
+      repository,
+      repoDirectoryPath,
+      {readJsonFile},
+    );
+    if (exploreError !== undefined) {
+      logAndRecord(exploreError.message);
       logAndRecord(
-        `Error while exploring ${url} in ${repoDirectory}. Skipping ...`,
+        `Error while exploring ${url} in ${repoDirectoryPath}. Skipping ...`,
       );
       continue;
     }
@@ -87,16 +89,16 @@ async function main() {
     repositoryMap.set(url, repository);
 
     // Install the dependencies for the repository
-    const error = await installRepository(repository);
+    const error = await installRepository(repository, repoDirectoryPath);
     if (error !== undefined) {
       logAndRecord(
-        `Error while installing ${url} in ${repoDirectory}. Skipping ...`,
+        `Error while installing ${url} in ${repoDirectoryPath}. Skipping ...`,
       );
       continue;
     }
 
     // TODO run safety-web per sub-package instead of at the root.
-    const summary = run(repoDirectory);
+    const summary = run(repoDirectoryPath);
     logAndRecord(`Safety-web summary for ${url}:`);
     logAndRecord(JSON.stringify(summary, null, 2));
   }

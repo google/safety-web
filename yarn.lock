@@ -385,6 +385,57 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@protobuf-ts/plugin-framework@npm:^2.9.4":
+  version: 2.9.4
+  resolution: "@protobuf-ts/plugin-framework@npm:2.9.4"
+  dependencies:
+    "@protobuf-ts/runtime": "npm:^2.9.4"
+    typescript: "npm:^3.9"
+  checksum: 10c0/2923852ab1d2d46090245a858fd362fffccd4f556963b01d153d4c5568dfa33d34101dacca0b1f38f23516e5a4d1f765e14be1d885dc1159d5ec37d25000f065
+  languageName: node
+  linkType: hard
+
+"@protobuf-ts/plugin@npm:^2.9.4":
+  version: 2.9.4
+  resolution: "@protobuf-ts/plugin@npm:2.9.4"
+  dependencies:
+    "@protobuf-ts/plugin-framework": "npm:^2.9.4"
+    "@protobuf-ts/protoc": "npm:^2.9.4"
+    "@protobuf-ts/runtime": "npm:^2.9.4"
+    "@protobuf-ts/runtime-rpc": "npm:^2.9.4"
+    typescript: "npm:^3.9"
+  bin:
+    protoc-gen-dump: bin/protoc-gen-dump
+    protoc-gen-ts: bin/protoc-gen-ts
+  checksum: 10c0/dbf1506e656d4d8ca91ace656cf3e238aed93d6539747c72c140fb0be29af61ccafae4e8c9f1e6f8369ac20508263d718ccb411dcf2d15276672c8ad7ba8194c
+  languageName: node
+  linkType: hard
+
+"@protobuf-ts/protoc@npm:^2.9.4":
+  version: 2.9.4
+  resolution: "@protobuf-ts/protoc@npm:2.9.4"
+  bin:
+    protoc: protoc.js
+  checksum: 10c0/4ce4380cdab5560d13dd3b8d3538e6aee508a10b6b43dbd649d2ffe0a774129d59bd0e270ce7f643a95b9703e19088a5c725f68939913f2187fdeb1d6b42d4b5
+  languageName: node
+  linkType: hard
+
+"@protobuf-ts/runtime-rpc@npm:^2.9.4":
+  version: 2.9.4
+  resolution: "@protobuf-ts/runtime-rpc@npm:2.9.4"
+  dependencies:
+    "@protobuf-ts/runtime": "npm:^2.9.4"
+  checksum: 10c0/91fa7037b669dc92073d393dbe6bb109307d7b884506f6e5a310c6bde43b3920154b1176c826e9739c81ecd108090516b826e94354d58e454df2eef7f50f3a12
+  languageName: node
+  linkType: hard
+
+"@protobuf-ts/runtime@npm:^2.9.4":
+  version: 2.9.4
+  resolution: "@protobuf-ts/runtime@npm:2.9.4"
+  checksum: 10c0/78a10c0e2ee33fe98b3e30d15f8a52fe1a9505de3a8c056339bc01a0a076d4108a4efe93b578dc034c91c1b8c85996643b3f4d45f95c7e2bd5c151455b4fd23f
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -2721,6 +2772,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "runner-safety-web@workspace:packages/runner-safety-web"
   dependencies:
+    "@protobuf-ts/plugin": "npm:^2.9.4"
     "@types/chai": "npm:^4.3.16"
     "@types/eslint": "npm:^9.6.0"
     "@types/minimist": "npm:^1"
@@ -3067,6 +3119,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^3.9":
+  version: 3.9.10
+  resolution: "typescript@npm:3.9.10"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/863cc06070fa18a0f9c6a83265fb4922a8b51bf6f2c6760fb0b73865305ce617ea4bc6477381f9f4b7c3a8cb4a455b054f5469e6e41307733fe6a2bd9aae82f8
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^5.5.0, typescript@npm:^5.5.4":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
@@ -3074,6 +3136,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/422be60f89e661eab29ac488c974b6cc0a660fb2228003b297c3d10c32c90f3bcffc1009b43876a082515a3c376b1eefcce823d6e78982e6878408b9a923199c
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^3.9#optional!builtin<compat/typescript>":
+  version: 3.9.10
+  resolution: "typescript@patch:typescript@npm%3A3.9.10#optional!builtin<compat/typescript>::version=3.9.10&hash=3bd3d3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/9041fb3886e7d6a560f985227b8c941d17a750f2edccb5f9b3a15a2480574654d9be803ad4a14aabcc2f2553c4d272a25fd698a7c42692f03f66b009fb46883c
   languageName: node
   linkType: hard
 
