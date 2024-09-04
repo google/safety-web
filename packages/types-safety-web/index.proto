@@ -1,3 +1,17 @@
+// Copyright 2024 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 syntax = "proto3";
 
 package safety_web;
@@ -9,10 +23,10 @@ message Violation {
   string message = 1;
   string rule_id = 2;
   string file_path = 3;
-  int64 line = 4;
-  int64 column = 5;
-  int64 end_line = 6;
-  int64 end_column = 7;
+  int32 line = 4;
+  int32 column = 5;
+  int32 end_line = 6;
+  int32 end_column = 7;
   string justification = 8;
   // A clickable URL that opens the file in e.g. VSCode
   string filesystem_url = 9;
@@ -29,6 +43,10 @@ message Summary {
   // ESLint violations not related to the safety-web plugin
   repeated Violation other_violations = 4;
   repeated Violation other_silenced_violations = 5;
+  int32 safety_web_violation_count = 6;
+  int32 safety_web_silenced_violation_count = 7;
+  int32 other_violation_count = 8;
+  int32 other_silenced_violation_count = 9;
 }
 
 message Package {

@@ -21,7 +21,7 @@ import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
 import {run} from '../runner.js';
-import {Repository} from '../protos/pipeline.js';
+import {Repository} from 'types-safety-web';
 
 const logger = new Logger('pipeline:main');
 const commandRunner = new CommandRunner(logger);

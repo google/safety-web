@@ -19,12 +19,13 @@ import * as fs from 'fs/promises';
 import {generateESLintOptions} from './eslint_config.js';
 import {generateTSConfig} from './ts_config.js';
 import * as formatter from 'eslint-formatter-safety-web';
+import {Summary} from 'types-safety-web';
 
-const safetyWebFormatter = formatter as unknown as ESLint.Formatter & {
+const safetyWebFormatter = formatter as ESLint.Formatter & {
   formatToObject: (
     results: ESLint.LintResult[],
     context: ESLint.LintResultData,
-  ) => formatter.SafetyWebSummary;
+  ) => Summary;
 };
 
 export const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
@@ -46,7 +47,10 @@ async function writeConfig(tsconfig: object, path: string) {
   await fs.writeFile(path, JSON.stringify(tsconfig, null, 2));
 }
 
-export async function run(rootDir: string, useDefaultTSConfig = false) {
+export async function run(
+  rootDir: string,
+  useDefaultTSConfig = false,
+): Promise<Summary> {
   const resolvedRootDir = await resolvePath(rootDir);
   if (resolvedRootDir === undefined) {
     throw new Error('Could not resolve the root directory. Aborting...');

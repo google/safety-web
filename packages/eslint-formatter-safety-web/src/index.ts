@@ -13,35 +13,9 @@
 // limitations under the License.
 
 import {ESLint, Linter} from 'eslint';
+import {Summary, Violation} from 'types-safety-web';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
-
-export interface SafetyWebSummary {
-  cwd: string;
-  violations: Array<Violation>;
-  silencedViolations: Array<Violation>;
-  otherErrors: Array<Violation>;
-  otherWarnings: Array<Violation>;
-  safetyWebViolations: number;
-  safetyWebSilencedViolations: number;
-  warnings: number;
-  errors: number;
-  // TODO: add other metrics on other errors like tsconfigs used, typechecking
-  // errors, ...
-}
-
-export interface Violation {
-  message: string;
-  ruleId: string;
-  filePath: string;
-  line: number;
-  column: number;
-  endLine: number;
-  endColumn: number;
-  link: string;
-  justification?: string;
-  snippet: string;
-}
 
 function formatFileLink(
   filePath: string,
@@ -61,40 +35,40 @@ export const format: ESLint.Formatter['format'] = function (
 export const formatToObject = function (
   results: ESLint.LintResult[],
   context: ESLint.LintResultData,
-): SafetyWebSummary {
-  const safetyWebSummary: SafetyWebSummary = {
+): Summary {
+  const safetyWebSummary: Summary = {
     cwd: context?.cwd,
-    violations: [],
-    silencedViolations: [],
-    otherErrors: [],
-    otherWarnings: [],
-    safetyWebViolations: 0,
-    safetyWebSilencedViolations: 0,
-    warnings: 0,
-    errors: 0,
+    safetyWebViolations: [],
+    safetyWebSilencedViolations: [],
+    otherViolations: [],
+    otherSilencedViolations: [],
+    safetyWebViolationCount: 0,
+    safetyWebSilencedViolationCount: 0,
+    otherViolationCount: 0,
+    otherSilencedViolationCount: 0,
   };
 
   for (const fileResult of results) {
     for (const lintMessage of fileResult.messages) {
       const violation = createViolation(lintMessage, fileResult.filePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
-        safetyWebSummary.violations.push(violation);
-        safetyWebSummary.safetyWebViolations += 1;
+        safetyWebSummary.safetyWebViolations.push(violation);
+        safetyWebSummary.safetyWebViolationCount += 1;
       } else {
-        safetyWebSummary.otherErrors.push(violation);
+        safetyWebSummary.otherViolations.push(violation);
+        safetyWebSummary.otherViolationCount += 1;
       }
     }
     for (const lintMessage of fileResult.suppressedMessages) {
       const violation = createViolation(lintMessage, fileResult.filePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
-        safetyWebSummary.silencedViolations.push(violation);
-        safetyWebSummary.safetyWebSilencedViolations += 1;
+        safetyWebSummary.safetyWebSilencedViolations.push(violation);
+        safetyWebSummary.safetyWebSilencedViolationCount += 1;
       } else {
-        safetyWebSummary.otherErrors.push(violation);
+        safetyWebSummary.otherSilencedViolations.push(violation);
+        safetyWebSummary.otherSilencedViolationCount += 1;
       }
     }
-    safetyWebSummary.warnings += fileResult.warningCount;
-    safetyWebSummary.errors += fileResult.errorCount;
   }
 
   return safetyWebSummary;
@@ -112,7 +86,9 @@ function createViolation(
     column: lintMessage.column,
     endLine: lintMessage.endLine,
     endColumn: lintMessage.endColumn,
-    link: formatFileLink(path, lintMessage.line, lintMessage.column),
+    justification: undefined,
+    filesystemUrl: formatFileLink(path, lintMessage.line, lintMessage.column),
+    webUrl: undefined,
     snippet: 'TODO',
   };
   if (isSuppressedLintMessage(lintMessage)) {

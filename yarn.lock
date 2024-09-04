@@ -1367,6 +1367,7 @@ __metadata:
     mocha: "npm:^10.6.0"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.16.2"
+    types-safety-web: "workspace:^"
     typescript: "npm:^5.5.0"
   peerDependencies:
     eslint-plugin-safety-web: "*"
@@ -2772,7 +2773,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "runner-safety-web@workspace:packages/runner-safety-web"
   dependencies:
-    "@protobuf-ts/plugin": "npm:^2.9.4"
     "@types/chai": "npm:^4.3.16"
     "@types/debug": "npm:^4.1.12"
     "@types/eslint": "npm:^9.6.0"
@@ -2790,6 +2790,7 @@ __metadata:
     mocha: "npm:^10.7.3"
     semver: "npm:^7.6.3"
     ts-node: "npm:^10.9.2"
+    types-safety-web: "workspace:^"
     typescript: "npm:^5.5.4"
     typescript-eslint: "npm:^8.0.0"
     yargs: "npm:^17.7.2"
@@ -3106,6 +3107,14 @@ __metadata:
   checksum: 10c0/dea9df45ea1f0aaa4e2d3bed3f9a0bfe9e5b2592bddb92eb1bf06e50bcf98dbb78189668cd8bc31a0511d3fc25539b4cd5c704497e53e93e2d40ca764b10bfc3
   languageName: node
   linkType: hard
+
+"types-safety-web@workspace:^, types-safety-web@workspace:packages/types-safety-web":
+  version: 0.0.0-use.local
+  resolution: "types-safety-web@workspace:packages/types-safety-web"
+  dependencies:
+    "@protobuf-ts/plugin": "npm:^2.9.4"
+  languageName: unknown
+  linkType: soft
 
 "typescript-eslint@npm:^8.0.0":
   version: 8.0.1

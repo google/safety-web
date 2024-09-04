@@ -5,6 +5,7 @@
   "author": "Google ISE Web Team",
   "repository": "https://github.com/google/safety-web",
   "main": "lib/src/index.js",
+  "type": "module",
   "files": [
     "lib/src/"
   ],
@@ -22,6 +23,7 @@
   "dependencies": {
     "debug": "^4.3.6",
     "eslint": "^8.56.0 <9.0.0",
+    "types-safety-web": "workspace:^",
     "typescript": "^5.5.0"
   },
   "devDependencies": {

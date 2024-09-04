@@ -1,0 +1,22 @@
+{
+  "name": "types-safety-web",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@protobuf-ts/plugin": "^2.9.4"
+  },
+  "exports": [
+    "./index.js"
+  ],
+  "engines": {
+    "node": "^20.11.0 || >21.2.0"
+  },
+  "scripts": {
+    "clean": "tsc --build --clean",
+    "build": "tsc -b ./tsconfig.json",
+    "build:watch": "tsc -b ./tsconfig.json --watch",
+    "lint": ":",
+    "test": ":",
+    "test:watch": ":"
+  }
+}

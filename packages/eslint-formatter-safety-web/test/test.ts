@@ -142,28 +142,28 @@ describe('eslint-formatter-safety-web', () => {
   );
 
   it('only lists safety-web errors', () => {
-    expect(formattedResults.violations).has.length(3);
-    formattedResults.violations.forEach((violation) => {
+    expect(formattedResults.safetyWebViolations).has.length(3);
+    formattedResults.safetyWebViolations.forEach((violation) => {
       expect(violation.ruleId).equals('safety-web/trusted-types-checks');
     });
   });
 
   it('lists safety-web silenced violations with their justification', () => {
-    expect(formattedResults.silencedViolations).has.length(1);
-    expect(formattedResults.silencedViolations[0].filePath).equals(
+    expect(formattedResults.safetyWebSilencedViolations).has.length(1);
+    expect(formattedResults.safetyWebSilencedViolations[0].filePath).equals(
       '/path/to/file_with_safety_web_errors_silenced.ts',
     );
-    expect(formattedResults.silencedViolations[0].justification).equals(
-      'This is a legacy violation.',
-    );
+    expect(
+      formattedResults.safetyWebSilencedViolations[0].justification,
+    ).equals('This is a legacy violation.');
   });
 
   it('lists other errors in a separate list', () => {
-    expect(formattedResults.otherErrors).has.length(1);
-    expect(formattedResults.otherErrors[0].filePath).equals(
+    expect(formattedResults.otherViolations).has.length(1);
+    expect(formattedResults.otherViolations[0].filePath).equals(
       '/path/to/file_with_other_errors.ts',
     );
-    expect(formattedResults.otherErrors[0].message).equals(
+    expect(formattedResults.otherViolations[0].message).equals(
       'Parsing error: X was not found by the project service.',
     );
   });
