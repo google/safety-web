@@ -57,6 +57,82 @@ async function parseCli() {
     .parse();
 }
 
+async function processRepository(
+  url: string,
+  baseCloneDir: string,
+): Promise<RepositoryImpl> {
+  const repository = new RepositoryImpl(
+    url,
+    {
+      readJsonFile,
+    },
+    new Logger(`pipeline:repository:${url}`),
+  );
+  // Clone the repository sources
+  const cloneError = await repository.clone(baseCloneDir);
+  if (cloneError !== undefined) {
+    logger.log(cloneError.message);
+    logger.log(`Error while cloning ${url}. Stopping processing here ...`);
+    return repository;
+  }
+
+  // Populate the repository structure. Look for the preferred package
+  // manager, sub packages, etc
+  const exploreError = await repository.explore();
+  if (exploreError !== undefined) {
+    logger.log(exploreError.message);
+    logger.log(
+      `Error while exploring repository ${url}. Stopping processing here ...`,
+    );
+    return repository;
+  }
+
+  // Install the dependencies for the repository
+  const installError = await repository.install();
+  if (installError !== undefined) {
+    logger.log(
+      `Error while installing repository ${url}. Stopping processing here ...`,
+    );
+    return repository;
+  }
+
+  // TODO run safety-web per sub-package instead of at the root.
+  const repoWorker = new Worker(
+    nodePath.resolve(import.meta.dirname, 'worker.js'),
+    {workerData: {rootDir: repository.rootPath}},
+  );
+  const workerPromise = new Promise((resolve) => {
+    repoWorker.on('exit', (code) => {
+      resolve(code);
+    });
+    repoWorker.on('error', (code) => {
+      resolve(code);
+    });
+  });
+  let summary: Summary;
+  let outcome: string;
+  repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
+    if (message.type === 'success') {
+      summary = message.summary;
+      outcome = 'SUCCESS';
+    } else {
+      summary = Summary.create({cwd: message.rootDir});
+      outcome = 'FAILURE';
+    }
+  });
+  await workerPromise;
+
+  // TODO: populate the real packages
+  repository.packages.push({
+    name: '<default>',
+    relativePath: './',
+    version: undefined,
+    safetyWebSummary: summary,
+    outcome,
+  });
+  return repository;
+}
+
 /**
  * Main entry point for the pipeline that runs safety-web on a set of
  * repositories.
@@ -70,75 +146,7 @@ async function main() {
   }
   await commandRunner.run`mkdir -p ${baseCloneDir} ${outputDir}`;
   for (const url of parsedCommand.repositories as string[]) {
-    const repository = new RepositoryImpl(
-      url,
-      {
-        readJsonFile,
-      },
-      new Logger(`pipeline:repository:${url}`),
-    );
-    // Clone the repository sources
-    const cloneError = await repository.clone(baseCloneDir);
-    if (cloneError !== undefined) {
-      logger.log(cloneError.message);
-      logger.log(`Error while cloning ${url}. Skipping ...`);
-      continue;
-    }
-
-    const repositoryMap = new Map<string, Repository>();
-
-    // Populate the repository structure. Look for the preferred package
-    // manager, sub packages, etc
-    const exploreError = await repository.explore();
-    if (exploreError !== undefined) {
-      logger.log(exploreError.message);
-      logger.log(`Error while exploring repository ${url}. Skipping ...`);
-      continue;
-    }
-    repositoryMap.set(url, repository);
-
-    // Install the dependencies for the repository
-    const installError = await repository.install();
-    if (installError !== undefined) {
-      logger.log(`Error while installing repository ${url}. Skipping ...`);
-      continue;
-    }
-
-    // TODO run safety-web per sub-package instead of at the root.
-    const repoWorker = new Worker(
-      nodePath.resolve(import.meta.dirname, 'worker.js'),
-      {workerData: {rootDir: repository.rootPath}},
-    );
-    const workerPromise = new Promise((resolve) => {
-      repoWorker.on('exit', (code) => {
-        resolve(code);
-      });
-      repoWorker.on('error', (code) => {
-        resolve(code);
-      });
-    });
-    let summary: Summary;
-    let outcome: string;
-    repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
-      if (message.type === 'success') {
-        summary = message.summary;
-        outcome = 'SUCCESS';
-      } else {
-        summary = Summary.create({cwd: message.rootDir});
-        outcome = 'FAILURE';
-      }
-    });
-    await workerPromise;
-
-    // TODO: populate the real packages
-    repository.packages.push({
-      name: '<default>',
-      relativePath: './',
-      version: undefined,
-      safetyWebSummary: summary,
-      outcome,
-    });
-
+    const repository = await processRepository(url, baseCloneDir);
     const repositoryProto = Repository.toBinary(Repository.create(repository));
     const outputFile = nodePath.resolve(
       outputDir,

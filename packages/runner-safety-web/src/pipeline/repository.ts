@@ -45,6 +45,7 @@ export class RepositoryImpl implements Repository {
   packageManagerUsed: PackageManager;
   packages: Package[] = [];
   rootPath: string = undefined;
+  stepFailure: string = undefined;
   private commandRunner: CommandRunner;
   get logs() {
     return this.logger.get().join('\n');
@@ -75,6 +76,7 @@ export class RepositoryImpl implements Repository {
       .run`git clone ${this.url} ${this.rootPath}`;
     if (!hasSucceeded(output)) {
       const errorMessage = `Failed to clone ${this.url} in ${baseDir}.`;
+      this.stepFailure = 'CLONE';
       this.logger.log(errorMessage);
       return new Error(errorMessage);
     }
@@ -103,6 +105,7 @@ export class RepositoryImpl implements Repository {
       nodePath.resolve(this.rootPath, 'package.json'),
     );
     if (rootPackageJson instanceof Error) {
+      this.stepFailure = 'EXPLORE';
       this.logger.log(
         `Error while exploring repository: ${rootPackageJson.message}`,
       );
@@ -183,6 +186,7 @@ export class RepositoryImpl implements Repository {
         break;
     }
     if (!hasSucceeded(installOutput)) {
+      this.stepFailure = 'INSTALL';
       this.logger.log(
         `Repository installation failed: ${installOutput.text()}`,
       );

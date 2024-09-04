@@ -70,4 +70,6 @@ message Repository {
   PackageManager package_manager_used = 4;
   repeated Package packages = 5;
   string logs = 6;
+  // When the repository fails to be set up, record the failing step.
+  string step_failure = 7;
 }
