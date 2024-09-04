@@ -17,9 +17,9 @@ import {PackageJson} from './typing.js';
 import {Reader} from './reader.js';
 import * as semver from 'semver';
 import {$, cd, ProcessOutput} from 'zx';
-import {hasSucceeded} from './command.js';
+import {CommandRunner, hasSucceeded} from './command.js';
 import {Repository, PackageManager, Package} from '../protos/pipeline.js';
-import { Logger } from './logger.js';
+import {Logger} from './logger.js';
 
 const knownPackageManagerKinds = ['npm', 'yarn', 'pnpm'] as const;
 type KnownPackageManagerKinds = (typeof knownPackageManagerKinds)[number];
@@ -42,6 +42,7 @@ export class RepositoryImpl implements Repository {
   packageManagerFound: PackageManager;
   packageManagerUsed: PackageManager;
   packages: Package[] = [];
+  private commandRunner: CommandRunner;
   get logs() {
     return this.logger.get().join('\n');
   }
@@ -50,9 +51,10 @@ export class RepositoryImpl implements Repository {
     readonly url: string,
     private readonly rootPath: string,
     private readonly reader: Reader,
-    private readonly logger: Logger
+    private readonly logger: Logger,
   ) {
     this.url = url;
+    this.commandRunner = new CommandRunner(logger);
   }
 
   /**
@@ -61,9 +63,7 @@ export class RepositoryImpl implements Repository {
    * otherwise successful.
    */
   async explore(): Promise<Error | undefined> {
-    this.logger.log(
-      `Exploring repository...`,
-    );
+    this.logger.log(`Exploring repository...`);
     const rootPackageJson = await this.reader.readJsonFile(
       nodePath.resolve(this.rootPath, 'package.json'),
     );
@@ -81,12 +81,16 @@ export class RepositoryImpl implements Repository {
   /** Sets of heuristics to determine the package manager used */
   private getPackageManager(packageJson: PackageJson): PackageManager {
     if (packageJson.packageManager) {
-      this.logger.log(`Found a 'packageManager' field: "${packageJson.packageManager}"`);
+      this.logger.log(
+        `Found a 'packageManager' field: "${packageJson.packageManager}"`,
+      );
       const [packageManagerKind, version] = packageJson.packageManager.split(
         '@',
       ) as [KnownPackageManagerKinds | undefined, string];
       if (!knownPackageManagerKinds.includes(packageManagerKind)) {
-        this.logger.log(`Found unknown package manager "${packageManagerKind}".`);
+        this.logger.log(
+          `Found unknown package manager "${packageManagerKind}".`,
+        );
         return {kind: undefined, version: undefined};
       } else {
         return {kind: packageManagerKind, version};
@@ -114,9 +118,7 @@ export class RepositoryImpl implements Repository {
    * @returns
    */
   async install(): Promise<Error | undefined> {
-    this.logger.log(
-      `Installing...`,
-    );
+    this.logger.log(`Installing...`);
     const version = this.tryResolvePackageManagerVersion(
       this.packageManagerFound,
     );
@@ -131,19 +133,24 @@ export class RepositoryImpl implements Repository {
           this.logger.log(
             `Defaulting to ${this.packageManagerFound.kind} latest...`,
           );
-          installOutput =
-            await $`corepack use ${this.packageManagerFound.kind}@latest`.nothrow();
+          installOutput = await this.commandRunner
+            .run`corepack use ${this.packageManagerFound.kind}@latest`;
         } else {
-          installOutput =
-            await $`corepack use ${this.packageManagerFound.kind}@${version}`.nothrow();
+          this.logger.log(
+            `Installing corepack use ${this.packageManagerFound.kind}@${version}`,
+          );
+          installOutput = await this.commandRunner
+            .run`corepack use ${this.packageManagerFound.kind}@${version}`;
         }
         break;
       default:
-        installOutput = await $`corepack use npm@latest`.nothrow();
+        installOutput = await this.commandRunner.run`corepack use npm@latest`;
         break;
     }
     if (!hasSucceeded(installOutput)) {
-      this.logger.log(`Repository installation failed: ${installOutput.text()}`)
+      this.logger.log(
+        `Repository installation failed: ${installOutput.text()}`,
+      );
       return new Error(installOutput.text());
     }
     return undefined;
@@ -163,7 +170,9 @@ export class RepositoryImpl implements Repository {
   private tryResolvePackageManagerVersion(manager: PackageManager): string {
     // Matches a well formed and well defined semver version
     if (manager.version?.match(this.SEMVER_STRING_REGEX)) {
-      this.logger.log(`Using explicit ${manager.kind} version "${manager.version}"`);
+      this.logger.log(
+        `Using explicit ${manager.kind} version "${manager.version}"`,
+      );
       return semver.clean(manager.version);
     }
 
@@ -172,10 +181,10 @@ export class RepositoryImpl implements Repository {
       knownPackageManagerVersions[manager.kind as KnownPackageManagerKinds],
       manager.version,
     );
-    if (maxVersion == undefined) {
-      this.logger.log(`Resolved ${manager.kind} version to "${maxVersion}"`);
+    if (maxVersion === null) {
+      this.logger.log(`Could not resolve to a known ${manager.kind} version`);
     } else {
-      this.logger.log(`Could not resolve to a know ${manager.kind} version`);
+      this.logger.log(`Resolved ${manager.kind} version to "${maxVersion}"`);
     }
     return maxVersion || undefined;
   }

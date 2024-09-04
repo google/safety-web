@@ -13,10 +13,12 @@
 // limitations under the License.
 
 import * as nodePath from 'node:path';
-import {hasSucceeded, runCommand} from './command.js';
+import {hasSucceeded, CommandRunner} from './command.js';
+import {Logger} from './logger.js';
 
 // Used to prevent naming collision when generating a directory name.
 let cloneCounter = 1;
+const commandRunner = new CommandRunner(new Logger('pipeline:clone'));
 
 /**
  * Clone a repository from a url. Create a new directory in a base directory.
@@ -34,7 +36,7 @@ export async function cloneRepository(
     baseDir,
     generateDirectoryName(url),
   );
-  const output = await runCommand`git clone ${url} ${repoDirectoryPath}`;
+  const output = await commandRunner.run`git clone ${url} ${repoDirectoryPath}`;
   if (!hasSucceeded(output)) {
     return new Error(`Failed to clone ${url} in ${baseDir}.`);
   }

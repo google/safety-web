@@ -15,7 +15,7 @@
 
 import yargs from 'yargs';
 import * as nodePath from 'node:path';
-import {runCommand} from './command.js';
+import {CommandRunner} from './command.js';
 import {cloneRepository} from './clone.js';
 import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
@@ -24,6 +24,7 @@ import {run} from '../runner.js';
 import {Repository} from '../protos/pipeline.js';
 
 const logger = new Logger('pipeline:main');
+const commandRunner = new CommandRunner(logger);
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -58,9 +59,9 @@ async function main() {
   const parsedCommand = await parseCli();
   const baseCloneDir = nodePath.resolve(parsedCommand.cloneDir);
   if (parsedCommand.clean) {
-    await runCommand`rm -rf ${baseCloneDir}`;
+    await commandRunner.run`rm -rf ${baseCloneDir}`;
   }
-  await runCommand`mkdir -p ${baseCloneDir}`;
+  await commandRunner.run`mkdir -p ${baseCloneDir}`;
   for (const url of parsedCommand.repositories as string[]) {
     // Clone the repository sources
     const repoDirectoryPath = await cloneRepository(url, baseCloneDir);
@@ -69,9 +70,14 @@ async function main() {
       logger.log(`Error while cloning ${url}. Skipping ...`);
       continue;
     }
-    const repository = new RepositoryImpl(url, repoDirectoryPath, {
-      readJsonFile,
-    }, new Logger(`pipeline:repository:${url}`));
+    const repository = new RepositoryImpl(
+      url,
+      repoDirectoryPath,
+      {
+        readJsonFile,
+      },
+      new Logger(`pipeline:repository:${url}`),
+    );
 
     const repositoryMap = new Map<string, Repository>();
 
