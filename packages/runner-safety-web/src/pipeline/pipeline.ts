@@ -118,13 +118,14 @@ async function main() {
       });
     });
     let summary: Summary;
+    let outcome: string;
     repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
       if (message.type === 'success') {
         summary = message.summary;
-        // summary.outcome = 'SUCCESS';
+        outcome = 'SUCCESS';
       } else {
         summary = Summary.create({cwd: message.rootDir});
-        // summary.outcome = 'FAILURE';
+        outcome = 'FAILURE';
       }
     });
     await workerPromise;
@@ -135,6 +136,7 @@ async function main() {
       relativePath: './',
       version: undefined,
       safetyWebSummary: summary,
+      outcome,
     });
 
     const repositoryProto = Repository.toBinary(Repository.create(repository));

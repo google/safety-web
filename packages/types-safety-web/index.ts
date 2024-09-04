@@ -160,6 +160,10 @@ export interface Package {
    * @generated from protobuf field: safety_web.Summary safety_web_summary = 4;
    */
   safetyWebSummary?: Summary;
+  /**
+   * @generated from protobuf field: string outcome = 5;
+   */
+  outcome: string;
 }
 /**
  * @generated from protobuf message safety_web.PackageManager
@@ -576,6 +580,7 @@ class Package$Type extends MessageType<Package> {
       },
       {no: 3, name: 'version', kind: 'scalar', T: 9 /*ScalarType.STRING*/},
       {no: 4, name: 'safety_web_summary', kind: 'message', T: () => Summary},
+      {no: 5, name: 'outcome', kind: 'scalar', T: 9 /*ScalarType.STRING*/},
     ]);
   }
   create(value?: PartialMessage<Package>): Package {
@@ -583,6 +588,7 @@ class Package$Type extends MessageType<Package> {
     message.name = '';
     message.relativePath = '';
     message.version = '';
+    message.outcome = '';
     if (value !== undefined)
       reflectionMergePartial<Package>(this, message, value);
     return message;
@@ -614,6 +620,9 @@ class Package$Type extends MessageType<Package> {
             options,
             message.safetyWebSummary,
           );
+          break;
+        case /* string outcome */ 5:
+          message.outcome = reader.string();
           break;
         default:
           let u = options.readUnknownField;
@@ -655,6 +664,9 @@ class Package$Type extends MessageType<Package> {
         writer.tag(4, WireType.LengthDelimited).fork(),
         options,
       ).join();
+    /* string outcome = 5; */
+    if (message.outcome !== '')
+      writer.tag(5, WireType.LengthDelimited).string(message.outcome);
     let u = options.writeUnknownFields;
     if (u !== false)
       (u == true ? UnknownFieldHandler.onWrite : u)(

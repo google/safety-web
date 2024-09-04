@@ -54,6 +54,7 @@ message Package {
   string relative_path = 2;
   string version = 3;
   Summary safety_web_summary = 4;
+  string outcome = 5;
 }
 
 message PackageManager {
