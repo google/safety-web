@@ -26,10 +26,10 @@ describe('exploreRepository', () => {
     };
     const repo = new RepositoryImpl(
       'https://foo.com/bar',
-      '/path/to/repo/',
       reader,
       new Logger('test'),
     );
+    repo.rootPath = '/path/to/repo/';
     await repo.explore();
     expect(repo.packageManagerFound.kind).to.equal('yarn');
     expect(repo.packageManagerFound.version).to.equal('3.2.3');
@@ -47,10 +47,10 @@ describe('exploreRepository', () => {
     };
     const repo = new RepositoryImpl(
       'https://foo.com/bar',
-      '/path/to/repo/',
       reader,
       new Logger('test'),
     );
+    repo.rootPath = '/path/to/repo/';
     await repo.explore();
     expect(repo.packageManagerFound.kind).to.equal('npm');
     expect(repo.packageManagerFound.version).to.equal('~1.0.20');
@@ -66,10 +66,10 @@ describe('exploreRepository', () => {
     };
     const repo = new RepositoryImpl(
       'https://foo.com/bar',
-      '/path/to/repo/',
       reader,
       new Logger('test'),
     );
+    repo.rootPath = '/path/to/repo/';
     await repo.explore();
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(repo.packageManagerFound.kind).to.be.undefined;

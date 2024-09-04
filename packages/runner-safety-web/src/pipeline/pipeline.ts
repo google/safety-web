@@ -16,7 +16,6 @@
 import yargs from 'yargs';
 import * as nodePath from 'node:path';
 import {CommandRunner} from './command.js';
-import {cloneRepository} from './clone.js';
 import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
@@ -63,21 +62,20 @@ async function main() {
   }
   await commandRunner.run`mkdir -p ${baseCloneDir}`;
   for (const url of parsedCommand.repositories as string[]) {
-    // Clone the repository sources
-    const repoDirectoryPath = await cloneRepository(url, baseCloneDir);
-    if (repoDirectoryPath instanceof Error) {
-      logger.log(repoDirectoryPath.message);
-      logger.log(`Error while cloning ${url}. Skipping ...`);
-      continue;
-    }
     const repository = new RepositoryImpl(
       url,
-      repoDirectoryPath,
       {
         readJsonFile,
       },
       new Logger(`pipeline:repository:${url}`),
     );
+    // Clone the repository sources
+    const cloneError = await repository.clone(baseCloneDir);
+    if (cloneError !== undefined) {
+      logger.log(cloneError.message);
+      logger.log(`Error while cloning ${url}. Skipping ...`);
+      continue;
+    }
 
     const repositoryMap = new Map<string, Repository>();
 
@@ -86,9 +84,7 @@ async function main() {
     const exploreError = await repository.explore();
     if (exploreError !== undefined) {
       logger.log(exploreError.message);
-      logger.log(
-        `Error while exploring ${url} in ${repoDirectoryPath}. Skipping ...`,
-      );
+      logger.log(`Error while exploring repository ${url}. Skipping ...`);
       continue;
     }
     repositoryMap.set(url, repository);
@@ -96,14 +92,12 @@ async function main() {
     // Install the dependencies for the repository
     const installError = await repository.install();
     if (installError !== undefined) {
-      logger.log(
-        `Error while installing ${url} in ${repoDirectoryPath}. Skipping ...`,
-      );
+      logger.log(`Error while installing repository ${url}. Skipping ...`);
       continue;
     }
 
     // TODO run safety-web per sub-package instead of at the root.
-    const summary = await run(repoDirectoryPath);
+    const summary = await run(repository.rootPath);
     logger.log(`Safety-web summary for ${url}:`);
     logger.log(JSON.stringify(summary, null, 2));
 

@@ -34,6 +34,8 @@ const knownPackageManagerVersions = {
   pnpm: ['8.15.9', '9.9.0'],
 };
 
+let cloneCounter = 1;
+
 /**
  * A repository that can be cloned and processed by safety-web. Can be
  * serialized to a `Repository` proto.
@@ -42,6 +44,7 @@ export class RepositoryImpl implements Repository {
   packageManagerFound: PackageManager;
   packageManagerUsed: PackageManager;
   packages: Package[] = [];
+  rootPath: string = undefined;
   private commandRunner: CommandRunner;
   get logs() {
     return this.logger.get().join('\n');
@@ -49,12 +52,44 @@ export class RepositoryImpl implements Repository {
 
   constructor(
     readonly url: string,
-    private readonly rootPath: string,
     private readonly reader: Reader,
     private readonly logger: Logger,
   ) {
     this.url = url;
     this.commandRunner = new CommandRunner(logger);
+  }
+
+  /**
+   * Clone the repository. Create a new directory in a base directory.
+   * @param baseDir absolute or relative path to a directory where to create the
+   *     new repository directory
+   * @returns an Error if the clone operation failed.
+   */
+  async clone(baseDir: string): Promise<Error | undefined> {
+    this.logger.log(`Cloning repository...`);
+    this.rootPath = nodePath.resolve(
+      baseDir,
+      this.generateDirectoryName(this.url),
+    );
+    const output = await this.commandRunner
+      .run`git clone ${this.url} ${this.rootPath}`;
+    if (!hasSucceeded(output)) {
+      const errorMessage = `Failed to clone ${this.url} in ${baseDir}.`;
+      this.logger.log(errorMessage);
+      return new Error(errorMessage);
+    }
+  }
+
+  private generateDirectoryName(url: string): string {
+    const githubMatcher = new RegExp(
+      '^https://github[.]com/(?<user>[a-zA-Z-_0-9]+)/(?<name>[a-zA-Z-_0-9]+)([.]git)?$',
+    );
+    const match = url.match(githubMatcher);
+    const name = match
+      ? `${cloneCounter}-${match.groups.user}:${match.groups.name}`
+      : `${cloneCounter}-unknown-name`;
+    cloneCounter += 1;
+    return name;
   }
 
   /**
