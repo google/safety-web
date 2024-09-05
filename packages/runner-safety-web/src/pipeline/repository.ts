@@ -36,6 +36,11 @@ const knownPackageManagerVersions = {
 
 let cloneCounter = 1;
 
+// Add local node module binaries to the PATH once and for all.
+$.env['PATH'] = './node_modules/.bin:' + $.env['PATH'];
+// Skip corepack prompts
+$.env['COREPACK_ENABLE_DOWNLOAD_PROMPT'] = '0';
+
 /**
  * A repository that can be cloned and processed by safety-web. Can be
  * serialized to a `Repository` proto.
@@ -172,7 +177,7 @@ export class RepositoryImpl implements Repository {
             `Defaulting to ${this.packageManagerFound.kind} latest...`,
           );
           installOutput = await this.commandRunner
-            .run`corepack use ${this.packageManagerFound.kind}@latest`;
+            .run`corepack use ${this.packageManagerFound.kind}`;
         } else {
           this.logger.log(
             `Installing corepack use ${this.packageManagerFound.kind}@${version}`,
@@ -182,7 +187,7 @@ export class RepositoryImpl implements Repository {
         }
         break;
       default:
-        installOutput = await this.commandRunner.run`corepack use npm@latest`;
+        installOutput = await this.commandRunner.run`corepack use npm`;
         break;
     }
     if (!hasSucceeded(installOutput)) {

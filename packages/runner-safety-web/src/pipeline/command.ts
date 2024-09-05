@@ -36,7 +36,9 @@ export class CommandRunner {
     this.logger.log(command, {silent: true});
 
     // Use .pipe to stream the command output to stdout in real time.
-    const output = await $(templateObj, ...rest).pipe(process.stdout).nothrow()
+    const output = await $(templateObj, ...rest)
+      .pipe(process.stdout)
+      .nothrow();
     const textOutput = output.text();
     if (!hasSucceeded(output)) {
       this.logger.log(`Failed! exit code: ${output.exitCode}`);
