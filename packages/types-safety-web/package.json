@@ -18,5 +18,8 @@
     "lint": ":",
     "test": ":",
     "test:watch": ":"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
   }
 }

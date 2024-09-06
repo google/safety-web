@@ -3113,6 +3113,7 @@ __metadata:
   resolution: "types-safety-web@workspace:packages/types-safety-web"
   dependencies:
     "@protobuf-ts/plugin": "npm:^2.9.4"
+    typescript: "npm:^5.5.4"
   languageName: unknown
   linkType: soft
 
