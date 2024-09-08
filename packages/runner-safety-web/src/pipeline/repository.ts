@@ -34,8 +34,6 @@ const knownPackageManagerVersions = {
   pnpm: ['8.15.9', '9.9.0'],
 };
 
-let cloneCounter = 1;
-
 // Add local node module binaries to the PATH once and for all.
 $.env['PATH'] = './node_modules/.bin:' + $.env['PATH'];
 // Skip corepack prompts
@@ -88,15 +86,7 @@ export class RepositoryImpl implements Repository {
   }
 
   private generateDirectoryName(url: string): string {
-    const githubMatcher = new RegExp(
-      '^https://github[.]com/(?<user>[a-zA-Z-_0-9]+)/(?<name>[a-zA-Z-_0-9]+)([.]git)?$',
-    );
-    const match = url.match(githubMatcher);
-    const name = match
-      ? `${cloneCounter}-${match.groups.user}:${match.groups.name}`
-      : `${cloneCounter}-unknown-name`;
-    cloneCounter += 1;
-    return name;
+    return `${Math.floor(Math.random() * 100000)}-${encodeURIComponent(url)}`;
   }
 
   /**
@@ -198,6 +188,10 @@ export class RepositoryImpl implements Repository {
       return new Error(installOutput.text());
     }
     return undefined;
+  }
+
+  async clean() {
+    await this.commandRunner.run`rm -rf ${this.rootPath}`;
   }
 
   // By spec https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string

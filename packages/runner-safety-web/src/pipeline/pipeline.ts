@@ -141,9 +141,6 @@ async function main() {
   const parsedCommand = await parseCli();
   const baseCloneDir = nodePath.resolve(parsedCommand.cloneDir);
   const outputDir = nodePath.resolve(parsedCommand.outputDir);
-  if (parsedCommand.clean) {
-    await commandRunner.run`rm -rf ${baseCloneDir} ${outputDir}`;
-  }
   await commandRunner.run`mkdir -p ${baseCloneDir} ${outputDir}`;
   for (const url of parsedCommand.repositories as string[]) {
     const repository = await processRepository(url, baseCloneDir);
@@ -157,6 +154,8 @@ async function main() {
     logger.log(
       Repository.toJsonString(Repository.create(repository), {prettySpaces: 2}),
     );
+    // Delete the clone repository to free disk space
+    await repository.clean();
   }
 }
 
