@@ -78,7 +78,7 @@ export class RepositoryImpl implements Repository {
       this.generateDirectoryName(this.url),
     );
     const output = await this.commandRunner
-      .run`git clone ${this.url} ${this.rootPath}`;
+      .run`GIT_TERMINAL_PROMPT=0 git clone ${this.url} ${this.rootPath}`;
     if (!hasSucceeded(output)) {
       const errorMessage = `Failed to clone ${this.url} in ${baseDir}.`;
       this.stepFailure = 'CLONE';
