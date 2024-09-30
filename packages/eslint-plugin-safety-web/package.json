@@ -1,12 +1,12 @@
 {
   "name": "eslint-plugin-safety-web",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "license": "Apache-2.0",
   "author": "Google ISE Web Team",
   "repository": "https://github.com/google/safety-web",
   "main": "lib/src/index.js",
   "files": [
-    "lib/src/"
+    "lib/src/**"
   ],
   "engines": {
     "node": "^20.11.0 || >21.2.0"
