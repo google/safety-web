@@ -3,7 +3,7 @@
   "license": "Apache-2.0",
   "author": "Google ISE Web Team",
   "workspaces": [
-    "packages/**/*"
+    "packages/**"
   ],
   "engines": {
     "node": "^20.11.0 || >21.2.0"
