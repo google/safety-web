@@ -5,8 +5,8 @@
   "parserOptions": {
     "projectService": true
   },
-  "plugins": ["@typescript-eslint", "eslint-plugin-safety-web"],
+  "plugins": ["@typescript-eslint", "@safety-web/eslint-plugin"],
   "rules": {
-    "safety-web/trusted-types-checks": "error"
+    "@safety-web/trusted-types-checks": "error"
   }
 }

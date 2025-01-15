@@ -35,7 +35,7 @@ message Violation {
   string snippet = 11;
 }
 
-// Return value of safety-web formatted with eslint-formatter-safety-web
+// Return value of safety-web formatted with @safety-web/eslint-formatter
 message Summary {
   string cwd = 1;
   repeated Violation safety_web_violations = 2;

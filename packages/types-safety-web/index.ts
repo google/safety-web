@@ -81,7 +81,7 @@ export interface Violation {
   snippet: string;
 }
 /**
- * Return value of safety-web formatted with eslint-formatter-safety-web
+ * Return value of safety-web formatted with @safety-web/eslint-formatter
  *
  * @generated from protobuf message safety_web.Summary
  */

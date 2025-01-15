@@ -14,7 +14,7 @@
 
 import {ESLint, Linter} from 'eslint';
 import typescriptESLintParser from '@typescript-eslint/parser';
-import safetyWeb from 'eslint-plugin-safety-web';
+import safetyWeb from '@safety-web/eslint-plugin';
 
 /**
  * @param explicitTSConfig When provided, passed to tsc for the compilation.

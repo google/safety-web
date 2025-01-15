@@ -12,9 +12,9 @@ module.exports = {
   },
   plugins: [
     // "@typescript-eslint",
-    'eslint-plugin-safety-web',
+    '@safety-web/eslint-plugin',
   ],
   rules: {
-    'safety-web/trusted-types-checks': 'error',
+    '@safety-web/trusted-types-checks': 'error',
   },
 };

@@ -1,4 +1,4 @@
-# eslint-plugin-safety-web
+# @safety-web/eslint-plugin
 
 ESLint plugin for Trusted Types and CSP compatibility in TypeScript and
 JavaScript projects.
@@ -10,13 +10,13 @@ The plugin is still under development.
 With Yarn:
 
 ```bash
-yarn add -D eslint-plugin-safety-web
+yarn add -D @safety-web/eslint-plugin
 ```
 
 or NPM:
 
 ```bash
-npm install -D eslint-plugin-safety-web
+npm install -D @safety-web/eslint-plugin
 ```
 
 You also need to install `typescript-eslint`.
@@ -34,7 +34,7 @@ add the following fields:
 
 ```javascript
 import tseslint from 'typescript-eslint';
-import safetyWeb from 'eslint-plugin-safety-web';
+import safetyWeb from '@safety-web/eslint-plugin';
 
 export default tseslint.config(
   {
@@ -68,7 +68,7 @@ module.exports = {
     EXPERIMENTAL_useProjectService: true,
   },
   plugins: [
-    'eslint-plugin-safety-web',
+    '@safety-web/eslint-plugin',
   ],
   rules: {
     'safety-web/trusted-types-checks': 'error',

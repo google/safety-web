@@ -4,12 +4,12 @@
 
 **This project is under development and is not ready for production yet.**
 
-eslint-plugin-safety-web (aka. safety-web in short) is an ESLint plugin that
+@safety-web/eslint-plugin (aka. safety-web in short) is an ESLint plugin that
 works on TypeScript and JavaScript projects and surfaces security issues like
 Trusted Types violations statically. This repository contains several packages.
 Refer to the package specific READMEs for more information. The eslint-plugin
 sources live in
-[`packages/eslint-plugin-safety-web/`](./packages/eslint-plugin-safety-web).
+[`packages/eslint-plugin/`](./packages/eslint-plugin).
 
 ## Development
 
@@ -44,7 +44,7 @@ yarn format
 ## safety-web unit testing
 
 ```bash
-yarn workspace eslint-plugin-safety-web run test
+yarn workspace @safety-web/eslint-plugin run test
 ```
 
 ## unit tests + integrations tests
@@ -58,7 +58,7 @@ yarn run unit_tests
 The core logic behind this plugin is re-used from
 [tsec](https://github.com/google/tsec). The
 [`common`](https://github.com/google/tsec/tree/main/common) directory of tsec is
-mirrored in `packages/eslint-plugin-safety-web/src/common`, as vendored
+mirrored in `packages/eslint-plugin/src/common`, as vendored
 dependency.
 
 Run tsetse_update.sh to pull the latest version of tsetse in:

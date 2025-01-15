@@ -1,13 +1,13 @@
 import tseslint from 'typescript-eslint';
-import safetyWeb from 'eslint-plugin-safety-web';
+import safetyWeb from '@safety-web/eslint-plugin';
 
 export default [
   {
     plugins: {
-      'safety-web': safetyWeb,
+      '@safety-web': safetyWeb,
     },
     rules: {
-      'safety-web/trusted-types-checks': 'error',
+      '@safety-web/trusted-types-checks': 'error',
     },
     files: ['**/*.ts', '**/*.js'],
     ignores: ['eslint.config.js'],

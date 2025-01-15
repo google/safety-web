@@ -6,8 +6,8 @@
 !.yarn/sdks
 !.yarn/versions
 node_modules
-packages/eslint-formatter-safety-web/lib/*
-packages/eslint-plugin-safety-web/lib/*
+packages/eslint-formatter/lib/*
+packages/eslint-plugin/lib/*
 packages/runner-safety-web/bin/*
 packages/test-helpers/expect-violations/bin/*
 packages/tests/*/lib/*

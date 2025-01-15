@@ -3,7 +3,7 @@
     "filePath": "[...]/index.js",
     "messages": [
       {
-        "ruleId": "safety-web/trusted-types-checks",
+        "ruleId": "@safety-web/trusted-types-checks",
         "message": "[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.",
         "line": 15,
         "column": 1,

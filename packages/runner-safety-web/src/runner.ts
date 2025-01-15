@@ -18,7 +18,7 @@ import * as nodePath from 'node:path';
 import * as fs from 'fs/promises';
 import {generateESLintOptions} from './eslint_config.js';
 import {generateTSConfig} from './ts_config.js';
-import * as formatter from 'eslint-formatter-safety-web';
+import * as formatter from '@safety-web/eslint-formatter';
 import {Summary} from 'types-safety-web';
 
 const safetyWebFormatter = formatter as ESLint.Formatter & {

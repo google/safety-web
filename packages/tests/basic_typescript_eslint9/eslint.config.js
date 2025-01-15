@@ -1,5 +1,5 @@
 import tseslint from 'typescript-eslint';
-import safetyWeb from 'eslint-plugin-safety-web';
+import safetyWeb from '@safety-web/eslint-plugin';
 
 // https://typescript-eslint.io/getting-started/typed-linting/
 export default tseslint.config(
@@ -12,10 +12,10 @@ export default tseslint.config(
     },
     files: ['src/**/*.ts'],
     plugins: {
-      'safety-web': safetyWeb,
+      '@safety-web': safetyWeb,
     },
     rules: {
-      'safety-web/trusted-types-checks': 'error',
+      '@safety-web/trusted-types-checks': 'error',
     },
   },
   // Disable undef in TS https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors

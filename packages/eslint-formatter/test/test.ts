@@ -16,7 +16,7 @@ import {expect} from 'chai';
 import {ESLint} from 'eslint';
 import * as safetyWebFormatter from '../src/index.js';
 
-describe('eslint-formatter-safety-web', () => {
+describe('@safety-web/eslint-formatter', () => {
   const results: ESLint.LintResult[] = [
     {
       filePath: '/path/to/file_with_no_error.js',

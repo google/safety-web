@@ -2,8 +2,8 @@ import * as ts from 'typescript';
 
 import {Allowlist} from '../../allowlist';
 import {Checker} from '../../checker';
-import {Fix, Fixer} from '../../util/fixer';
-import {PatternEngineConfig} from '../../util/pattern_config';
+import {Fix, Fixer} from '../fixer';
+import {PatternEngineConfig} from '../pattern_config';
 import {shouldExamineNode} from '../ast_tools';
 
 /**

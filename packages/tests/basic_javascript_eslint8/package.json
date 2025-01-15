@@ -10,8 +10,8 @@
     "update": "eslint index.js --format json | yarn run expect-violations update ./expected_violations.json"
   },
   "devDependencies": {
+    "@safety-web/eslint-plugin": "workspace:^",
     "eslint": "^8.0.0",
-    "eslint-plugin-safety-web": "workspace:^",
     "expect-violations": "workspace:^",
     "typescript-eslint": "^8.0.0"
   }

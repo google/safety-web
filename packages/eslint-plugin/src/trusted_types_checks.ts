@@ -49,7 +49,8 @@ export const trustedTypesChecks = createRule({
   defaultOptions: [],
   create(context) {
     // Skip checking declaration files
-    if (context.filename.endsWith('.d.ts')) {
+    logDebug(context);
+    if (context.filename?.endsWith('.d.ts')) {
       return {};
     }
 

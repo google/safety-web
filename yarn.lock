@@ -436,6 +436,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@safety-web/eslint-formatter@workspace:^, @safety-web/eslint-formatter@workspace:packages/eslint-formatter":
+  version: 0.0.0-use.local
+  resolution: "@safety-web/eslint-formatter@workspace:packages/eslint-formatter"
+  dependencies:
+    "@types/chai": "npm:^4.3.16"
+    "@types/debug": "npm:^4.1.12"
+    "@types/mocha": "npm:^10.0.7"
+    "@types/node": "npm:^20.14.9"
+    chai: "npm:^5.1.1"
+    debug: "npm:^4.3.6"
+    eslint: "npm:^8.56.0 <9.0.0"
+    mocha: "npm:^10.6.0"
+    ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.16.2"
+    types-safety-web: "workspace:^"
+    typescript: "npm:^5.5.0"
+  peerDependencies:
+    "@safety-web/eslint-plugin": "*"
+  languageName: unknown
+  linkType: soft
+
+"@safety-web/eslint-plugin@workspace:^, @safety-web/eslint-plugin@workspace:packages/eslint-plugin":
+  version: 0.0.0-use.local
+  resolution: "@safety-web/eslint-plugin@workspace:packages/eslint-plugin"
+  dependencies:
+    "@eslint/eslintrc": "npm:^3.1.0"
+    "@types/chai": "npm:^4.3.16"
+    "@types/debug": "npm:^4.1.12"
+    "@types/mocha": "npm:^10.0.7"
+    "@types/node": "npm:^20.14.9"
+    "@typescript-eslint/parser": "npm:^8.0.0"
+    "@typescript-eslint/rule-tester": "npm:^8.0.0"
+    "@typescript-eslint/utils": "npm:^8.0.0"
+    chai: "npm:^5.1.1"
+    debug: "npm:^4.3.6"
+    eslint: "npm:^8.56.0 <9.0.0"
+    mocha: "npm:^10.6.0"
+    ts-node: "npm:^10.9.2"
+    tsutils: "npm:^3.21.0"
+    tsx: "npm:^4.16.2"
+    typescript: "npm:^5.5.0"
+    typescript-eslint: "npm:^8.0.0"
+  peerDependencies:
+    eslint: ">8.56.0"
+    typescript: ^5.5.0
+  languageName: unknown
+  linkType: soft
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -894,8 +942,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "basic-javascript-eslint8@workspace:packages/tests/basic_javascript_eslint8"
   dependencies:
+    "@safety-web/eslint-plugin": "workspace:^"
     eslint: "npm:^8.0.0"
-    eslint-plugin-safety-web: "workspace:^"
     expect-violations: "workspace:^"
     typescript-eslint: "npm:^8.0.0"
   languageName: unknown
@@ -905,8 +953,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "basic-javascript-eslint9@workspace:packages/tests/basic_javascript_eslint9"
   dependencies:
+    "@safety-web/eslint-plugin": "workspace:^"
     eslint: "npm:^9.6.0"
-    eslint-plugin-safety-web: "workspace:^"
     expect-violations: "workspace:^"
     typescript-eslint: "npm:^8.0.0"
   languageName: unknown
@@ -916,8 +964,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "basic-typescript-eslint8@workspace:packages/tests/basic_typescript_eslint8"
   dependencies:
+    "@safety-web/eslint-plugin": "workspace:^"
     eslint: "npm:^8.0.0"
-    eslint-plugin-safety-web: "workspace:^"
     expect-violations: "workspace:^"
     typescript: "npm:^5.5.0"
     typescript-eslint: "npm:^8.0.0"
@@ -928,8 +976,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "basic-typescript-eslint9@workspace:packages/tests/basic_typescript_eslint9"
   dependencies:
+    "@safety-web/eslint-plugin": "workspace:^"
     eslint: "npm:^9.6.0"
-    eslint-plugin-safety-web: "workspace:^"
     expect-violations: "workspace:^"
     typescript: "npm:^5.5.0"
     typescript-eslint: "npm:^8.0.0"
@@ -1353,27 +1401,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-formatter-safety-web@workspace:^, eslint-formatter-safety-web@workspace:packages/eslint-formatter-safety-web":
-  version: 0.0.0-use.local
-  resolution: "eslint-formatter-safety-web@workspace:packages/eslint-formatter-safety-web"
-  dependencies:
-    "@types/chai": "npm:^4.3.16"
-    "@types/debug": "npm:^4.1.12"
-    "@types/mocha": "npm:^10.0.7"
-    "@types/node": "npm:^20.14.9"
-    chai: "npm:^5.1.1"
-    debug: "npm:^4.3.6"
-    eslint: "npm:^8.56.0 <9.0.0"
-    mocha: "npm:^10.6.0"
-    ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.16.2"
-    types-safety-web: "workspace:^"
-    typescript: "npm:^5.5.0"
-  peerDependencies:
-    eslint-plugin-safety-web: "*"
-  languageName: unknown
-  linkType: soft
-
 "eslint-plugin-header@npm:^3.1.1":
   version: 3.1.1
   resolution: "eslint-plugin-header@npm:3.1.1"
@@ -1382,33 +1409,6 @@ __metadata:
   checksum: 10c0/2eb70acd8efe2b72a7bff3e3958a637871c6d0ed4166effea8b68e79b9ba291b6a33182e7f0e31ca7de717fc5b2cf2e42dcc0a07db1a37ae6941bbb6a8eda731
   languageName: node
   linkType: hard
-
-"eslint-plugin-safety-web@workspace:^, eslint-plugin-safety-web@workspace:packages/eslint-plugin-safety-web":
-  version: 0.0.0-use.local
-  resolution: "eslint-plugin-safety-web@workspace:packages/eslint-plugin-safety-web"
-  dependencies:
-    "@eslint/eslintrc": "npm:^3.1.0"
-    "@types/chai": "npm:^4.3.16"
-    "@types/debug": "npm:^4.1.12"
-    "@types/mocha": "npm:^10.0.7"
-    "@types/node": "npm:^20.14.9"
-    "@typescript-eslint/parser": "npm:^8.0.0"
-    "@typescript-eslint/rule-tester": "npm:^8.0.0"
-    "@typescript-eslint/utils": "npm:^8.0.0"
-    chai: "npm:^5.1.1"
-    debug: "npm:^4.3.6"
-    eslint: "npm:^8.56.0 <9.0.0"
-    mocha: "npm:^10.6.0"
-    ts-node: "npm:^10.9.2"
-    tsutils: "npm:^3.21.0"
-    tsx: "npm:^4.16.2"
-    typescript: "npm:^5.5.0"
-    typescript-eslint: "npm:^8.0.0"
-  peerDependencies:
-    eslint: ">8.56.0"
-    typescript: ^5.5.0
-  languageName: unknown
-  linkType: soft
 
 "eslint-scope@npm:^7.2.2":
   version: 7.2.2
@@ -2773,6 +2773,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "runner-safety-web@workspace:packages/runner-safety-web"
   dependencies:
+    "@safety-web/eslint-formatter": "workspace:^"
+    "@safety-web/eslint-plugin": "workspace:^"
     "@types/chai": "npm:^4.3.16"
     "@types/debug": "npm:^4.1.12"
     "@types/eslint": "npm:^9.6.0"
@@ -2784,8 +2786,6 @@ __metadata:
     chai: "npm:^5.1.1"
     debug: "npm:^4.3.6"
     eslint: "npm:^9.6.0"
-    eslint-formatter-safety-web: "workspace:^"
-    eslint-plugin-safety-web: "workspace:^"
     minimist: "npm:^1.2.8"
     mocha: "npm:^10.7.3"
     semver: "npm:^7.6.3"

@@ -1,11 +1,10 @@
 {
-  "name": "eslint-formatter-safety-web",
+  "name": "@safety-web/eslint-plugin",
   "version": "0.3.0",
   "license": "Apache-2.0",
   "author": "Google ISE Web Team",
   "repository": "https://github.com/google/safety-web",
   "main": "lib/src/index.js",
-  "type": "module",
   "files": [
     "lib/src/**"
   ],
@@ -21,22 +20,28 @@
     "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
   },
   "dependencies": {
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/utils": "^8.0.0",
     "debug": "^4.3.6",
     "eslint": "^8.56.0 <9.0.0",
-    "types-safety-web": "workspace:^",
+    "tsutils": "^3.21.0",
     "typescript": "^5.5.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.1.0",
     "@types/chai": "^4.3.16",
     "@types/debug": "^4.1.12",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.9",
+    "@typescript-eslint/rule-tester": "^8.0.0",
     "chai": "^5.1.1",
     "mocha": "^10.6.0",
     "ts-node": "^10.9.2",
-    "tsx": "^4.16.2"
+    "tsx": "^4.16.2",
+    "typescript-eslint": "^8.0.0"
   },
   "peerDependencies": {
-    "eslint-plugin-safety-web": "*"
+    "eslint": ">8.56.0",
+    "typescript": "^5.5.0"
   }
 }

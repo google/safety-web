@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
+    "@safety-web/eslint-formatter": "workspace:^",
+    "@safety-web/eslint-plugin": "workspace:^",
     "debug": "^4.3.6",
     "eslint": "^9.6.0",
-    "eslint-formatter-safety-web": "workspace:^",
-    "eslint-plugin-safety-web": "workspace:^",
     "semver": "^7.6.3",
     "types-safety-web": "workspace:^",
     "typescript-eslint": "^8.0.0",
