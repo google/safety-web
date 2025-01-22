@@ -42,14 +42,14 @@ export default tseslint.config(
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        EXPERIMENTAL_useProjectService: true,
+        projectService: true,
       },
     },
     plugins: {
-      'safety-web': safetyWeb,
+      '@safety-web': safetyWeb,
     },
     rules: {
-      'safety-web/trusted-types-checks': 'error',
+      '@safety-web/trusted-types-checks': 'error',
     },
     // ...,
   },
@@ -65,13 +65,13 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    EXPERIMENTAL_useProjectService: true,
+    projectService: true,
   },
   plugins: [
     '@safety-web/eslint-plugin',
   ],
   rules: {
-    'safety-web/trusted-types-checks': 'error',
+    '@safety-web/trusted-types-checks': 'error',
   },
 };
 ```
