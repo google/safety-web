@@ -1,6 +1,6 @@
 {
   "name": "@safety-web/types",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "type": "module",
   "dependencies": {
     "@protobuf-ts/plugin": "^2.9.4"
