@@ -14,7 +14,9 @@
     "update_integration_tests": "yarn workspace basic-typescript-eslint9 update && yarn workspace basic-typescript-eslint8 update && yarn workspace basic-javascript-eslint9 update && yarn workspace basic-javascript-eslint8 update",
     "test": "yarn workspaces foreach --all run test",
     "format": "prettier . --write",
-    "lint": "yarn workspaces foreach --all run lint"
+    "lint": "yarn workspaces foreach --all run lint",
+    "prepublish": "echo \"clean and build...\" && yarn workspaces foreach --all run clean && yarn workspaces foreach --all run build && yarn workspaces foreach --all exec \"jq .version package.json\" && yarn exec bash -c \"read -p 'About to publish these package versions...\n Press enter to continue, or CTRL+C to abort...'\"",
+    "publish": "yarn run prepublish && yarn workspace @safety-web/eslint-plugin npm publish --access public && yarn workspace @safety-web/eslint-formatter npm publish --access public && yarn workspace @safety-web/types npm publish --access public && yarn workspace @safety-web/runner npm publish --access public"
   },
   "packageManager": "yarn@4.4.0",
   "devDependencies": {

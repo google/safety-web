@@ -9,6 +9,21 @@ easier to scan a project that is not yet setup with ESLint. It:
 
 ## Usage
 
+Using the latest release:
+
 ```bash
 npm exec @safety-web/runner run --rootDir path/to/repository_to_scan
+```
+
+Using a locally built version:
+
+From the root of the repository:
+
+```bash 
+yarn workspace @safety-web/runner exec runner run ...
+```
+From this package's folder:
+
+```bash 
+yarn exec runner run ... 
 ```
