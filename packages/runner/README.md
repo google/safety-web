@@ -1,6 +1,6 @@
-# runner-safety-web
+# @safety-web/runner
 
-A NodeJS binary that wraps ESLint and safety-web. `runner-safety-web` makes it
+A NodeJS binary that wraps ESLint and safety-web. `@safety-web/runner` makes it
 easier to scan a project that is not yet setup with ESLint. It:
 
 - Uses heuristics to determine the project structure
@@ -10,5 +10,5 @@ easier to scan a project that is not yet setup with ESLint. It:
 ## Usage
 
 ```bash
-npm exec runner-safety-web run --rootDir path/to/repository_to_scan
+npm exec @safety-web/runner run --rootDir path/to/repository_to_scan
 ```

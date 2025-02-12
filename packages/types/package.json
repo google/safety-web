@@ -1,5 +1,5 @@
 {
-  "name": "types-safety-web",
+  "name": "@safety-web/types",
   "version": "0.1.0",
   "type": "module",
   "dependencies": {

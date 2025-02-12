@@ -440,6 +440,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@safety-web/eslint-formatter@workspace:packages/eslint-formatter"
   dependencies:
+    "@safety-web/types": "workspace:^"
     "@types/chai": "npm:^4.3.16"
     "@types/debug": "npm:^4.1.12"
     "@types/mocha": "npm:^10.0.7"
@@ -450,7 +451,6 @@ __metadata:
     mocha: "npm:^10.6.0"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.16.2"
-    types-safety-web: "workspace:^"
     typescript: "npm:^5.5.0"
   peerDependencies:
     "@safety-web/eslint-plugin": "*"
@@ -481,6 +481,47 @@ __metadata:
   peerDependencies:
     eslint: ">8.56.0"
     typescript: ^5.5.0
+  languageName: unknown
+  linkType: soft
+
+"@safety-web/runner@workspace:packages/runner":
+  version: 0.0.0-use.local
+  resolution: "@safety-web/runner@workspace:packages/runner"
+  dependencies:
+    "@safety-web/eslint-formatter": "workspace:^"
+    "@safety-web/eslint-plugin": "workspace:^"
+    "@safety-web/types": "workspace:^"
+    "@types/chai": "npm:^4.3.16"
+    "@types/debug": "npm:^4.1.12"
+    "@types/eslint": "npm:^9.6.0"
+    "@types/minimist": "npm:^1"
+    "@types/mocha": "npm:^10.0.7"
+    "@types/node": "npm:^22.1.0"
+    "@types/semver": "npm:^7"
+    "@types/yargs": "npm:^17.0.32"
+    chai: "npm:^5.1.1"
+    debug: "npm:^4.3.6"
+    eslint: "npm:^9.6.0"
+    minimist: "npm:^1.2.8"
+    mocha: "npm:^10.7.3"
+    semver: "npm:^7.6.3"
+    ts-node: "npm:^10.9.2"
+    typescript: "npm:^5.5.4"
+    typescript-eslint: "npm:^8.0.0"
+    yargs: "npm:^17.7.2"
+    zx: "npm:^8.1.4"
+  bin:
+    pipeline: ./bin/src/pipeline/pipeline.js
+    runner: ./bin/src/index.js
+  languageName: unknown
+  linkType: soft
+
+"@safety-web/types@workspace:^, @safety-web/types@workspace:packages/types":
+  version: 0.0.0-use.local
+  resolution: "@safety-web/types@workspace:packages/types"
+  dependencies:
+    "@protobuf-ts/plugin": "npm:^2.9.4"
+    typescript: "npm:^5.5.4"
   languageName: unknown
   linkType: soft
 
@@ -2769,38 +2810,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"runner-safety-web@workspace:packages/runner-safety-web":
-  version: 0.0.0-use.local
-  resolution: "runner-safety-web@workspace:packages/runner-safety-web"
-  dependencies:
-    "@safety-web/eslint-formatter": "workspace:^"
-    "@safety-web/eslint-plugin": "workspace:^"
-    "@types/chai": "npm:^4.3.16"
-    "@types/debug": "npm:^4.1.12"
-    "@types/eslint": "npm:^9.6.0"
-    "@types/minimist": "npm:^1"
-    "@types/mocha": "npm:^10.0.7"
-    "@types/node": "npm:^22.1.0"
-    "@types/semver": "npm:^7"
-    "@types/yargs": "npm:^17.0.32"
-    chai: "npm:^5.1.1"
-    debug: "npm:^4.3.6"
-    eslint: "npm:^9.6.0"
-    minimist: "npm:^1.2.8"
-    mocha: "npm:^10.7.3"
-    semver: "npm:^7.6.3"
-    ts-node: "npm:^10.9.2"
-    types-safety-web: "workspace:^"
-    typescript: "npm:^5.5.4"
-    typescript-eslint: "npm:^8.0.0"
-    yargs: "npm:^17.7.2"
-    zx: "npm:^8.1.4"
-  bin:
-    pipeline: ./bin/src/pipeline/pipeline.js
-    runner-safety-web: ./bin/src/index.js
-  languageName: unknown
-  linkType: soft
-
 "safe-buffer@npm:^5.1.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
@@ -3107,15 +3116,6 @@ __metadata:
   checksum: 10c0/dea9df45ea1f0aaa4e2d3bed3f9a0bfe9e5b2592bddb92eb1bf06e50bcf98dbb78189668cd8bc31a0511d3fc25539b4cd5c704497e53e93e2d40ca764b10bfc3
   languageName: node
   linkType: hard
-
-"types-safety-web@workspace:^, types-safety-web@workspace:packages/types-safety-web":
-  version: 0.0.0-use.local
-  resolution: "types-safety-web@workspace:packages/types-safety-web"
-  dependencies:
-    "@protobuf-ts/plugin": "npm:^2.9.4"
-    typescript: "npm:^5.5.4"
-  languageName: unknown
-  linkType: soft
 
 "typescript-eslint@npm:^8.0.0":
   version: 8.0.1

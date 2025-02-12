@@ -14,7 +14,7 @@
 
 import {assert} from 'chai';
 
-describe('runner-safety-web', () => {
+describe('safety-web runner', () => {
   it('writes a new tsconfig', () => {
     assert.equal(5, 5);
   });

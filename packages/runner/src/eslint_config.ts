@@ -27,7 +27,7 @@ function generateESLintConfigOverride(
   explicitTSConfig?: string,
 ): Linter.Config<Linter.RulesRecord> {
   const overrideConfig: Linter.Config<Linter.RulesRecord> = {
-    name: 'runner-safety-web override',
+    name: '@safety-web/runner override',
     files: ['**/*js', '**/*.ts'],
     ignores: ['**/.*.js'], // Ignores config files, e.g. `.config.eslint.js`
     languageOptions: {

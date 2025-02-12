@@ -18,7 +18,7 @@ import {run, SAFETY_WEB_TSCONFIG_FILENAME} from './runner.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
-    .scriptName('runner-safety-web')
+    .scriptName('runner')
     .option('rootDir', {
       demandOption: false,
       default: './',

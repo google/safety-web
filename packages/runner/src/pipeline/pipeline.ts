@@ -19,7 +19,7 @@ import {CommandRunner} from './command.js';
 import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
-import {Repository, Summary} from 'types-safety-web';
+import {Repository, Summary} from '@safety-web/types';
 import * as fs from 'node:fs/promises';
 import {Worker} from 'node:worker_threads';
 import {WorkerSuccess, WorkerError} from './worker.js';

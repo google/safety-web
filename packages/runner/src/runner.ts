@@ -19,7 +19,7 @@ import * as fs from 'fs/promises';
 import {generateESLintOptions} from './eslint_config.js';
 import {generateTSConfig} from './ts_config.js';
 import * as formatter from '@safety-web/eslint-formatter';
-import {Summary} from 'types-safety-web';
+import {Summary} from '@safety-web/types';
 
 const safetyWebFormatter = formatter as ESLint.Formatter & {
   formatToObject: (

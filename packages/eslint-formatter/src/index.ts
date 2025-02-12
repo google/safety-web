@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {ESLint, Linter} from 'eslint';
-import {Summary, Violation} from 'types-safety-web';
+import {Summary, Violation} from '@safety-web/types';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
 

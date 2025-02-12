@@ -1,21 +1,21 @@
 {
-  "name": "runner-safety-web",
+  "name": "@safety-web/runner",
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
     "@safety-web/eslint-formatter": "workspace:^",
     "@safety-web/eslint-plugin": "workspace:^",
+    "@safety-web/types": "workspace:^",
     "debug": "^4.3.6",
     "eslint": "^9.6.0",
     "semver": "^7.6.3",
-    "types-safety-web": "workspace:^",
     "typescript-eslint": "^8.0.0",
     "yargs": "^17.7.2",
     "zx": "^8.1.4"
   },
   "bin": {
     "pipeline": "./bin/src/pipeline/pipeline.js",
-    "runner-safety-web": "./bin/src/index.js"
+    "runner": "./bin/src/index.js"
   },
   "engines": {
     "node": "^20.11.0 || >21.2.0"
