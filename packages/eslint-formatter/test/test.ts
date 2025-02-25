@@ -15,6 +15,7 @@
 import {expect} from 'chai';
 import {ESLint} from 'eslint';
 import * as safetyWebFormatter from '../src/index.js';
+import { Status } from '@safety-web/types';
 
 describe('@safety-web/eslint-formatter', () => {
   const results: ESLint.LintResult[] = [
@@ -142,29 +143,20 @@ describe('@safety-web/eslint-formatter', () => {
   );
 
   it('only lists safety-web errors', () => {
-    expect(formattedResults.safetyWebViolations).has.length(3);
-    formattedResults.safetyWebViolations.forEach((violation) => {
+    expect(formattedResults.violations).has.length(4);
+    formattedResults.violations.forEach((violation) => {
       expect(violation.ruleId).equals('safety-web/trusted-types-checks');
     });
   });
 
   it('lists safety-web silenced violations with their justification', () => {
-    expect(formattedResults.safetyWebSilencedViolations).has.length(1);
-    expect(formattedResults.safetyWebSilencedViolations[0].filePath).equals(
+    const eslintSilencedViolations = formattedResults.violations.filter((violation => violation.treatment.status !== Status.UNMANAGED));
+    expect(eslintSilencedViolations).has.length(1);
+    expect(eslintSilencedViolations[0].location.filepath).equals(
       '/path/to/file_with_safety_web_errors_silenced.ts',
     );
     expect(
-      formattedResults.safetyWebSilencedViolations[0].justification,
+      eslintSilencedViolations[0].treatment.justification,
     ).equals('This is a legacy violation.');
-  });
-
-  it('lists other errors in a separate list', () => {
-    expect(formattedResults.otherViolations).has.length(1);
-    expect(formattedResults.otherViolations[0].filePath).equals(
-      '/path/to/file_with_other_errors.ts',
-    );
-    expect(formattedResults.otherViolations[0].message).equals(
-      'Parsing error: X was not found by the project service.',
-    );
   });
 });

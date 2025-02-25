@@ -12,18 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {ESLint, Linter} from 'eslint';
-import {Summary, Violation} from '@safety-web/types';
+import { ESLint, Linter } from 'eslint';
+import { ConfidenceLevel, Status, Summary, Violation } from '@safety-web/types';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
-
-function formatFileLink(
-  filePath: string,
-  line: number,
-  column: number,
-): string {
-  return `file://${filePath}:${line}:${column}`;
-}
 
 export const format: ESLint.Formatter['format'] = function (
   results: ESLint.LintResult[],
@@ -37,36 +29,15 @@ export const formatToObject = function (
   context: ESLint.LintResultData,
 ): Summary {
   const safetyWebSummary: Summary = {
-    cwd: context?.cwd,
-    safetyWebViolations: [],
-    safetyWebSilencedViolations: [],
-    otherViolations: [],
-    otherSilencedViolations: [],
-    safetyWebViolationCount: 0,
-    safetyWebSilencedViolationCount: 0,
-    otherViolationCount: 0,
-    otherSilencedViolationCount: 0,
+    version: '0.0.1.TODO',
+    violations: [],
   };
 
   for (const fileResult of results) {
-    for (const lintMessage of fileResult.messages) {
+    for (const lintMessage of [...fileResult.messages, ...fileResult.suppressedMessages]) {
       const violation = createViolation(lintMessage, fileResult.filePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
-        safetyWebSummary.safetyWebViolations.push(violation);
-        safetyWebSummary.safetyWebViolationCount += 1;
-      } else {
-        safetyWebSummary.otherViolations.push(violation);
-        safetyWebSummary.otherViolationCount += 1;
-      }
-    }
-    for (const lintMessage of fileResult.suppressedMessages) {
-      const violation = createViolation(lintMessage, fileResult.filePath);
-      if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
-        safetyWebSummary.safetyWebSilencedViolations.push(violation);
-        safetyWebSummary.safetyWebSilencedViolationCount += 1;
-      } else {
-        safetyWebSummary.otherSilencedViolations.push(violation);
-        safetyWebSummary.otherSilencedViolationCount += 1;
+        safetyWebSummary.violations.push(violation);
       }
     }
   }
@@ -79,23 +50,24 @@ function createViolation(
   path: string,
 ): Violation {
   const violation: Violation = {
-    message: lintMessage.message,
     ruleId: lintMessage.ruleId,
-    filePath: path,
-    line: lintMessage.line,
-    column: lintMessage.column,
-    endLine: lintMessage.endLine,
-    endColumn: lintMessage.endColumn,
-    justification: undefined,
-    filesystemUrl: formatFileLink(path, lintMessage.line, lintMessage.column),
-    webUrl: undefined,
+    confidence: ConfidenceLevel.VIOLATION,  // TODO populate from the LintMessage
     snippet: 'TODO',
+    location: {
+      filepath: path,
+      filesystemUrl: undefined,  // TODO
+      webUrl: undefined,  // TODO
+      line: lintMessage.line,
+      column: lintMessage.column,
+      endLine: lintMessage.endLine,
+      endColumn: lintMessage.endColumn,
+    },
+    treatment: {
+      status: isSuppressedLintMessage(lintMessage) ? Status.ESLINT_SILENCED : Status.UNMANAGED,
+      justification: isSuppressedLintMessage(lintMessage) ? lintMessage.suppressions.map((e) => e.justification).join(' | ') :
+        'NO JUSTIFICATION'
+    }
   };
-  if (isSuppressedLintMessage(lintMessage)) {
-    violation.justification =
-      lintMessage.suppressions.map((e) => e.justification).join(' | ') ||
-      'NO JUSTIFICATION';
-  }
   return violation;
 }
 

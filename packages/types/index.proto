@@ -16,37 +16,61 @@ syntax = "proto3";
 
 package safety_web;
 
-// These messages are not stable and may still be changed in a breaking way
-// while we figure out what's useful.
+// Safety-web summary-related messages
 
-message Violation {
-  string message = 1;
-  string rule_id = 2;
-  string file_path = 3;
-  int32 line = 4;
-  int32 column = 5;
-  int32 end_line = 6;
-  int32 end_column = 7;
-  string justification = 8;
-  // A clickable URL that opens the file in e.g. VSCode
-  string filesystem_url = 9;
-  // A clickable URL that opens the file in e.g. GitHub in the browser
-  string web_url = 10;
-  string snippet = 11;
+// Summary is tied to a package, not a repo.
+message Summary {
+  string version = 1;
+  repeated Violation violations = 4;
 }
 
-// Return value of safety-web formatted with @safety-web/eslint-formatter
-message Summary {
-  string cwd = 1;
-  repeated Violation safety_web_violations = 2;
-  repeated Violation safety_web_silenced_violations = 3;
-  // ESLint violations not related to the safety-web plugin
-  repeated Violation other_violations = 4;
-  repeated Violation other_silenced_violations = 5;
-  int32 safety_web_violation_count = 6;
-  int32 safety_web_silenced_violation_count = 7;
-  int32 other_violation_count = 8;
-  int32 other_silenced_violation_count = 9;
+enum ConfidenceLevel {
+  VIOLATION = 0;
+  MEDIUM_POTENTIAL_VIOLATION = 1;
+  LOW_POTENTIAL_VIOLATION = 2;
+}
+
+// These messages are not stable and may still be changed in a breaking way
+// while we figure out what's useful.
+message Violation {
+  string rule_id = 2;  // e.g. "ban-element-innerhtml-assignments"
+  ConfidenceLevel confidence = 3;
+  string snippet = 4;
+  Location location = 5;
+  Treatment treatment = 6;  // TODO find a better name for this field
+}
+
+message Location {
+  string filepath = 1;
+  int32 line = 2;
+  int32 column = 3;
+  int32 end_line = 4;
+  int32 end_column = 5;
+  // A clickable URL that opens the file in e.g. VSCode
+  string filesystem_url = 6;
+  // A clickable URL that opens the file in e.g. GitHub in the browser
+  string web_url = 7;
+}
+
+message Treatment {
+  Status status = 1;
+  string justification = 2;
+}
+
+enum Status {
+  ALLOWLISTED = 0;  // Violation is tracked in a safety-web allowlist
+  ESLINT_SILENCED = 1;  // Violation is silenced using ESLint comments
+  UNMANAGED = 2;  // Violation is not managed. It still shows as an ESLint error
+}
+
+
+// Safety-web config-related messages
+
+// Captures the project setup used during the analysis
+message RepoConfig {
+  string name = 1;
+  string url = 2;
+  string commit = 3;
 }
 
 message Package {

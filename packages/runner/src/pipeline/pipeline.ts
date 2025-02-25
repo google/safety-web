@@ -116,7 +116,7 @@ async function processRepository(
       summary = message.summary;
       outcome = 'SUCCESS';
     } else {
-      summary = Summary.create({cwd: message.rootDir});
+      summary = Summary.create();
       outcome = 'FAILURE';
     }
   });
