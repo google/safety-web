@@ -12,29 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ESLint, Linter } from 'eslint';
-import { ConfidenceLevel, Status, Summary, Violation } from '@safety-web/types';
+import {ESLint, Linter} from 'eslint';
+import {ConfidenceLevel, Status, Summary, Violation} from '@safety-web/types';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
 
 export const format: ESLint.Formatter['format'] = function (
   results: ESLint.LintResult[],
-  context: ESLint.LintResultData,
 ): string {
-  return JSON.stringify(formatToObject(results, context), null, 2);
+  return JSON.stringify(formatToObject(results), null, 2);
 };
 
-export const formatToObject = function (
-  results: ESLint.LintResult[],
-  context: ESLint.LintResultData,
-): Summary {
+export const formatToObject = function (results: ESLint.LintResult[]): Summary {
   const safetyWebSummary: Summary = {
     version: '0.0.1.TODO',
     violations: [],
   };
 
   for (const fileResult of results) {
-    for (const lintMessage of [...fileResult.messages, ...fileResult.suppressedMessages]) {
+    for (const lintMessage of [
+      ...fileResult.messages,
+      ...fileResult.suppressedMessages,
+    ]) {
       const violation = createViolation(lintMessage, fileResult.filePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
         safetyWebSummary.violations.push(violation);
@@ -51,22 +50,25 @@ function createViolation(
 ): Violation {
   const violation: Violation = {
     ruleId: lintMessage.ruleId,
-    confidence: ConfidenceLevel.VIOLATION,  // TODO populate from the LintMessage
+    confidence: ConfidenceLevel.VIOLATION, // TODO populate from the LintMessage
     snippet: 'TODO',
     location: {
       filepath: path,
-      filesystemUrl: undefined,  // TODO
-      webUrl: undefined,  // TODO
+      filesystemUrl: undefined, // TODO
+      webUrl: undefined, // TODO
       line: lintMessage.line,
       column: lintMessage.column,
       endLine: lintMessage.endLine,
       endColumn: lintMessage.endColumn,
     },
     treatment: {
-      status: isSuppressedLintMessage(lintMessage) ? Status.ESLINT_SILENCED : Status.UNMANAGED,
-      justification: isSuppressedLintMessage(lintMessage) ? lintMessage.suppressions.map((e) => e.justification).join(' | ') :
-        'NO JUSTIFICATION'
-    }
+      status: isSuppressedLintMessage(lintMessage)
+        ? Status.ESLINT_SILENCED
+        : Status.UNMANAGED,
+      justification: isSuppressedLintMessage(lintMessage)
+        ? lintMessage.suppressions.map((e) => e.justification).join(' | ')
+        : 'NO JUSTIFICATION',
+    },
   };
   return violation;
 }

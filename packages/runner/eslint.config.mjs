@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import {commonMonorepoConfig} from '../../eslint-common.config.mjs';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -38,4 +39,5 @@ export default tseslint.config(
   {
     ignores: ['**/*.js', '**/*.cjs', '**/*.mjs', 'bin/', 'node_modules/'],
   },
+  eslintPluginPrettierRecommended
 );
