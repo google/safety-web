@@ -19,15 +19,26 @@ import debug from 'debug';
 
 const logDebug = debug('safety-web:runner:repository');
 
+export let mockableFs = fs;
+
+export function testOnlyMockFs(mockFs: typeof fs) {
+  mockableFs = mockFs;
+}
+
 export interface Package {
   name: string;
   relativePath: string; // Relative the repository root
   version: string;
 }
 
+interface PackageJson {
+  name?: string;
+  version?: string;
+  private?: string;
+}
+
 export async function exploreRepository(
   repoRootDir: string,
-  iFs = fs,
 ): Promise<Set<Package>> {
   const directories: string[] = [repoRootDir];
   const packages = new Set<Package>();
@@ -35,19 +46,30 @@ export async function exploreRepository(
   while (directories.length > 0) {
     const dir = directories.pop();
     try {
-      for await (const entry of await iFs.promises.opendir(dir)) {
+      for await (const entry of await mockableFs.promises.opendir(dir)) {
         if (entry.isDirectory()) {
           if (entry.name !== 'node_modules') {
             directories.push(nodePath.resolve(entry.parentPath, entry.name));
           }
         } else if (entry.isFile()) {
           if (entry.name === 'package.json') {
-            // TODO parse package.json. Look for fields: private, name, version
-            packages.add({
-              name: 'TODO',
-              relativePath: nodePath.relative(repoRootDir, entry.parentPath),
-              version: 'TODO',
-            });
+            const packageJson = await parsePackageJson(
+              nodePath.resolve(entry.parentPath, 'package.json'),
+            );
+            if (packageJson !== undefined) {
+              if (!packageJson.private) {
+                packages.add({
+                  name: packageJson.name ?? '__NAME_NOT_FOUND__',
+                  relativePath: nodePath.relative(
+                    repoRootDir,
+                    entry.parentPath,
+                  ),
+                  version: packageJson.version ?? '__VERSION_NOT_FOUND__',
+                });
+              }
+            } else {
+              logDebug(`Failed to parse package.json at: ${entry.parentPath}.`);
+            }
           }
         }
       }
@@ -55,6 +77,16 @@ export async function exploreRepository(
       logDebug(`Error while listing the repository root directory: ${e}`);
     }
   }
-  debug(`packages: ${JSON.stringify([...packages])}`);
   return packages;
+}
+
+async function parsePackageJson(filePath: string): Promise<PackageJson | null> {
+  try {
+    const fileContent = await mockableFs.promises.readFile(filePath, 'utf-8');
+    const jsonData = JSON.parse(fileContent) as PackageJson;
+    return jsonData;
+  } catch (error) {
+    console.error('Error parsing JSON:', error);
+    return null;
+  }
 }

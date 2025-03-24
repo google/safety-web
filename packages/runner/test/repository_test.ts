@@ -14,7 +14,7 @@
 
 import {expect} from 'chai';
 import {Volume} from 'memfs';
-import {exploreRepository} from '../src/repository.js';
+import {exploreRepository, testOnlyMockFs} from '../src/repository.js';
 import * as fs from 'node:fs';
 
 const multiPackageRepository = Volume.fromJSON({
@@ -22,38 +22,32 @@ const multiPackageRepository = Volume.fromJSON({
   "private": true,
   "workspaces": [
     "packages/**"
-  ],
+  ]
 }`,
   '/repository_root/packages/foo/package.json': `{
   "name": "foo",
-  "version": "0.0.1",
+  "version": "0.0.1"
 }`,
   '/repository_root/packages/bar/package.json': `{
   "name": "bar",
-  "version": "0.0.1",
+  "version": "0.0.1"
 }`,
   '/repository_root/packages/utils/baz/package.json': `{
   "name": "@utils/baz",
-  "version": "0.0.1",
+  "version": "0.0.1"
 }`,
 });
 
 describe('repository', () => {
-  it('finds nested packages under the root directory', async () => {
-    const packages = await exploreRepository(
-      '/repository_root',
-      multiPackageRepository as unknown as typeof fs,
-    );
+  it('finds nested packages under the root directory that are not private', async () => {
+    testOnlyMockFs(multiPackageRepository as unknown as typeof fs);
+    const packages = await exploreRepository('/repository_root');
     const relativPaths = [...packages].map((p) => p.relativePath);
+    // "./" is a private package so it's not expected here.
     expect(relativPaths).to.have.members([
-      '', // TODO private packages should not be surfaced in future iterations.
       'packages/foo',
       'packages/bar',
       'packages/utils/baz',
     ]);
   });
-
-  // it('ignore packages that are private', async () => {
-  //   expect('foo').to.have.property('bar');
-  // });
 });
