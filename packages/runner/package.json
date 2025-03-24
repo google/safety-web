@@ -41,6 +41,7 @@
     "@types/semver": "^7",
     "@types/yargs": "^17.0.32",
     "chai": "^5.1.1",
+    "memfs": "^4.17.0",
     "minimist": "^1.2.8",
     "mocha": "^10.7.3",
     "ts-node": "^10.9.2",

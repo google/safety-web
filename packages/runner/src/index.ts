@@ -15,6 +15,7 @@
 
 import yargs from 'yargs';
 import {run, SAFETY_WEB_TSCONFIG_FILENAME} from './runner.js';
+import {exploreRepository} from './repository.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
