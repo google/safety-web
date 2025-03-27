@@ -96,7 +96,6 @@ async function processRepository(
     return repository;
   }
 
-  // TODO run safety-web per sub-package instead of at the root.
   const repoWorker = new Worker(
     nodePath.resolve(import.meta.dirname, 'worker.js'),
     {workerData: {rootDir: repository.rootPath}},
@@ -109,27 +108,20 @@ async function processRepository(
       resolve(code);
     });
   });
-  let summary: PackageSummary;
+  let summaries: Set<PackageSummary>;
   let outcome: string;
   repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
     if (message.type === 'success') {
-      summary = message.summary;
+      summaries = message.summaries;
       outcome = 'SUCCESS';
     } else {
-      summary = PackageSummary.create();
+      summaries = new Set();
       outcome = 'FAILURE';
     }
   });
   await workerPromise;
 
-  // TODO: populate the real packages
-  repository.packages.push({
-    name: '<default>',
-    relativePath: './',
-    version: undefined,
-    safetyWebSummary: summary,
-    outcome,
-  });
+  repository.summaries = [...summaries];
   return repository;
 }
 

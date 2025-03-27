@@ -14,7 +14,7 @@
 
 import {expect} from 'chai';
 import {Volume} from 'memfs';
-import {exploreRepository, testOnlyMockFs} from '../src/repository.js';
+import {crawl, testOnlyMockFs} from '../src/repository.js';
 import * as fs from 'node:fs';
 
 const multiPackageRepository = Volume.fromJSON({
@@ -41,7 +41,7 @@ const multiPackageRepository = Volume.fromJSON({
 describe('repository', () => {
   it('finds nested packages under the root directory that are not private', async () => {
     testOnlyMockFs(multiPackageRepository as unknown as typeof fs);
-    const packages = await exploreRepository('/repository_root');
+    const packages = await crawl('/repository_root');
     const relativPaths = [...packages].map((p) => p.relativePath);
     // "./" is a private package so it's not expected here.
     expect(relativPaths).to.have.members([

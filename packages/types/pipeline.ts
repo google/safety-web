@@ -103,9 +103,9 @@ export interface Repository {
      */
     packageManagerUsed?: PackageManager;
     /**
-     * @generated from protobuf field: repeated safety_web.pipeline.Package packages = 5;
+     * @generated from protobuf field: repeated safety_web.PackageSummary summaries = 5;
      */
-    packages: Package[];
+    summaries: PackageSummary[];
     /**
      * @generated from protobuf field: string logs = 6;
      */
@@ -320,7 +320,7 @@ class Repository$Type extends MessageType<Repository> {
             { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "package_manager_found", kind: "message", T: () => PackageManager },
             { no: 4, name: "package_manager_used", kind: "message", T: () => PackageManager },
-            { no: 5, name: "packages", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Package },
+            { no: 5, name: "summaries", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => PackageSummary },
             { no: 6, name: "logs", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 7, name: "step_failure", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
@@ -328,7 +328,7 @@ class Repository$Type extends MessageType<Repository> {
     create(value?: PartialMessage<Repository>): Repository {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.url = "";
-        message.packages = [];
+        message.summaries = [];
         message.logs = "";
         message.stepFailure = "";
         if (value !== undefined)
@@ -349,8 +349,8 @@ class Repository$Type extends MessageType<Repository> {
                 case /* safety_web.pipeline.PackageManager package_manager_used */ 4:
                     message.packageManagerUsed = PackageManager.internalBinaryRead(reader, reader.uint32(), options, message.packageManagerUsed);
                     break;
-                case /* repeated safety_web.pipeline.Package packages */ 5:
-                    message.packages.push(Package.internalBinaryRead(reader, reader.uint32(), options));
+                case /* repeated safety_web.PackageSummary summaries */ 5:
+                    message.summaries.push(PackageSummary.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 case /* string logs */ 6:
                     message.logs = reader.string();
@@ -379,9 +379,9 @@ class Repository$Type extends MessageType<Repository> {
         /* safety_web.pipeline.PackageManager package_manager_used = 4; */
         if (message.packageManagerUsed)
             PackageManager.internalBinaryWrite(message.packageManagerUsed, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* repeated safety_web.pipeline.Package packages = 5; */
-        for (let i = 0; i < message.packages.length; i++)
-            Package.internalBinaryWrite(message.packages[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* repeated safety_web.PackageSummary summaries = 5; */
+        for (let i = 0; i < message.summaries.length; i++)
+            PackageSummary.internalBinaryWrite(message.summaries[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         /* string logs = 6; */
         if (message.logs !== "")
             writer.tag(6, WireType.LengthDelimited).string(message.logs);

@@ -37,9 +37,13 @@ interface PackageJson {
   private?: string;
 }
 
-export async function exploreRepository(
-  repoRootDir: string,
-): Promise<Set<Package>> {
+export interface Repository {
+  url: string;
+  commitId?: string;
+  packages: Set<Package>;
+}
+
+export async function crawl(repoRootDir: string): Promise<Set<Package>> {
   const directories: string[] = [repoRootDir];
   const packages = new Set<Package>();
 

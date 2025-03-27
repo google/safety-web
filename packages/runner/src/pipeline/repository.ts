@@ -18,8 +18,8 @@ import {Reader} from './reader.js';
 import * as semver from 'semver';
 import {$, cd, ProcessOutput} from 'zx';
 import {CommandRunner, hasSucceeded} from './command.js';
-import {Repository} from '@safety-web/types';
-import {PackageManager, Package} from '@safety-web/types/pipeline';
+import {PackageSummary, Repository} from '@safety-web/types';
+import {PackageManager} from '@safety-web/types/pipeline';
 import {Logger} from './logger.js';
 
 const knownPackageManagerKinds = ['npm', 'yarn', 'pnpm'] as const;
@@ -47,7 +47,7 @@ $.env['COREPACK_ENABLE_DOWNLOAD_PROMPT'] = '0';
 export class RepositoryImpl implements Repository {
   packageManagerFound: PackageManager;
   packageManagerUsed: PackageManager;
-  packages: Package[] = [];
+  summaries: PackageSummary[] = [];
   rootPath: string = undefined;
   stepFailure: string = undefined;
   private commandRunner: CommandRunner;

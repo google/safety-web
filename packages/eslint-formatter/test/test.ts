@@ -150,7 +150,7 @@ describe('@safety-web/eslint-formatter', () => {
       (violation) => violation.exemption !== undefined,
     );
     expect(eslintSilencedViolations).has.length(1);
-    expect(eslintSilencedViolations[0].location.filepath).equals(
+    expect(eslintSilencedViolations[0].location.filePath).equals(
       '/path/to/file_with_safety_web_errors_silenced.ts',
     );
     expect(eslintSilencedViolations[0].exemption.justification).equals(

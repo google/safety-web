@@ -23,7 +23,7 @@ function postToParent(workerMessage: WorkerSuccess | WorkerError) {
 
 export interface WorkerSuccess {
   type: 'success';
-  summary: PackageSummary;
+  summaries: Set<PackageSummary>;
   rootDir: string;
 }
 
@@ -34,8 +34,8 @@ export interface WorkerError {
 }
 
 export async function workerMain(rootDir: string) {
-  const summary = await run(rootDir);
-  postToParent({type: 'success', summary, rootDir});
+  const summaries = await run(rootDir);
+  postToParent({type: 'success', summaries, rootDir});
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

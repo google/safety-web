@@ -23,7 +23,7 @@ message PackageSummary {
   string summaryVersion = 1;  // Version of the summary format definition
   string packageName = 2;
   string packageVersion = 3;
-  string packagePath = 4;  // Relative path of the package in the repository
+  string packagePath = 4;  // Relative to the repository root and normalized
   Repository repository = 5;  // Metadata about the repository scanned
   repeated Violation violations = 6;
 }
@@ -50,7 +50,7 @@ message Violation {
 }
 
 message Location {
-  string filepath = 1;
+  string file_path = 1;  // Relative to the repository root and normalized
   int32 line = 2;
   int32 column = 3;
   int32 end_line = 4;

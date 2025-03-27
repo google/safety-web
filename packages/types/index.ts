@@ -48,7 +48,7 @@ export interface PackageSummary {
     /**
      * @generated from protobuf field: string packagePath = 4;
      */
-    packagePath: string; // Relative path of the package in the repository
+    packagePath: string; // Relative to the repository root and normalized
     /**
      * @generated from protobuf field: safety_web.Repository repository = 5;
      */
@@ -104,9 +104,9 @@ export interface Violation {
  */
 export interface Location {
     /**
-     * @generated from protobuf field: string filepath = 1;
+     * @generated from protobuf field: string file_path = 1;
      */
-    filepath: string;
+    filePath: string; // Relative to the repository root and normalized
     /**
      * @generated from protobuf field: int32 line = 2;
      */
@@ -396,7 +396,7 @@ export const Violation = new Violation$Type();
 class Location$Type extends MessageType<Location> {
     constructor() {
         super("safety_web.Location", [
-            { no: 1, name: "filepath", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 1, name: "file_path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "line", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 3, name: "column", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "end_line", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
@@ -405,7 +405,7 @@ class Location$Type extends MessageType<Location> {
     }
     create(value?: PartialMessage<Location>): Location {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.filepath = "";
+        message.filePath = "";
         message.line = 0;
         message.column = 0;
         message.endLine = 0;
@@ -419,8 +419,8 @@ class Location$Type extends MessageType<Location> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string filepath */ 1:
-                    message.filepath = reader.string();
+                case /* string file_path */ 1:
+                    message.filePath = reader.string();
                     break;
                 case /* int32 line */ 2:
                     message.line = reader.int32();
@@ -446,9 +446,9 @@ class Location$Type extends MessageType<Location> {
         return message;
     }
     internalBinaryWrite(message: Location, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string filepath = 1; */
-        if (message.filepath !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.filepath);
+        /* string file_path = 1; */
+        if (message.filePath !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.filePath);
         /* int32 line = 2; */
         if (message.line !== 0)
             writer.tag(2, WireType.Varint).int32(message.line);

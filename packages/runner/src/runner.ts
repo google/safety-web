@@ -18,15 +18,10 @@ import * as nodePath from 'node:path';
 import * as fs from 'fs/promises';
 import {generateESLintOptions} from './eslint_config.js';
 import {generateTSConfig} from './ts_config.js';
-import * as formatter from '@safety-web/eslint-formatter';
 import {PackageSummary} from '@safety-web/types';
-
-const safetyWebFormatter = formatter as ESLint.Formatter & {
-  formatToObject: (
-    results: ESLint.LintResult[],
-    context: ESLint.LintResultData,
-  ) => PackageSummary;
-};
+import {createSummaries} from './summary.js';
+import {crawl} from './repository.js';
+import {createViolations} from './violation.js';
 
 export const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
 
@@ -50,7 +45,7 @@ async function writeConfig(tsconfig: object, path: string) {
 export async function run(
   rootDir: string,
   useDefaultTSConfig = false,
-): Promise<PackageSummary> {
+): Promise<Set<PackageSummary>> {
   const resolvedRootDir = await resolvePath(rootDir);
   if (resolvedRootDir === undefined) {
     throw new Error('Could not resolve the root directory. Aborting...');
@@ -71,9 +66,13 @@ export async function run(
   );
 
   const eslint = new ESLint(options);
+  const packages = await crawl(resolvedRootDir);
+  const repository = {
+    url: 'TODO',
+    commitId: 'TODO',
+    packages,
+  };
   const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);
-  return safetyWebFormatter.formatToObject(results, {
-    cwd: options.cwd,
-    rulesMeta: undefined,
-  });
+  const violations = createViolations(results);
+  return createSummaries(violations, repository);
 }
