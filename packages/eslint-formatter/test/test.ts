@@ -15,7 +15,6 @@
 import {expect} from 'chai';
 import {ESLint} from 'eslint';
 import * as safetyWebFormatter from '../src/index.js';
-import {Status} from '@safety-web/types';
 
 describe('@safety-web/eslint-formatter', () => {
   const results: ESLint.LintResult[] = [
@@ -148,13 +147,13 @@ describe('@safety-web/eslint-formatter', () => {
 
   it('lists safety-web silenced violations with their justification', () => {
     const eslintSilencedViolations = formattedResults.violations.filter(
-      (violation) => violation.treatment.status !== Status.UNMANAGED,
+      (violation) => violation.exemption !== undefined,
     );
     expect(eslintSilencedViolations).has.length(1);
     expect(eslintSilencedViolations[0].location.filepath).equals(
       '/path/to/file_with_safety_web_errors_silenced.ts',
     );
-    expect(eslintSilencedViolations[0].treatment.justification).equals(
+    expect(eslintSilencedViolations[0].exemption.justification).equals(
       'This is a legacy violation.',
     );
   });

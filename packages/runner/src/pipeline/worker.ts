@@ -15,7 +15,7 @@
 
 import {workerData, parentPort} from 'node:worker_threads';
 import {run} from '../runner.js';
-import {Summary} from '@safety-web/types';
+import {PackageSummary} from '@safety-web/types';
 
 function postToParent(workerMessage: WorkerSuccess | WorkerError) {
   parentPort.postMessage(workerMessage);
@@ -23,7 +23,7 @@ function postToParent(workerMessage: WorkerSuccess | WorkerError) {
 
 export interface WorkerSuccess {
   type: 'success';
-  summary: Summary;
+  summary: PackageSummary;
   rootDir: string;
 }
 

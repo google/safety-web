@@ -13,7 +13,12 @@
 // limitations under the License.
 
 import {ESLint, Linter} from 'eslint';
-import {ConfidenceLevel, Status, Summary, Violation} from '@safety-web/types';
+import {
+  ConfidenceLevel,
+  ExemptionType,
+  PackageSummary,
+  Violation,
+} from '@safety-web/types';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
 
@@ -23,9 +28,14 @@ export const format: ESLint.Formatter['format'] = function (
   return JSON.stringify(formatToObject(results), null, 2);
 };
 
-export const formatToObject = function (results: ESLint.LintResult[]): Summary {
-  const safetyWebSummary: Summary = {
-    version: '0.0.1.TODO',
+export const formatToObject = function (
+  results: ESLint.LintResult[],
+): PackageSummary {
+  const safetyWebSummary: PackageSummary = {
+    packageName: 'TODO',
+    packageVersion: '0.0.1.TODO',
+    packagePath: 'TODO',
+    summaryVersion: 'TODO',
     violations: [],
   };
 
@@ -51,25 +61,23 @@ function createViolation(
   const violation: Violation = {
     ruleId: lintMessage.ruleId,
     confidence: ConfidenceLevel.VIOLATION, // TODO populate from the LintMessage
-    snippet: 'TODO',
+    category: 'TODO',
     location: {
       filepath: path,
-      filesystemUrl: undefined, // TODO
-      webUrl: undefined, // TODO
       line: lintMessage.line,
       column: lintMessage.column,
       endLine: lintMessage.endLine,
       endColumn: lintMessage.endColumn,
     },
-    treatment: {
-      status: isSuppressedLintMessage(lintMessage)
-        ? Status.ESLINT_SILENCED
-        : Status.UNMANAGED,
+  };
+  if (isSuppressedLintMessage(lintMessage)) {
+    violation.exemption = {
+      type: ExemptionType.ESLINT_SILENCED,
       justification: isSuppressedLintMessage(lintMessage)
         ? lintMessage.suppressions.map((e) => e.justification).join(' | ')
         : 'NO JUSTIFICATION',
-    },
-  };
+    };
+  }
   return violation;
 }
 

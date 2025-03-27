@@ -3,5 +3,5 @@
 To regenerate `index.ts` (from the root of the repository):
 
 ```bash
-npx protoc --ts_out . --proto_path . packages/types/index.proto
+yarn workspace @safety-web/types exec protoc --ts_out . --proto_path . index.proto pipeline.proto
 ```

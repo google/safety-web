@@ -1,0 +1,51 @@
+// Copyright 2024 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package safety_web.pipeline;
+
+import "index.proto";
+
+// Captures the project setup used during the analysis
+message RepoConfig {
+  string name = 1;
+  string url = 2;
+  string commit = 3;
+}
+
+message Package {
+  string name = 1;
+  string relative_path = 2;
+  string version = 3;
+  PackageSummary safety_web_summary = 4;
+  string outcome = 5;
+}
+
+message PackageManager {
+  string kind = 1;
+  string version = 2;
+}
+
+// An invocation of the pipeline on 1 repository. Captures characteristics found
+// while analyzing and installing the repository.
+message Repository {
+  string url = 1;
+  PackageManager package_manager_found = 3;
+  PackageManager package_manager_used = 4;
+  repeated Package packages = 5;
+  string logs = 6;
+  // When the repository fails to be set up, record the failing step.
+  string step_failure = 7;
+}

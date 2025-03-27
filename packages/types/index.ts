@@ -30,17 +30,46 @@ import { MessageType } from "@protobuf-ts/runtime";
 /**
  * Summary is tied to a package, not a repo.
  *
- * @generated from protobuf message safety_web.Summary
+ * @generated from protobuf message safety_web.PackageSummary
  */
-export interface Summary {
+export interface PackageSummary {
     /**
-     * @generated from protobuf field: string version = 1;
+     * @generated from protobuf field: string summaryVersion = 1;
      */
-    version: string;
+    summaryVersion: string; // Version of the summary format definition
     /**
-     * @generated from protobuf field: repeated safety_web.Violation violations = 4;
+     * @generated from protobuf field: string packageName = 2;
+     */
+    packageName: string;
+    /**
+     * @generated from protobuf field: string packageVersion = 3;
+     */
+    packageVersion: string;
+    /**
+     * @generated from protobuf field: string packagePath = 4;
+     */
+    packagePath: string; // Relative path of the package in the repository
+    /**
+     * @generated from protobuf field: safety_web.Repository repository = 5;
+     */
+    repository?: Repository; // Metadata about the repository scanned
+    /**
+     * @generated from protobuf field: repeated safety_web.Violation violations = 6;
      */
     violations: Violation[];
+}
+/**
+ * @generated from protobuf message safety_web.Repository
+ */
+export interface Repository {
+    /**
+     * @generated from protobuf field: string url = 1;
+     */
+    url: string;
+    /**
+     * @generated from protobuf field: optional string commitId = 2;
+     */
+    commitId?: string;
 }
 /**
  * These messages are not stable and may still be changed in a breaking way
@@ -50,6 +79,10 @@ export interface Summary {
  */
 export interface Violation {
     /**
+     * @generated from protobuf field: string category = 1;
+     */
+    category: string; // Free form string, but is more of an enum. e.g. all TT violations should be "trusted-types"
+    /**
      * @generated from protobuf field: string rule_id = 2;
      */
     ruleId: string; // e.g. "ban-element-innerhtml-assignments"
@@ -58,17 +91,13 @@ export interface Violation {
      */
     confidence: ConfidenceLevel;
     /**
-     * @generated from protobuf field: string snippet = 4;
-     */
-    snippet: string;
-    /**
      * @generated from protobuf field: safety_web.Location location = 5;
      */
     location?: Location;
     /**
-     * @generated from protobuf field: safety_web.Treatment treatment = 6;
+     * @generated from protobuf field: optional safety_web.Exemption exemption = 6;
      */
-    treatment?: Treatment; // TODO find a better name for this field
+    exemption?: Exemption;
 }
 /**
  * @generated from protobuf message safety_web.Location
@@ -94,124 +123,19 @@ export interface Location {
      * @generated from protobuf field: int32 end_column = 5;
      */
     endColumn: number;
-    /**
-     * A clickable URL that opens the file in e.g. VSCode
-     *
-     * @generated from protobuf field: string filesystem_url = 6;
-     */
-    filesystemUrl: string;
-    /**
-     * A clickable URL that opens the file in e.g. GitHub in the browser
-     *
-     * @generated from protobuf field: string web_url = 7;
-     */
-    webUrl: string;
 }
 /**
- * @generated from protobuf message safety_web.Treatment
+ * @generated from protobuf message safety_web.Exemption
  */
-export interface Treatment {
+export interface Exemption {
     /**
-     * @generated from protobuf field: safety_web.Status status = 1;
+     * @generated from protobuf field: safety_web.ExemptionType type = 1;
      */
-    status: Status;
+    type: ExemptionType;
     /**
      * @generated from protobuf field: string justification = 2;
      */
     justification: string;
-}
-// Safety-web config-related messages
-
-/**
- * Captures the project setup used during the analysis
- *
- * @generated from protobuf message safety_web.RepoConfig
- */
-export interface RepoConfig {
-    /**
-     * @generated from protobuf field: string name = 1;
-     */
-    name: string;
-    /**
-     * @generated from protobuf field: string url = 2;
-     */
-    url: string;
-    /**
-     * @generated from protobuf field: string commit = 3;
-     */
-    commit: string;
-}
-/**
- * @generated from protobuf message safety_web.Package
- */
-export interface Package {
-    /**
-     * @generated from protobuf field: string name = 1;
-     */
-    name: string;
-    /**
-     * @generated from protobuf field: string relative_path = 2;
-     */
-    relativePath: string;
-    /**
-     * @generated from protobuf field: string version = 3;
-     */
-    version: string;
-    /**
-     * @generated from protobuf field: safety_web.Summary safety_web_summary = 4;
-     */
-    safetyWebSummary?: Summary;
-    /**
-     * @generated from protobuf field: string outcome = 5;
-     */
-    outcome: string;
-}
-/**
- * @generated from protobuf message safety_web.PackageManager
- */
-export interface PackageManager {
-    /**
-     * @generated from protobuf field: string kind = 1;
-     */
-    kind: string;
-    /**
-     * @generated from protobuf field: string version = 2;
-     */
-    version: string;
-}
-/**
- * An invocation of the pipeline on 1 repository. Captures characteristics found
- * while analyzing and installing the repository.
- *
- * @generated from protobuf message safety_web.Repository
- */
-export interface Repository {
-    /**
-     * @generated from protobuf field: string url = 1;
-     */
-    url: string;
-    /**
-     * @generated from protobuf field: safety_web.PackageManager package_manager_found = 3;
-     */
-    packageManagerFound?: PackageManager;
-    /**
-     * @generated from protobuf field: safety_web.PackageManager package_manager_used = 4;
-     */
-    packageManagerUsed?: PackageManager;
-    /**
-     * @generated from protobuf field: repeated safety_web.Package packages = 5;
-     */
-    packages: Package[];
-    /**
-     * @generated from protobuf field: string logs = 6;
-     */
-    logs: string;
-    /**
-     * When the repository fails to be set up, record the failing step.
-     *
-     * @generated from protobuf field: string step_failure = 7;
-     */
-    stepFailure: string;
 }
 /**
  * @generated from protobuf enum safety_web.ConfidenceLevel
@@ -231,53 +155,70 @@ export enum ConfidenceLevel {
     LOW_POTENTIAL_VIOLATION = 2
 }
 /**
- * @generated from protobuf enum safety_web.Status
+ * @generated from protobuf enum safety_web.ExemptionType
  */
-export enum Status {
+export enum ExemptionType {
+    /**
+     * @generated from protobuf enum value: UNKNOWN_TYPE = 0;
+     */
+    UNKNOWN_TYPE = 0,
     /**
      * Violation is tracked in a safety-web allowlist
      *
-     * @generated from protobuf enum value: ALLOWLISTED = 0;
+     * @generated from protobuf enum value: ALLOWLISTED = 1;
      */
-    ALLOWLISTED = 0,
+    ALLOWLISTED = 1,
     /**
      * Violation is silenced using ESLint comments
      *
-     * @generated from protobuf enum value: ESLINT_SILENCED = 1;
+     * @generated from protobuf enum value: ESLINT_SILENCED = 2;
      */
-    ESLINT_SILENCED = 1,
-    /**
-     * Violation is not managed. It still shows as an ESLint error
-     *
-     * @generated from protobuf enum value: UNMANAGED = 2;
-     */
-    UNMANAGED = 2
+    ESLINT_SILENCED = 2
 }
 // @generated message type with reflection information, may provide speed optimized methods
-class Summary$Type extends MessageType<Summary> {
+class PackageSummary$Type extends MessageType<PackageSummary> {
     constructor() {
-        super("safety_web.Summary", [
-            { no: 1, name: "version", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "violations", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Violation }
+        super("safety_web.PackageSummary", [
+            { no: 1, name: "summaryVersion", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "packageName", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "packageVersion", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "packagePath", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "repository", kind: "message", T: () => Repository },
+            { no: 6, name: "violations", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Violation }
         ]);
     }
-    create(value?: PartialMessage<Summary>): Summary {
+    create(value?: PartialMessage<PackageSummary>): PackageSummary {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.version = "";
+        message.summaryVersion = "";
+        message.packageName = "";
+        message.packageVersion = "";
+        message.packagePath = "";
         message.violations = [];
         if (value !== undefined)
-            reflectionMergePartial<Summary>(this, message, value);
+            reflectionMergePartial<PackageSummary>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Summary): Summary {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PackageSummary): PackageSummary {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* string version */ 1:
-                    message.version = reader.string();
+                case /* string summaryVersion */ 1:
+                    message.summaryVersion = reader.string();
                     break;
-                case /* repeated safety_web.Violation violations */ 4:
+                case /* string packageName */ 2:
+                    message.packageName = reader.string();
+                    break;
+                case /* string packageVersion */ 3:
+                    message.packageVersion = reader.string();
+                    break;
+                case /* string packagePath */ 4:
+                    message.packagePath = reader.string();
+                    break;
+                case /* safety_web.Repository repository */ 5:
+                    message.repository = Repository.internalBinaryRead(reader, reader.uint32(), options, message.repository);
+                    break;
+                case /* repeated safety_web.Violation violations */ 6:
                     message.violations.push(Violation.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 default:
@@ -291,13 +232,25 @@ class Summary$Type extends MessageType<Summary> {
         }
         return message;
     }
-    internalBinaryWrite(message: Summary, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string version = 1; */
-        if (message.version !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.version);
-        /* repeated safety_web.Violation violations = 4; */
+    internalBinaryWrite(message: PackageSummary, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string summaryVersion = 1; */
+        if (message.summaryVersion !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.summaryVersion);
+        /* string packageName = 2; */
+        if (message.packageName !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.packageName);
+        /* string packageVersion = 3; */
+        if (message.packageVersion !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.packageVersion);
+        /* string packagePath = 4; */
+        if (message.packagePath !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.packagePath);
+        /* safety_web.Repository repository = 5; */
+        if (message.repository)
+            Repository.internalBinaryWrite(message.repository, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* repeated safety_web.Violation violations = 6; */
         for (let i = 0; i < message.violations.length; i++)
-            Violation.internalBinaryWrite(message.violations[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+            Violation.internalBinaryWrite(message.violations[i], writer.tag(6, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -305,25 +258,79 @@ class Summary$Type extends MessageType<Summary> {
     }
 }
 /**
- * @generated MessageType for protobuf message safety_web.Summary
+ * @generated MessageType for protobuf message safety_web.PackageSummary
  */
-export const Summary = new Summary$Type();
+export const PackageSummary = new PackageSummary$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Repository$Type extends MessageType<Repository> {
+    constructor() {
+        super("safety_web.Repository", [
+            { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "commitId", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Repository>): Repository {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.url = "";
+        if (value !== undefined)
+            reflectionMergePartial<Repository>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Repository): Repository {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string url */ 1:
+                    message.url = reader.string();
+                    break;
+                case /* optional string commitId */ 2:
+                    message.commitId = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Repository, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string url = 1; */
+        if (message.url !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.url);
+        /* optional string commitId = 2; */
+        if (message.commitId !== undefined)
+            writer.tag(2, WireType.LengthDelimited).string(message.commitId);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message safety_web.Repository
+ */
+export const Repository = new Repository$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Violation$Type extends MessageType<Violation> {
     constructor() {
         super("safety_web.Violation", [
+            { no: 1, name: "category", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "rule_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 3, name: "confidence", kind: "enum", T: () => ["safety_web.ConfidenceLevel", ConfidenceLevel] },
-            { no: 4, name: "snippet", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 5, name: "location", kind: "message", T: () => Location },
-            { no: 6, name: "treatment", kind: "message", T: () => Treatment }
+            { no: 6, name: "exemption", kind: "message", T: () => Exemption }
         ]);
     }
     create(value?: PartialMessage<Violation>): Violation {
         const message = globalThis.Object.create((this.messagePrototype!));
+        message.category = "";
         message.ruleId = "";
         message.confidence = 0;
-        message.snippet = "";
         if (value !== undefined)
             reflectionMergePartial<Violation>(this, message, value);
         return message;
@@ -333,20 +340,20 @@ class Violation$Type extends MessageType<Violation> {
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
+                case /* string category */ 1:
+                    message.category = reader.string();
+                    break;
                 case /* string rule_id */ 2:
                     message.ruleId = reader.string();
                     break;
                 case /* safety_web.ConfidenceLevel confidence */ 3:
                     message.confidence = reader.int32();
                     break;
-                case /* string snippet */ 4:
-                    message.snippet = reader.string();
-                    break;
                 case /* safety_web.Location location */ 5:
                     message.location = Location.internalBinaryRead(reader, reader.uint32(), options, message.location);
                     break;
-                case /* safety_web.Treatment treatment */ 6:
-                    message.treatment = Treatment.internalBinaryRead(reader, reader.uint32(), options, message.treatment);
+                case /* optional safety_web.Exemption exemption */ 6:
+                    message.exemption = Exemption.internalBinaryRead(reader, reader.uint32(), options, message.exemption);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -360,21 +367,21 @@ class Violation$Type extends MessageType<Violation> {
         return message;
     }
     internalBinaryWrite(message: Violation, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string category = 1; */
+        if (message.category !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.category);
         /* string rule_id = 2; */
         if (message.ruleId !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.ruleId);
         /* safety_web.ConfidenceLevel confidence = 3; */
         if (message.confidence !== 0)
             writer.tag(3, WireType.Varint).int32(message.confidence);
-        /* string snippet = 4; */
-        if (message.snippet !== "")
-            writer.tag(4, WireType.LengthDelimited).string(message.snippet);
         /* safety_web.Location location = 5; */
         if (message.location)
             Location.internalBinaryWrite(message.location, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
-        /* safety_web.Treatment treatment = 6; */
-        if (message.treatment)
-            Treatment.internalBinaryWrite(message.treatment, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* optional safety_web.Exemption exemption = 6; */
+        if (message.exemption)
+            Exemption.internalBinaryWrite(message.exemption, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -393,9 +400,7 @@ class Location$Type extends MessageType<Location> {
             { no: 2, name: "line", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 3, name: "column", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 4, name: "end_line", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 5, name: "end_column", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 6, name: "filesystem_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "web_url", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 5, name: "end_column", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<Location>): Location {
@@ -405,8 +410,6 @@ class Location$Type extends MessageType<Location> {
         message.column = 0;
         message.endLine = 0;
         message.endColumn = 0;
-        message.filesystemUrl = "";
-        message.webUrl = "";
         if (value !== undefined)
             reflectionMergePartial<Location>(this, message, value);
         return message;
@@ -430,12 +433,6 @@ class Location$Type extends MessageType<Location> {
                     break;
                 case /* int32 end_column */ 5:
                     message.endColumn = reader.int32();
-                    break;
-                case /* string filesystem_url */ 6:
-                    message.filesystemUrl = reader.string();
-                    break;
-                case /* string web_url */ 7:
-                    message.webUrl = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -464,12 +461,6 @@ class Location$Type extends MessageType<Location> {
         /* int32 end_column = 5; */
         if (message.endColumn !== 0)
             writer.tag(5, WireType.Varint).int32(message.endColumn);
-        /* string filesystem_url = 6; */
-        if (message.filesystemUrl !== "")
-            writer.tag(6, WireType.LengthDelimited).string(message.filesystemUrl);
-        /* string web_url = 7; */
-        if (message.webUrl !== "")
-            writer.tag(7, WireType.LengthDelimited).string(message.webUrl);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -481,28 +472,28 @@ class Location$Type extends MessageType<Location> {
  */
 export const Location = new Location$Type();
 // @generated message type with reflection information, may provide speed optimized methods
-class Treatment$Type extends MessageType<Treatment> {
+class Exemption$Type extends MessageType<Exemption> {
     constructor() {
-        super("safety_web.Treatment", [
-            { no: 1, name: "status", kind: "enum", T: () => ["safety_web.Status", Status] },
+        super("safety_web.Exemption", [
+            { no: 1, name: "type", kind: "enum", T: () => ["safety_web.ExemptionType", ExemptionType] },
             { no: 2, name: "justification", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
-    create(value?: PartialMessage<Treatment>): Treatment {
+    create(value?: PartialMessage<Exemption>): Exemption {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.status = 0;
+        message.type = 0;
         message.justification = "";
         if (value !== undefined)
-            reflectionMergePartial<Treatment>(this, message, value);
+            reflectionMergePartial<Exemption>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Treatment): Treatment {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Exemption): Exemption {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
             switch (fieldNo) {
-                case /* safety_web.Status status */ 1:
-                    message.status = reader.int32();
+                case /* safety_web.ExemptionType type */ 1:
+                    message.type = reader.int32();
                     break;
                 case /* string justification */ 2:
                     message.justification = reader.string();
@@ -518,10 +509,10 @@ class Treatment$Type extends MessageType<Treatment> {
         }
         return message;
     }
-    internalBinaryWrite(message: Treatment, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* safety_web.Status status = 1; */
-        if (message.status !== 0)
-            writer.tag(1, WireType.Varint).int32(message.status);
+    internalBinaryWrite(message: Exemption, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* safety_web.ExemptionType type = 1; */
+        if (message.type !== 0)
+            writer.tag(1, WireType.Varint).int32(message.type);
         /* string justification = 2; */
         if (message.justification !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.justification);
@@ -532,287 +523,6 @@ class Treatment$Type extends MessageType<Treatment> {
     }
 }
 /**
- * @generated MessageType for protobuf message safety_web.Treatment
+ * @generated MessageType for protobuf message safety_web.Exemption
  */
-export const Treatment = new Treatment$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class RepoConfig$Type extends MessageType<RepoConfig> {
-    constructor() {
-        super("safety_web.RepoConfig", [
-            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "commit", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<RepoConfig>): RepoConfig {
-        const message = globalThis.Object.create((this.messagePrototype!));
-        message.name = "";
-        message.url = "";
-        message.commit = "";
-        if (value !== undefined)
-            reflectionMergePartial<RepoConfig>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RepoConfig): RepoConfig {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string name */ 1:
-                    message.name = reader.string();
-                    break;
-                case /* string url */ 2:
-                    message.url = reader.string();
-                    break;
-                case /* string commit */ 3:
-                    message.commit = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: RepoConfig, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string name = 1; */
-        if (message.name !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.name);
-        /* string url = 2; */
-        if (message.url !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.url);
-        /* string commit = 3; */
-        if (message.commit !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.commit);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message safety_web.RepoConfig
- */
-export const RepoConfig = new RepoConfig$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class Package$Type extends MessageType<Package> {
-    constructor() {
-        super("safety_web.Package", [
-            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "relative_path", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "version", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "safety_web_summary", kind: "message", T: () => Summary },
-            { no: 5, name: "outcome", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<Package>): Package {
-        const message = globalThis.Object.create((this.messagePrototype!));
-        message.name = "";
-        message.relativePath = "";
-        message.version = "";
-        message.outcome = "";
-        if (value !== undefined)
-            reflectionMergePartial<Package>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Package): Package {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string name */ 1:
-                    message.name = reader.string();
-                    break;
-                case /* string relative_path */ 2:
-                    message.relativePath = reader.string();
-                    break;
-                case /* string version */ 3:
-                    message.version = reader.string();
-                    break;
-                case /* safety_web.Summary safety_web_summary */ 4:
-                    message.safetyWebSummary = Summary.internalBinaryRead(reader, reader.uint32(), options, message.safetyWebSummary);
-                    break;
-                case /* string outcome */ 5:
-                    message.outcome = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: Package, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string name = 1; */
-        if (message.name !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.name);
-        /* string relative_path = 2; */
-        if (message.relativePath !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.relativePath);
-        /* string version = 3; */
-        if (message.version !== "")
-            writer.tag(3, WireType.LengthDelimited).string(message.version);
-        /* safety_web.Summary safety_web_summary = 4; */
-        if (message.safetyWebSummary)
-            Summary.internalBinaryWrite(message.safetyWebSummary, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* string outcome = 5; */
-        if (message.outcome !== "")
-            writer.tag(5, WireType.LengthDelimited).string(message.outcome);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message safety_web.Package
- */
-export const Package = new Package$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class PackageManager$Type extends MessageType<PackageManager> {
-    constructor() {
-        super("safety_web.PackageManager", [
-            { no: 1, name: "kind", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "version", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<PackageManager>): PackageManager {
-        const message = globalThis.Object.create((this.messagePrototype!));
-        message.kind = "";
-        message.version = "";
-        if (value !== undefined)
-            reflectionMergePartial<PackageManager>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PackageManager): PackageManager {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string kind */ 1:
-                    message.kind = reader.string();
-                    break;
-                case /* string version */ 2:
-                    message.version = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: PackageManager, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string kind = 1; */
-        if (message.kind !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.kind);
-        /* string version = 2; */
-        if (message.version !== "")
-            writer.tag(2, WireType.LengthDelimited).string(message.version);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message safety_web.PackageManager
- */
-export const PackageManager = new PackageManager$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class Repository$Type extends MessageType<Repository> {
-    constructor() {
-        super("safety_web.Repository", [
-            { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 3, name: "package_manager_found", kind: "message", T: () => PackageManager },
-            { no: 4, name: "package_manager_used", kind: "message", T: () => PackageManager },
-            { no: 5, name: "packages", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Package },
-            { no: 6, name: "logs", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 7, name: "step_failure", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
-        ]);
-    }
-    create(value?: PartialMessage<Repository>): Repository {
-        const message = globalThis.Object.create((this.messagePrototype!));
-        message.url = "";
-        message.packages = [];
-        message.logs = "";
-        message.stepFailure = "";
-        if (value !== undefined)
-            reflectionMergePartial<Repository>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Repository): Repository {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* string url */ 1:
-                    message.url = reader.string();
-                    break;
-                case /* safety_web.PackageManager package_manager_found */ 3:
-                    message.packageManagerFound = PackageManager.internalBinaryRead(reader, reader.uint32(), options, message.packageManagerFound);
-                    break;
-                case /* safety_web.PackageManager package_manager_used */ 4:
-                    message.packageManagerUsed = PackageManager.internalBinaryRead(reader, reader.uint32(), options, message.packageManagerUsed);
-                    break;
-                case /* repeated safety_web.Package packages */ 5:
-                    message.packages.push(Package.internalBinaryRead(reader, reader.uint32(), options));
-                    break;
-                case /* string logs */ 6:
-                    message.logs = reader.string();
-                    break;
-                case /* string step_failure */ 7:
-                    message.stepFailure = reader.string();
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: Repository, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* string url = 1; */
-        if (message.url !== "")
-            writer.tag(1, WireType.LengthDelimited).string(message.url);
-        /* safety_web.PackageManager package_manager_found = 3; */
-        if (message.packageManagerFound)
-            PackageManager.internalBinaryWrite(message.packageManagerFound, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
-        /* safety_web.PackageManager package_manager_used = 4; */
-        if (message.packageManagerUsed)
-            PackageManager.internalBinaryWrite(message.packageManagerUsed, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
-        /* repeated safety_web.Package packages = 5; */
-        for (let i = 0; i < message.packages.length; i++)
-            Package.internalBinaryWrite(message.packages[i], writer.tag(5, WireType.LengthDelimited).fork(), options).join();
-        /* string logs = 6; */
-        if (message.logs !== "")
-            writer.tag(6, WireType.LengthDelimited).string(message.logs);
-        /* string step_failure = 7; */
-        if (message.stepFailure !== "")
-            writer.tag(7, WireType.LengthDelimited).string(message.stepFailure);
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message safety_web.Repository
- */
-export const Repository = new Repository$Type();
+export const Exemption = new Exemption$Type();

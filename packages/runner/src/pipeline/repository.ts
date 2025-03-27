@@ -18,7 +18,8 @@ import {Reader} from './reader.js';
 import * as semver from 'semver';
 import {$, cd, ProcessOutput} from 'zx';
 import {CommandRunner, hasSucceeded} from './command.js';
-import {Repository, PackageManager, Package} from '@safety-web/types';
+import {Repository} from '@safety-web/types';
+import {PackageManager, Package} from '@safety-web/types/pipeline';
 import {Logger} from './logger.js';
 
 const knownPackageManagerKinds = ['npm', 'yarn', 'pnpm'] as const;

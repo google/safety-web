@@ -19,7 +19,7 @@ import {CommandRunner} from './command.js';
 import {Logger} from './logger.js';
 import {RepositoryImpl} from './repository.js';
 import {readJsonFile} from './reader.js';
-import {Repository, Summary} from '@safety-web/types';
+import {Repository, PackageSummary} from '@safety-web/types';
 import * as fs from 'node:fs/promises';
 import {Worker} from 'node:worker_threads';
 import {WorkerSuccess, WorkerError} from './worker.js';
@@ -109,14 +109,14 @@ async function processRepository(
       resolve(code);
     });
   });
-  let summary: Summary;
+  let summary: PackageSummary;
   let outcome: string;
   repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
     if (message.type === 'success') {
       summary = message.summary;
       outcome = 'SUCCESS';
     } else {
-      summary = Summary.create();
+      summary = PackageSummary.create();
       outcome = 'FAILURE';
     }
   });

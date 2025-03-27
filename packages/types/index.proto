@@ -19,9 +19,18 @@ package safety_web;
 // Safety-web summary-related messages
 
 // Summary is tied to a package, not a repo.
-message Summary {
-  string version = 1;
-  repeated Violation violations = 4;
+message PackageSummary {
+  string summaryVersion = 1;  // Version of the summary format definition
+  string packageName = 2;
+  string packageVersion = 3;
+  string packagePath = 4;  // Relative path of the package in the repository
+  Repository repository = 5;  // Metadata about the repository scanned
+  repeated Violation violations = 6;
+}
+
+message Repository {
+  string url = 1;
+  optional string commitId = 2;
 }
 
 enum ConfidenceLevel {
@@ -33,11 +42,11 @@ enum ConfidenceLevel {
 // These messages are not stable and may still be changed in a breaking way
 // while we figure out what's useful.
 message Violation {
+  string category = 1;  // Free form string, but is more of an enum. e.g. all TT violations should be "trusted-types"
   string rule_id = 2;  // e.g. "ban-element-innerhtml-assignments"
   ConfidenceLevel confidence = 3;
-  string snippet = 4;
   Location location = 5;
-  Treatment treatment = 6;  // TODO find a better name for this field
+  optional Exemption exemption = 6;
 }
 
 message Location {
@@ -46,54 +55,15 @@ message Location {
   int32 column = 3;
   int32 end_line = 4;
   int32 end_column = 5;
-  // A clickable URL that opens the file in e.g. VSCode
-  string filesystem_url = 6;
-  // A clickable URL that opens the file in e.g. GitHub in the browser
-  string web_url = 7;
 }
 
-message Treatment {
-  Status status = 1;
+message Exemption {
+  ExemptionType type = 1;
   string justification = 2;
 }
 
-enum Status {
-  ALLOWLISTED = 0;  // Violation is tracked in a safety-web allowlist
-  ESLINT_SILENCED = 1;  // Violation is silenced using ESLint comments
-  UNMANAGED = 2;  // Violation is not managed. It still shows as an ESLint error
-}
-
-
-// Safety-web config-related messages
-
-// Captures the project setup used during the analysis
-message RepoConfig {
-  string name = 1;
-  string url = 2;
-  string commit = 3;
-}
-
-message Package {
-  string name = 1;
-  string relative_path = 2;
-  string version = 3;
-  Summary safety_web_summary = 4;
-  string outcome = 5;
-}
-
-message PackageManager {
-  string kind = 1;
-  string version = 2;
-}
-
-// An invocation of the pipeline on 1 repository. Captures characteristics found
-// while analyzing and installing the repository.
-message Repository {
-  string url = 1;
-  PackageManager package_manager_found = 3;
-  PackageManager package_manager_used = 4;
-  repeated Package packages = 5;
-  string logs = 6;
-  // When the repository fails to be set up, record the failing step.
-  string step_failure = 7;
+enum ExemptionType {
+  UNKNOWN_TYPE = 0;
+  ALLOWLISTED = 1;  // Violation is tracked in a safety-web allowlist
+  ESLINT_SILENCED = 2;  // Violation is silenced using ESLint comments
 }
