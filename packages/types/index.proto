@@ -30,17 +30,16 @@ message PackageSummary {
 
 message Repository {
   string url = 1;
-  optional string commitId = 2;
+  optional string commit_id = 2;
 }
 
 enum ConfidenceLevel {
-  VIOLATION = 0;
-  MEDIUM_POTENTIAL_VIOLATION = 1;
-  LOW_POTENTIAL_VIOLATION = 2;
+  CONFIDENCE_LEVEL_UNKNOWN = 0;
+  VIOLATION = 1;
+  MEDIUM_POTENTIAL_VIOLATION = 2;
+  LOW_POTENTIAL_VIOLATION = 3;
 }
 
-// These messages are not stable and may still be changed in a breaking way
-// while we figure out what's useful.
 message Violation {
   string category = 1;  // Free form string, but is more of an enum. e.g. all TT violations should be "trusted-types"
   string rule_id = 2;  // e.g. "ban-element-innerhtml-assignments"
@@ -63,7 +62,7 @@ message Exemption {
 }
 
 enum ExemptionType {
-  UNKNOWN_TYPE = 0;
+  EXEMPTION_TYPE_UNKOWN = 0;
   ALLOWLISTED = 1;  // Violation is tracked in a safety-web allowlist
   ESLINT_SILENCED = 2;  // Violation is silenced using ESLint comments
 }

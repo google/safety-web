@@ -67,14 +67,11 @@ export interface Repository {
      */
     url: string;
     /**
-     * @generated from protobuf field: optional string commitId = 2;
+     * @generated from protobuf field: optional string commit_id = 2;
      */
     commitId?: string;
 }
 /**
- * These messages are not stable and may still be changed in a breaking way
- * while we figure out what's useful.
- *
  * @generated from protobuf message safety_web.Violation
  */
 export interface Violation {
@@ -142,26 +139,30 @@ export interface Exemption {
  */
 export enum ConfidenceLevel {
     /**
-     * @generated from protobuf enum value: VIOLATION = 0;
+     * @generated from protobuf enum value: CONFIDENCE_LEVEL_UNKNOWN = 0;
      */
-    VIOLATION = 0,
+    CONFIDENCE_LEVEL_UNKNOWN = 0,
     /**
-     * @generated from protobuf enum value: MEDIUM_POTENTIAL_VIOLATION = 1;
+     * @generated from protobuf enum value: VIOLATION = 1;
      */
-    MEDIUM_POTENTIAL_VIOLATION = 1,
+    VIOLATION = 1,
     /**
-     * @generated from protobuf enum value: LOW_POTENTIAL_VIOLATION = 2;
+     * @generated from protobuf enum value: MEDIUM_POTENTIAL_VIOLATION = 2;
      */
-    LOW_POTENTIAL_VIOLATION = 2
+    MEDIUM_POTENTIAL_VIOLATION = 2,
+    /**
+     * @generated from protobuf enum value: LOW_POTENTIAL_VIOLATION = 3;
+     */
+    LOW_POTENTIAL_VIOLATION = 3
 }
 /**
  * @generated from protobuf enum safety_web.ExemptionType
  */
 export enum ExemptionType {
     /**
-     * @generated from protobuf enum value: UNKNOWN_TYPE = 0;
+     * @generated from protobuf enum value: EXEMPTION_TYPE_UNKOWN = 0;
      */
-    UNKNOWN_TYPE = 0,
+    EXEMPTION_TYPE_UNKOWN = 0,
     /**
      * Violation is tracked in a safety-web allowlist
      *
@@ -266,7 +267,7 @@ class Repository$Type extends MessageType<Repository> {
     constructor() {
         super("safety_web.Repository", [
             { no: 1, name: "url", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "commitId", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "commit_id", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Repository>): Repository {
@@ -284,7 +285,7 @@ class Repository$Type extends MessageType<Repository> {
                 case /* string url */ 1:
                     message.url = reader.string();
                     break;
-                case /* optional string commitId */ 2:
+                case /* optional string commit_id */ 2:
                     message.commitId = reader.string();
                     break;
                 default:
@@ -302,7 +303,7 @@ class Repository$Type extends MessageType<Repository> {
         /* string url = 1; */
         if (message.url !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.url);
-        /* optional string commitId = 2; */
+        /* optional string commit_id = 2; */
         if (message.commitId !== undefined)
             writer.tag(2, WireType.LengthDelimited).string(message.commitId);
         let u = options.writeUnknownFields;
