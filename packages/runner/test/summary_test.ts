@@ -19,18 +19,18 @@ import {createSummaries} from '../src/summary.js';
 
 describe('createSummaries', () => {
   const repository: Repository = {
-    url: 'github.com/foo/bar',
+    url: 'https://github.com/foo/bar',
     commitId: 'abcdef',
     packages: new Set([
       {
         name: 'foo',
-        relativePath: './packages/foo',
+        relativePath: 'packages/foo',
         version: '0.0.1',
       },
       {
         name: 'bar',
-        relativePath: './packages/bar',
-        version: '0.0.1',
+        relativePath: 'packages/bar',
+        version: '0.0.2',
       },
     ]),
   };
@@ -69,5 +69,17 @@ describe('createSummaries', () => {
     expect(barSummaryFilter).to.have.lengthOf(1);
     const barSummary = barSummaryFilter[0];
     expect(barSummary.violations).to.have.lengthOf(0);
+  });
+
+  it('creates the expected summary structure for a package that has violations', () => {
+    const summaries = createSummaries(violations, repository);
+    const fooSummary = [...summaries].filter(
+      (s) => s.packageName === 'foo',
+    )[0];
+    expect(fooSummary.packageName).to.equal('foo');
+    expect(fooSummary.packagePath).to.equal('packages/foo');
+    expect(fooSummary.packageVersion).to.equal('0.0.1');
+    expect(fooSummary.repository.url).to.equal('https://github.com/foo/bar');
+    expect(fooSummary.repository.commitId).to.equal('abcdef');
   });
 });

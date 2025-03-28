@@ -24,10 +24,14 @@ export function createSummaries(
 
   for (const pack of repository.packages) {
     const summary: PackageSummary = {
+      summaryVersion: 'TODO-0.0.1',
       packageName: pack.name,
       packageVersion: pack.version,
       packagePath: pack.relativePath,
-      summaryVersion: 'TODO-0.0.1',
+      repository: {
+        url: repository.url,
+        commitId: repository.commitId,
+      },
       violations: undefined,
     };
     addViolations(summary, allViolations);
