@@ -1,1 +1,3 @@
 packages/eslint-plugin/src/common
+packages/types/*.ts
+packages/types/*.js

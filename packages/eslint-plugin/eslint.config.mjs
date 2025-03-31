@@ -34,5 +34,5 @@ export default tseslint.config(
       'src/common/', // tsetse folder is linted internally.
     ],
   },
-  eslintPluginPrettierRecommended
+  eslintPluginPrettierRecommended,
 );

@@ -29,5 +29,5 @@ export default tseslint.config(
   {
     ignores: ['**/*.js', '**/*.mjs', 'bin/', 'node_modules/'],
   },
-  eslintPluginPrettierRecommended
+  eslintPluginPrettierRecommended,
 );

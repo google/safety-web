@@ -19,11 +19,12 @@ Using a locally built version:
 
 From the root of the repository:
 
-```bash 
+```bash
 yarn workspace @safety-web/runner exec runner run ...
 ```
+
 From this package's folder:
 
-```bash 
-yarn exec runner run ... 
+```bash
+yarn exec runner run ...
 ```

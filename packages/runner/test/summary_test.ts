@@ -73,9 +73,7 @@ describe('createSummaries', () => {
 
   it('creates the expected summary structure for a package that has violations', () => {
     const summaries = createSummaries(violations, repository);
-    const fooSummary = [...summaries].filter(
-      (s) => s.packageName === 'foo',
-    )[0];
+    const fooSummary = [...summaries].filter((s) => s.packageName === 'foo')[0];
     expect(fooSummary.packageName).to.equal('foo');
     expect(fooSummary.packagePath).to.equal('packages/foo');
     expect(fooSummary.packageVersion).to.equal('0.0.1');

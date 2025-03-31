@@ -41,5 +41,5 @@ export default tseslint.config(
   {
     ignores: ['**/*.js', '**/*.mjs', 'lib/', 'node_modules/', '.mocharc.cjs'],
   },
-  eslintPluginPrettierRecommended
+  eslintPluginPrettierRecommended,
 );

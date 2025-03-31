@@ -8,8 +8,7 @@
 works on TypeScript and JavaScript projects and surfaces security issues like
 Trusted Types violations statically. This repository contains several packages.
 Refer to the package specific READMEs for more information. The eslint-plugin
-sources live in
-[`packages/eslint-plugin/`](./packages/eslint-plugin).
+sources live in [`packages/eslint-plugin/`](./packages/eslint-plugin).
 
 ## Development
 
@@ -21,7 +20,8 @@ This project uses yarn "modern" Berry (Yarn 4) with workspaces, and Node
 yarn
 ```
 
-Scripts are defined using [Wireit](https://github.com/google/wireit). It makes it very it to build all the packages and watch for changes. Just run :
+Scripts are defined using [Wireit](https://github.com/google/wireit). It makes
+it very it to build all the packages and watch for changes. Just run :
 
 ```bash
 # Build all workspaces. Rebuild the necessary steps if files are updated.
@@ -51,8 +51,7 @@ yarn run test
 The core logic behind this plugin is re-used from
 [tsec](https://github.com/google/tsec). The
 [`common`](https://github.com/google/tsec/tree/main/common) directory of tsec is
-mirrored in `packages/eslint-plugin/src/common`, as vendored
-dependency.
+mirrored in `packages/eslint-plugin/src/common`, as vendored dependency.
 
 Run tsetse_update.sh to pull the latest version of tsetse in:
 
