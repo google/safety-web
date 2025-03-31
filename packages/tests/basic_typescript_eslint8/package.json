@@ -4,12 +4,29 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "clean": "tsc --build --clean",
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "build": "wireit",
     "lint": "echo skip lint script for integration test case",
-    "test": "eslint --version | grep 'v8' && eslint src/ --format json | yarn run expect-violations test ./expected_violations.json",
+    "test": "wireit",
     "update": "eslint src/ --format json | yarn run expect-violations update ./expected_violations.json"
+  },
+  "wireit": {
+    "build": {
+      "command": "wireit",
+      "clean": "if-file-deleted",
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "lib/**"
+      ]
+    },
+    "test": {
+      "command": "eslint --version | grep 'v8' && eslint src/ --format json | yarn run expect-violations test ./expected_violations.json",
+      "dependencies": [
+        "../../test-helpers/expect-violations:build"
+      ]
+    }
   },
   "devDependencies": {
     "@safety-web/eslint-plugin": "workspace:^",

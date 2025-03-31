@@ -21,36 +21,29 @@ This project uses yarn "modern" Berry (Yarn 4) with workspaces, and Node
 yarn
 ```
 
-The commands `clean`, `build`, `lint`, `test` are defined in all workspaces.
-This makes it possible to run them in all workspaces:
+Scripts are defined using [Wireit](https://github.com/google/wireit). It makes it very it to build all the packages and watch for changes. Just run :
 
 ```bash
-# Build all workspaces
-yarn workspaces foreach --all run build
-```
-
-```bash
-# Build-watch all TypeScript workspaces in parallel
-yarn workspaces foreach -Ap run build:watch
+# Build all workspaces. Rebuild the necessary steps if files are updated.
+yarn run build --watch
 ```
 
 To format the repository:
 
 ```bash
 yarn format
-# prettier . --write
 ```
 
 ## safety-web unit testing
 
 ```bash
-yarn workspace @safety-web/eslint-plugin run test
+yarn run unit_tests
 ```
 
 ## unit tests + integrations tests
 
 ```bash
-yarn run unit_tests
+yarn run test
 ```
 
 ## Updating tsetse

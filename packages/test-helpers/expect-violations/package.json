@@ -12,11 +12,24 @@
   },
   "bin": "./bin/index.js",
   "scripts": {
-    "clean": "tsc --build --clean",
-    "build": "tsc && chmod +x bin/index.js",
+    "build": "wireit",
     "build:watch": "tsc --watch",
     "lint": "eslint .",
     "test": "echo TODO"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -b ./tsconfig.json && chmod +x bin/index.js",
+      "clean": "if-file-deleted",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "bin/**"
+      ]
+    }
   },
   "devDependencies": {
     "@types/yargs": "^17.0.32",

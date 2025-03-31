@@ -12,12 +12,24 @@
     "node": "^20.11.0 || >21.2.0"
   },
   "scripts": {
-    "clean": "tsc --build --clean",
-    "build": "tsc -b ./tsconfig.json",
-    "build:watch": "tsc -b ./tsconfig.json --watch",
+    "build": "wireit",
     "lint": "eslint .",
     "test": "mocha",
     "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -b ./tsconfig.json",
+      "clean": "if-file-deleted",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "lib/**"
+      ]
+    }
   },
   "dependencies": {
     "@typescript-eslint/parser": "^8.0.0",

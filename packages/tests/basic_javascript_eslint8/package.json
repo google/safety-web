@@ -3,11 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "clean": ":",
-    "build": ":",
     "lint": "echo skip lint script for integration test case",
-    "test": "eslint --version | grep 'v8' && eslint index.js --format json | yarn run expect-violations test ./expected_violations.json",
+    "test": "wireit",
     "update": "eslint index.js --format json | yarn run expect-violations update ./expected_violations.json"
+  },
+  "wireit": {
+    "test": {
+      "command": "eslint --version | grep 'v8' && eslint index.js --format json | yarn run expect-violations test ./expected_violations.json",
+      "dependencies": [
+        "../../test-helpers/expect-violations:build"
+      ]
+    }
   },
   "devDependencies": {
     "@safety-web/eslint-plugin": "workspace:^",

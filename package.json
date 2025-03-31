@@ -9,8 +9,10 @@
     "node": "^20.11.0 || >21.2.0"
   },
   "scripts": {
-    "unit_tests": "yarn workspace @safety-web/eslint-plugin test",
-    "integration_tests": "yarn workspace basic-typescript-eslint9 test && yarn workspace basic-typescript-eslint8 test && yarn workspace basic-javascript-eslint9 test && yarn workspace basic-javascript-eslint8 test",
+    "build": "wireit",
+    "unit_tests": "wireit",
+    "integration_tests": "wireit",
+    "test": "wireit",
     "update_integration_tests": "yarn workspace basic-typescript-eslint9 update && yarn workspace basic-typescript-eslint8 update && yarn workspace basic-javascript-eslint9 update && yarn workspace basic-javascript-eslint8 update",
     "test:all": "yarn workspaces foreach --all run test",
     "format": "prettier . --write",
@@ -18,11 +20,45 @@
     "prepublish": "echo \"clean and build...\" && yarn workspaces foreach --all run clean && yarn workspaces foreach --all run build && yarn workspaces foreach --all exec \"jq .version package.json\" && yarn exec bash -c \"read -p 'About to publish these package versions...\n Press enter to continue, or CTRL+C to abort...'\"",
     "publish": "yarn run prepublish && yarn workspace @safety-web/eslint-plugin npm publish --access public && yarn workspace @safety-web/eslint-formatter npm publish --access public && yarn workspace @safety-web/types npm publish --access public && yarn workspace @safety-web/runner npm publish --access public"
   },
+  "wireit": {
+    "build": {
+      "dependencies": [
+        "./packages/eslint-formatter:build",
+        "./packages/eslint-plugin:build",
+        "./packages/runner:build",
+        "./packages/types:build"
+      ]
+    },
+    "unit_tests": {
+      "dependencies": [
+        "./packages/eslint-formatter:test",
+        "./packages/eslint-plugin:test",
+        "./packages/runner:test",
+        "./packages/types:test"
+      ]
+    },
+    "integration_tests": {
+      "dependencies": [
+        "build",
+        "./packages/tests/basic_javascript_eslint8:test",
+        "./packages/tests/basic_javascript_eslint9:test",
+        "./packages/tests/basic_typescript_eslint8:test",
+        "./packages/tests/basic_typescript_eslint9:test"
+      ]
+    },
+    "test": {
+      "dependencies": [
+        "unit_tests",
+        "integration_tests"
+      ]
+    }
+  },
   "packageManager": "yarn@4.4.0",
   "devDependencies": {
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "wireit": "^0.14.11"
   }
 }

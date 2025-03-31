@@ -4,11 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "clean": ":",
-    "build": ":",
     "lint": "echo skip lint script for integration test case",
-    "test": "eslint --format json | yarn run expect-violations test ./expected_violations.json",
+    "test": "wireit",
     "update": "eslint --format json | yarn run expect-violations update ./expected_violations.json"
+  },
+  "wireit": {
+    "test": {
+      "command": "eslint --version | grep 'v9' && eslint --format json | yarn run expect-violations test ./expected_violations.json",
+      "dependencies": [
+        "../../test-helpers/expect-violations:build"
+      ]
+    }
   },
   "devDependencies": {
     "@safety-web/eslint-plugin": "workspace:^",

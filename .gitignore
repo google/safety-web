@@ -13,3 +13,4 @@ packages/test-helpers/expect-violations/bin/*
 packages/tests/*/lib/*
 packages/types/*.js
 packages/types/*.js.map
+.wireit

@@ -24,12 +24,29 @@
     "node": "^20.11.0 || >21.2.0"
   },
   "scripts": {
-    "clean": "tsc --build --clean",
-    "build": "tsc && chmod +x bin/src/index.js",
+    "build": "wireit",
     "build:watch": "tsc --watch",
     "lint": "eslint .",
     "test": "mocha test/**/*.ts",
     "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -b ./tsconfig.json",
+      "clean": "if-file-deleted",
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "bin/**"
+      ],
+      "dependencies": [
+        "../eslint-plugin:build",
+        "../types:build"
+      ]
+    }
   },
   "devDependencies": {
     "@types/chai": "^4.3.16",
