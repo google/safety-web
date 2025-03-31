@@ -25,14 +25,14 @@ describe('exploreRepository', () => {
         }),
     };
     const repo = new RepositoryImpl(
+      'git/foo/bar',
       'https://foo.com/bar',
       reader,
       new Logger('test'),
     );
-    repo.rootPath = '/path/to/repo/';
     await repo.explore();
-    expect(repo.packageManagerFound.kind).to.equal('yarn');
-    expect(repo.packageManagerFound.version).to.equal('3.2.3');
+    expect(repo.packageManagerFound?.kind).to.equal('yarn');
+    expect(repo.packageManagerFound?.version).to.equal('3.2.3');
   });
 
   it('uses the engines field to determine the package manager', async () => {
@@ -46,14 +46,14 @@ describe('exploreRepository', () => {
         }),
     };
     const repo = new RepositoryImpl(
+      'git/foo/bar',
       'https://foo.com/bar',
       reader,
       new Logger('test'),
     );
-    repo.rootPath = '/path/to/repo/';
     await repo.explore();
-    expect(repo.packageManagerFound.kind).to.equal('npm');
-    expect(repo.packageManagerFound.version).to.equal('~1.0.20');
+    expect(repo.packageManagerFound?.kind).to.equal('npm');
+    expect(repo.packageManagerFound?.version).to.equal('~1.0.20');
   });
 
   it('return undefined fields when an unknown package manager is required', async () => {
@@ -65,15 +65,15 @@ describe('exploreRepository', () => {
         }),
     };
     const repo = new RepositoryImpl(
+      'git/foo/bar',
       'https://foo.com/bar',
       reader,
       new Logger('test'),
     );
-    repo.rootPath = '/path/to/repo/';
     await repo.explore();
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    expect(repo.packageManagerFound.kind).to.be.undefined;
+    expect(repo.packageManagerFound?.kind).to.equal('UNKNOWN_KIND');
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    expect(repo.packageManagerFound.version).to.be.undefined;
+    expect(repo.packageManagerFound?.version).to.equal('UNKNOWN_VERSION');
   });
 });

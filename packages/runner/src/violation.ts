@@ -17,7 +17,7 @@ import {ESLint, Linter} from 'eslint';
 import * as path from 'node:path';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
-
+const UNDEFINED_NUMBER = -1;
 export function createViolations(results: ESLint.LintResult[]): Violation[] {
   const allViolations: Array<Violation> = [];
   for (const fileResult of results) {
@@ -39,15 +39,15 @@ export function createViolation(
   filePath: string,
 ): Violation {
   const violation: Violation = {
-    ruleId: lintMessage.ruleId,
+    ruleId: lintMessage.ruleId || 'UNKNOWN_RULE_ID',
     confidence: ConfidenceLevel.VIOLATION, // TODO populate from the LintMessage
     category: 'TODO',
     location: {
       filePath: path.normalize(filePath),
       line: lintMessage.line,
       column: lintMessage.column,
-      endLine: lintMessage.endLine,
-      endColumn: lintMessage.endColumn,
+      endLine: lintMessage.endLine || UNDEFINED_NUMBER,
+      endColumn: lintMessage.endColumn || UNDEFINED_NUMBER,
     },
   };
   if (isSuppressedLintMessage(lintMessage)) {

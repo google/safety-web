@@ -44,18 +44,18 @@ $.env['COREPACK_ENABLE_DOWNLOAD_PROMPT'] = '0';
  * A repository that can be cloned and processed by safety-web. Can be
  * serialized to a `Repository` proto.
  */
-export class RepositoryImpl implements Repository {
-  packageManagerFound: PackageManager;
-  packageManagerUsed: PackageManager;
+export class RepositoryImpl implements Partial<Repository> {
+  packageManagerFound?: PackageManager = undefined;
+  packageManagerUsed?: PackageManager = undefined;
   summaries: PackageSummary[] = [];
-  rootPath: string = undefined;
-  stepFailure: string = undefined;
+  stepFailure?: string = undefined;
   private commandRunner: CommandRunner;
   get logs() {
     return this.logger.get().join('\n');
   }
 
   constructor(
+    readonly rootPath: string,
     readonly url: string,
     private readonly reader: Reader,
     private readonly logger: Logger,
@@ -70,23 +70,32 @@ export class RepositoryImpl implements Repository {
    *     new repository directory
    * @returns an Error if the clone operation failed.
    */
-  async clone(baseDir: string): Promise<Error | undefined> {
-    this.logger.log(`Cloning repository...`);
-    this.rootPath = nodePath.resolve(
+  static async clone(
+    baseDir: string,
+    url: string,
+    reader: Reader,
+    logger: Logger,
+  ): Promise<RepositoryImpl | Error> {
+    logger.log(`Cloning repository...`);
+    const rootPath = nodePath.resolve(
       baseDir,
-      this.generateDirectoryName(this.url),
+      RepositoryImpl.generateDirectoryName(url),
     );
-    const output = await this.commandRunner
-      .run`GIT_TERMINAL_PROMPT=0 git clone ${this.url} ${this.rootPath}`;
+
+    const repository = new RepositoryImpl(rootPath, url, reader, logger);
+
+    const output = await repository.commandRunner
+      .run`GIT_TERMINAL_PROMPT=0 git clone ${url} ${rootPath}`;
     if (!hasSucceeded(output)) {
-      const errorMessage = `Failed to clone ${this.url} in ${baseDir}.`;
-      this.stepFailure = 'CLONE';
-      this.logger.log(errorMessage);
+      const errorMessage = `Failed to clone ${url} in ${baseDir}.`;
+      repository.stepFailure = 'CLONE';
+      repository.logger.log(errorMessage);
       return new Error(errorMessage);
     }
+    return repository;
   }
 
-  private generateDirectoryName(url: string): string {
+  private static generateDirectoryName(url: string): string {
     return `${Math.floor(Math.random() * 100000)}-${encodeURIComponent(url)}`;
   }
 
@@ -97,6 +106,11 @@ export class RepositoryImpl implements Repository {
    */
   async explore(): Promise<Error | undefined> {
     this.logger.log(`Exploring repository...`);
+    if (!this.rootPath) {
+      throw new Error(
+        `Error while exploring repository: rootPath is undefined.`,
+      );
+    }
     const rootPackageJson = await this.reader.readJsonFile(
       nodePath.resolve(this.rootPath, 'package.json'),
     );
@@ -120,12 +134,16 @@ export class RepositoryImpl implements Repository {
       );
       const [packageManagerKind, version] = packageJson.packageManager.split(
         '@',
-      ) as [KnownPackageManagerKinds | undefined, string];
-      if (!knownPackageManagerKinds.includes(packageManagerKind)) {
+      ) as [string, string];
+      if (
+        !(knownPackageManagerKinds as unknown as string[]).includes(
+          packageManagerKind,
+        )
+      ) {
         this.logger.log(
           `Found unknown package manager "${packageManagerKind}".`,
         );
-        return {kind: undefined, version: undefined};
+        return {kind: 'UNKNOWN_KIND', version: 'UNKNOWN_VERSION'};
       } else {
         return {kind: packageManagerKind, version};
       }
@@ -142,7 +160,7 @@ export class RepositoryImpl implements Repository {
       }
     }
 
-    return {kind: undefined, version: undefined};
+    return {kind: 'UNKNOWN_KIND', version: 'UNKNOWN_VERSION'};
   }
 
   /**
@@ -153,13 +171,14 @@ export class RepositoryImpl implements Repository {
    */
   async install(): Promise<Error | undefined> {
     this.logger.log(`Installing...`);
-    const version = this.tryResolvePackageManagerVersion(
-      this.packageManagerFound,
-    );
+    const version =
+      this.packageManagerFound !== undefined
+        ? this.tryResolvePackageManagerVersion(this.packageManagerFound)
+        : 'UNKOWN_VERSION';
     cd(this.rootPath);
     $.verbose = true;
     let installOutput: ProcessOutput;
-    switch (this.packageManagerFound.kind) {
+    switch (this.packageManagerFound?.kind) {
       case 'yarn':
       case 'pnpm':
       case 'npm':
@@ -192,6 +211,10 @@ export class RepositoryImpl implements Repository {
   }
 
   async clean() {
+    if (this.rootPath === undefined) {
+      this.logger.log('Could not clean the directory. rootPath is undefined.');
+      return;
+    }
     await this.commandRunner.run`rm -rf ${this.rootPath}`;
   }
 
@@ -212,7 +235,7 @@ export class RepositoryImpl implements Repository {
       this.logger.log(
         `Using explicit ${manager.kind} version "${manager.version}"`,
       );
-      return semver.clean(manager.version);
+      return semver.clean(manager.version) || 'INVALID_VERSION';
     }
 
     // Otherwise we assume it's a version range that we need to resolve
@@ -225,6 +248,6 @@ export class RepositoryImpl implements Repository {
     } else {
       this.logger.log(`Resolved ${manager.kind} version to "${maxVersion}"`);
     }
-    return maxVersion || undefined;
+    return maxVersion || 'COULD_NOT_RESOLVE_VERSION';
   }
 }

@@ -43,10 +43,10 @@ function generateESLintConfigOverride(
   };
 
   if (explicitTSConfig) {
-    overrideConfig.languageOptions.parserOptions.project = [explicitTSConfig];
+    overrideConfig.languageOptions!.parserOptions!.project = [explicitTSConfig];
   } else {
     // TODO: detect and if necessary define a default project for files in scope for ESLint but not in a existing tsconfig.
-    overrideConfig.languageOptions.parserOptions.projectService = {};
+    overrideConfig.languageOptions!.parserOptions!.projectService = {};
   }
   return overrideConfig;
 }
@@ -60,7 +60,7 @@ function generateESLintConfigOverride(
  */
 export function generateESLintOptions(
   rootDir: string,
-  explicitTSConfig: string,
+  explicitTSConfig?: string,
 ): ESLint.Options {
   return {
     cwd: rootDir,

@@ -25,7 +25,7 @@ import {createViolations} from './violation.js';
 
 export const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
 
-async function resolvePath(path: string): Promise<string> | undefined {
+async function resolvePath(path: string): Promise<string | undefined> {
   const resolvedPath = nodePath.resolve(path);
   try {
     await fs.access(resolvedPath);
@@ -51,7 +51,7 @@ export async function run(
     throw new Error('Could not resolve the root directory. Aborting...');
   }
 
-  let tsConfigPath: string = undefined;
+  let tsConfigPath: string | undefined = undefined;
   if (!useDefaultTSConfig) {
     tsConfigPath = nodePath.resolve(
       resolvedRootDir,

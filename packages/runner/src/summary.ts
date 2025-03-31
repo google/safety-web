@@ -32,7 +32,7 @@ export function createSummaries(
         url: repository.url,
         commitId: repository.commitId,
       },
-      violations: undefined,
+      violations: [],
     };
     addViolations(summary, allViolations);
     summaries.add(summary);
@@ -43,6 +43,6 @@ export function createSummaries(
 function addViolations(summary: PackageSummary, violations: Violation[]) {
   const packagePath = path.normalize(summary.packagePath);
   summary.violations = violations.filter((v) =>
-    path.normalize(v.location.filePath).startsWith(packagePath),
+    path.normalize(v.location!.filePath).startsWith(packagePath),
   );
 }

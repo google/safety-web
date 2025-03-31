@@ -18,7 +18,7 @@ import {run} from '../runner.js';
 import {PackageSummary} from '@safety-web/types';
 
 function postToParent(workerMessage: WorkerSuccess | WorkerError) {
-  parentPort.postMessage(workerMessage);
+  parentPort!.postMessage(workerMessage);
 }
 
 export interface WorkerSuccess {

@@ -14,7 +14,7 @@
 
 import {expect} from 'chai';
 import {generateESLintOptions} from '../src/eslint_config.js';
-import {ESLint} from 'eslint';
+import {ESLint, Linter} from 'eslint';
 
 describe('eslint_config', () => {
   describe('generateESLintOptions', () => {
@@ -23,16 +23,13 @@ describe('eslint_config', () => {
       const eslint = new ESLint(options);
 
       it('uses the ts service', async () => {
-        // calculateConfigForFile is untyped
         const config = (await eslint.calculateConfigForFile(
           'some_file.js',
-        )) as unknown;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(config['languageOptions']['parser']['meta']['name']).to.equal(
+        )) as Partial<Linter.Config>;
+        expect(config.languageOptions?.parser?.meta?.name).to.equal(
           'typescript-eslint/parser',
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(config['languageOptions']['parserOptions']).to.have.property(
+        expect(config?.languageOptions?.parserOptions).to.have.property(
           'projectService',
         );
       });
@@ -40,9 +37,9 @@ describe('eslint_config', () => {
       it('registers safety-web and the TrustedTypes rule on JavaScript files', async () => {
         const config = (await eslint.calculateConfigForFile(
           'some_file.js',
-        )) as unknown;
-        expect(config['plugins']).to.have.property('safety-web');
-        expect(config['rules']).to.have.property(
+        )) as Partial<Linter.Config>;
+        expect(config.plugins).to.have.property('safety-web');
+        expect(config.rules).to.have.property(
           'safety-web/trusted-types-checks',
         );
       });
@@ -50,9 +47,9 @@ describe('eslint_config', () => {
       it('registers safety-web and the TrustedTypes rule on TypeScript files', async () => {
         const config = (await eslint.calculateConfigForFile(
           'some_file.ts',
-        )) as unknown;
-        expect(config['plugins']).to.have.property('safety-web');
-        expect(config['rules']).to.have.property(
+        )) as Partial<Linter.Config>;
+        expect(config.plugins).to.have.property('safety-web');
+        expect(config.rules).to.have.property(
           'safety-web/trusted-types-checks',
         );
       });
@@ -65,17 +62,12 @@ describe('eslint_config', () => {
       it('uses the actual tsconfig for a project', async () => {
         const config = (await eslint.calculateConfigForFile(
           'some_file.js',
-        )) as unknown;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(config['languageOptions']['parser']['meta']['name']).to.equal(
+        )) as Partial<Linter.Config>;
+        expect(config.languageOptions?.parser?.meta?.name).to.equal(
           'typescript-eslint/parser',
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(config['languageOptions']['parserOptions']).to.have.property(
-          'project',
-        );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(config['languageOptions']['parserOptions']['project'])
+        expect(config.languageOptions?.parserOptions).have.property('project');
+        expect(config.languageOptions?.parserOptions?.project)
           .to.be.an('array')
           .that.include('my.tsconfig.json');
       });
@@ -83,9 +75,9 @@ describe('eslint_config', () => {
       it('registers safety-web and the TrustedTypes rule on JavaScript files', async () => {
         const config = (await eslint.calculateConfigForFile(
           'some_file.js',
-        )) as unknown;
-        expect(config['plugins']).to.have.property('safety-web');
-        expect(config['rules']).to.have.property(
+        )) as Partial<Linter.Config>;
+        expect(config.plugins).to.have.property('safety-web');
+        expect(config.rules).to.have.property(
           'safety-web/trusted-types-checks',
         );
       });
@@ -93,9 +85,9 @@ describe('eslint_config', () => {
       it('registers safety-web and the TrustedTypes rule on TypeScript files', async () => {
         const config = (await eslint.calculateConfigForFile(
           'some_file.ts',
-        )) as unknown;
-        expect(config['plugins']).to.have.property('safety-web');
-        expect(config['rules']).to.have.property(
+        )) as Partial<Linter.Config>;
+        expect(config.plugins).to.have.property('safety-web');
+        expect(config.rules).to.have.property(
           'safety-web/trusted-types-checks',
         );
       });

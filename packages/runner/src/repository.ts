@@ -46,9 +46,8 @@ export interface Repository {
 export async function crawl(repoRootDir: string): Promise<Set<Package>> {
   const directories: string[] = [repoRootDir];
   const packages = new Set<Package>();
-
-  while (directories.length > 0) {
-    const dir = directories.pop();
+  let dir: string | undefined = undefined;
+  while ((dir = directories.pop()) !== undefined) {
     try {
       for await (const entry of await mockableFs.promises.opendir(dir)) {
         if (entry.isDirectory()) {
@@ -60,7 +59,7 @@ export async function crawl(repoRootDir: string): Promise<Set<Package>> {
             const packageJson = await parsePackageJson(
               nodePath.resolve(entry.parentPath, 'package.json'),
             );
-            if (packageJson !== undefined) {
+            if (packageJson !== undefined && packageJson !== null) {
               if (!packageJson.private) {
                 packages.add({
                   name: packageJson.name ?? '__NAME_NOT_FOUND__',
@@ -84,7 +83,9 @@ export async function crawl(repoRootDir: string): Promise<Set<Package>> {
   return packages;
 }
 
-async function parsePackageJson(filePath: string): Promise<PackageJson | null> {
+async function parsePackageJson(
+  filePath: string,
+): Promise<PackageJson | null | undefined> {
   try {
     const fileContent = await mockableFs.promises.readFile(filePath, 'utf-8');
     const jsonData = JSON.parse(fileContent) as PackageJson;

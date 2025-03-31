@@ -77,7 +77,7 @@ describe('createSummaries', () => {
     expect(fooSummary.packageName).to.equal('foo');
     expect(fooSummary.packagePath).to.equal('packages/foo');
     expect(fooSummary.packageVersion).to.equal('0.0.1');
-    expect(fooSummary.repository.url).to.equal('https://github.com/foo/bar');
-    expect(fooSummary.repository.commitId).to.equal('abcdef');
+    expect(fooSummary.repository?.url).to.equal('https://github.com/foo/bar');
+    expect(fooSummary.repository?.commitId).to.equal('abcdef');
   });
 });

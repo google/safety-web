@@ -60,21 +60,22 @@ async function parseCli() {
 async function processRepository(
   url: string,
   baseCloneDir: string,
-): Promise<RepositoryImpl> {
-  const repository = new RepositoryImpl(
+): Promise<RepositoryImpl | undefined> {
+  // Clone the repository sources
+  const repositoryOrError = await RepositoryImpl.clone(
+    baseCloneDir,
     url,
     {
       readJsonFile,
     },
     new Logger(`pipeline:repository:${url}`),
   );
-  // Clone the repository sources
-  const cloneError = await repository.clone(baseCloneDir);
-  if (cloneError !== undefined) {
-    logger.log(cloneError.message);
+  if (repositoryOrError instanceof Error) {
+    logger.log(repositoryOrError.message);
     logger.log(`Error while cloning ${url}. Stopping processing here ...`);
-    return repository;
+    return undefined;
   }
+  const repository = repositoryOrError;
 
   // Populate the repository structure. Look for the preferred package
   // manager, sub packages, etc
@@ -96,30 +97,21 @@ async function processRepository(
     return repository;
   }
 
-  const repoWorker = new Worker(
-    nodePath.resolve(import.meta.dirname, 'worker.js'),
-    {workerData: {rootDir: repository.rootPath}},
+  const summaries = await new Promise<Set<PackageSummary>>(
+    (resolveSummaries, reject) => {
+      const repoWorker = new Worker(
+        nodePath.resolve(import.meta.dirname, 'worker.js'),
+        {workerData: {rootDir: repository.rootPath}},
+      );
+      repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
+        if (message.type === 'success') {
+          resolveSummaries(message.summaries);
+        } else {
+          reject(new Error());
+        }
+      });
+    },
   );
-  const workerPromise = new Promise((resolve) => {
-    repoWorker.on('exit', (code) => {
-      resolve(code);
-    });
-    repoWorker.on('error', (code) => {
-      resolve(code);
-    });
-  });
-  let summaries: Set<PackageSummary>;
-  let outcome: string;
-  repoWorker.on('message', (message: WorkerSuccess | WorkerError) => {
-    if (message.type === 'success') {
-      summaries = message.summaries;
-      outcome = 'SUCCESS';
-    } else {
-      summaries = new Set();
-      outcome = 'FAILURE';
-    }
-  });
-  await workerPromise;
 
   repository.summaries = [...summaries];
   return repository;
@@ -136,6 +128,10 @@ async function main() {
   await commandRunner.run`mkdir -p ${baseCloneDir} ${outputDir}`;
   for (const url of parsedCommand.repositories as string[]) {
     const repository = await processRepository(url, baseCloneDir);
+    if (repository === undefined) {
+      logger.log(`Error while processing repository at ${url}. Skipping...`);
+      continue;
+    }
     const repositoryProto = Repository.toBinary(Repository.create(repository));
     const outputFile = nodePath.resolve(
       outputDir,
