@@ -59,15 +59,15 @@ function createViolation(
   path: string,
 ): Violation {
   const violation: Violation = {
-    ruleId: lintMessage.ruleId,
+    ruleId: lintMessage.ruleId || 'UNKNOWN_RULE_ID',
     confidence: ConfidenceLevel.VIOLATION, // TODO populate from the LintMessage
     category: 'TODO',
     location: {
       filePath: path,
       line: lintMessage.line,
       column: lintMessage.column,
-      endLine: lintMessage.endLine,
-      endColumn: lintMessage.endColumn,
+      endLine: lintMessage.endLine || -1,
+      endColumn: lintMessage.endColumn || -1,
     },
   };
   if (isSuppressedLintMessage(lintMessage)) {

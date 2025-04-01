@@ -39,7 +39,7 @@ describe('@safety-web/eslint-formatter', () => {
             '[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.',
           line: 3,
           column: 1,
-          nodeType: null,
+          nodeType: undefined,
           messageId: 'ban_element_innerhtml_assignments',
           endLine: 3,
           endColumn: 22,
@@ -51,7 +51,7 @@ describe('@safety-web/eslint-formatter', () => {
             '[ban-element-outerhtml-assignments] Assigning directly to Element#outerHTML can result in XSS vulnerabilities.',
           line: 4,
           column: 1,
-          nodeType: null,
+          nodeType: undefined,
           messageId: 'ban_element_outerhtml_assignments',
           endLine: 4,
           endColumn: 25,
@@ -77,7 +77,7 @@ describe('@safety-web/eslint-formatter', () => {
             '[ban-element-innerhtml-assignments] Assigning directly to Element#innerHTML can result in XSS vulnerabilities.',
           line: 3,
           column: 1,
-          nodeType: null,
+          nodeType: undefined,
           messageId: 'ban_element_innerhtml_assignments',
           endLine: 3,
           endColumn: 22,
@@ -91,7 +91,7 @@ describe('@safety-web/eslint-formatter', () => {
             '[ban-element-outerhtml-assignments] Assigning directly to Element#outerHTML can result in XSS vulnerabilities.',
           line: 5,
           column: 1,
-          nodeType: null,
+          nodeType: undefined,
           messageId: 'ban_element_outerhtml_assignments',
           endLine: 5,
           endColumn: 25,
@@ -119,10 +119,10 @@ describe('@safety-web/eslint-formatter', () => {
           ruleId: null,
           severity: 2,
           message: 'Parsing error: X was not found by the project service.',
-          line: undefined,
-          column: undefined,
+          line: -1,
+          column: -1,
           fatal: true,
-          nodeType: null,
+          nodeType: undefined,
         },
       ],
       suppressedMessages: [],
@@ -150,10 +150,10 @@ describe('@safety-web/eslint-formatter', () => {
       (violation) => violation.exemption !== undefined,
     );
     expect(eslintSilencedViolations).has.length(1);
-    expect(eslintSilencedViolations[0].location.filePath).equals(
+    expect(eslintSilencedViolations[0].location?.filePath).equals(
       '/path/to/file_with_safety_web_errors_silenced.ts',
     );
-    expect(eslintSilencedViolations[0].exemption.justification).equals(
+    expect(eslintSilencedViolations[0].exemption?.justification).equals(
       'This is a legacy violation.',
     );
   });
