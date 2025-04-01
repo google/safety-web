@@ -115,7 +115,7 @@ function getExpectedViolations(path: string): ViolationReport {
     const jsonViolations = fs.readFileSync(path, 'utf8');
     return JSON.parse(jsonViolations) as ViolationReport;
   } catch (err) {
-    console.error(err);
+    throw new Error(String(err));
   }
 }
 
