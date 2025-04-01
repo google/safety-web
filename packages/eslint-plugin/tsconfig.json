@@ -5,7 +5,8 @@
     "target": "ES2015",
     "outDir": "lib",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true
   },
   "include": ["src/**/*.ts", "test/**/*.ts"]
 }

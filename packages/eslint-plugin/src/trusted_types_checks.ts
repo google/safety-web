@@ -70,7 +70,7 @@ export const trustedTypesChecks = createRule({
       );
       logDebugNewProgram(context.filename, programForCurrentFile);
     }
-    const checker = checkers.get(programForCurrentFile);
+    const checker = checkers.get(programForCurrentFile)!;
     return {
       Program(node) {
         const parserServices = ESLintUtils.getParserServices(context);
@@ -84,7 +84,7 @@ export const trustedTypesChecks = createRule({
           const diagnostic = failure.toDiagnostic();
           const start = ts.getLineAndCharacterOfPosition(
             rootNode,
-            diagnostic.start,
+            diagnostic.start!,
           );
           const end = ts.getLineAndCharacterOfPosition(
             rootNode,

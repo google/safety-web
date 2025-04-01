@@ -18,9 +18,9 @@ import * as ts from 'typescript';
  * A tree representation of a type. Used in the debugging console.
  */
 interface TypeTree {
-  name: string;
-  symbol: ts.Symbol;
-  baseTypes: Array<TypeTree>;
+  name?: string;
+  symbol?: ts.Symbol;
+  baseTypes?: Array<TypeTree>;
 }
 
 /**
@@ -35,4 +35,5 @@ function getTypeTree(inspectedType: ts.Type): TypeTree {
   return res;
 }
 
-global.getTypeTree = getTypeTree;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+(global as any).getTypeTree = getTypeTree;
