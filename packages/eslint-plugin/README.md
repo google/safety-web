@@ -115,7 +115,9 @@ tsconfig.json configuration.
 
 ## Debugging
 
-Like eslint, safety-web uses the popular
-[`debug`](https://www.npmjs.com/package/debug) package to manage debug logs. You
-can enable all safety-web debug logs with the environment variable
-`DEBUG="safety-web:*"`.
+Safety-web uses Winston a logging framework. The level of verbosity for logs can be controlled with the SAFETY_WEB_LOG environment variable.
+It uses the default Winston values, which include debug < info < error.
+
+When `NODE_ENV` is not `'production'`, logs are printed to the console with the configured verbosity. Logs are also stored in a safety-web.log file.
+
+Since this is an ESLint-plugin, you may also be interested in using the `DEBUG=` environment variable (from the [`debug`](https://www.npmjs.com/package/debug) package) to debug how ESLint is behaving.

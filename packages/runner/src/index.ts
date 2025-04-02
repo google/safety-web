@@ -15,6 +15,7 @@
 
 import yargs from 'yargs';
 import {run, SAFETY_WEB_TSCONFIG_FILENAME} from './runner.js';
+import {Logger} from './logging.js';
 
 async function parseCli() {
   return yargs(process.argv.slice(2))
@@ -38,8 +39,11 @@ async function parseCli() {
 
 async function main() {
   const args = await parseCli();
+  Logger.info(`Processing repository at ${args.rootDir}`);
   const summaries = await run(args.rootDir, args.useDefaultTSConfig);
-  console.log(JSON.stringify([...summaries], null, 2));
+  Logger.info(
+    `Done processing. Summaries: ${JSON.stringify([...summaries], null, 2)}`,
+  );
 }
 
 main().catch((error) => {

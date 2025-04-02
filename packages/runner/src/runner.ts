@@ -22,6 +22,7 @@ import {PackageSummary} from '@safety-web/types';
 import {createSummaries} from './summary.js';
 import {crawl} from './repository.js';
 import {createViolations} from './violation.js';
+import {Logger} from './logging.js';
 
 export const SAFETY_WEB_TSCONFIG_FILENAME = 'tsconfig.safety-web.json';
 
@@ -31,9 +32,7 @@ async function resolvePath(path: string): Promise<string | undefined> {
     await fs.access(resolvedPath);
     return resolvedPath;
   } catch (_) {
-    console.error(
-      `Error: path '${path}' could not be resolved. Does it exist?`,
-    );
+    Logger.error(`Error: path '${path}' could not be resolved. Does it exist?`);
   }
   return;
 }
@@ -57,7 +56,9 @@ export async function run(
       resolvedRootDir,
       SAFETY_WEB_TSCONFIG_FILENAME,
     );
-    await writeConfig(generateTSConfig(), tsConfigPath);
+    const generatedTSConfig = generateTSConfig();
+    Logger.debug(`Generated tsconfig: ${JSON.stringify(generatedTSConfig)}`);
+    await writeConfig(generatedTSConfig, tsConfigPath);
   }
 
   const options: ESLint.Options = generateESLintOptions(

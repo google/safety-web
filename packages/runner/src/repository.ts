@@ -15,9 +15,9 @@
 import * as fs from 'node:fs';
 import * as nodePath from 'node:path';
 
-import debug from 'debug';
+import {Logger} from './logging.js';
 
-const logDebug = debug('safety-web:runner:repository');
+const LOG_TAG = 'safety-web:runner:repository';
 
 export let mockableFs = fs;
 
@@ -44,6 +44,7 @@ export interface Repository {
 }
 
 export async function crawl(repoRootDir: string): Promise<Set<Package>> {
+  Logger.debug(`Crawling from "${repoRootDir}"`);
   const directories: string[] = [repoRootDir];
   const packages = new Set<Package>();
   let dir: string | undefined = undefined;
@@ -61,6 +62,7 @@ export async function crawl(repoRootDir: string): Promise<Set<Package>> {
             );
             if (packageJson !== undefined && packageJson !== null) {
               if (!packageJson.private) {
+                Logger.debug(`Found package at "${dir}"`);
                 packages.add({
                   name: packageJson.name ?? '__NAME_NOT_FOUND__',
                   relativePath: nodePath.relative(
@@ -69,15 +71,25 @@ export async function crawl(repoRootDir: string): Promise<Set<Package>> {
                   ),
                   version: packageJson.version ?? '__VERSION_NOT_FOUND__',
                 });
+              } else {
+                Logger.debug(`Ignoring private package at "${dir}"`);
               }
             } else {
-              logDebug(`Failed to parse package.json at: ${entry.parentPath}.`);
+              Logger.error(
+                `Failed to parse package.json at: ${entry.parentPath}.`,
+                {tags: LOG_TAG},
+              );
             }
           }
         }
       }
     } catch (e) {
-      logDebug(`Error while listing the repository root directory: ${e}`);
+      Logger.error(
+        `Error while listing the repository root directory: ${String(e)}`,
+        {
+          tags: LOG_TAG,
+        },
+      );
     }
   }
   return packages;
@@ -91,7 +103,7 @@ async function parsePackageJson(
     const jsonData = JSON.parse(fileContent) as PackageJson;
     return jsonData;
   } catch (error) {
-    console.error('Error parsing JSON:', error);
+    Logger.error(`Error parsing JSON: ${String(error)}`, {tags: LOG_TAG});
     return null;
   }
 }

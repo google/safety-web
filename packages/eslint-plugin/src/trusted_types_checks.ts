@@ -18,6 +18,7 @@ import {Checker} from './common/third_party/tsetse/checker';
 import * as ts from 'typescript';
 import {tsetseMessageToMessageId, messageIdMap} from './tsetse_compat';
 import debug from 'debug';
+import {Logger} from './logging.js';
 
 const logDebug = debug('safety-web:trusted_types_checks');
 
@@ -114,11 +115,11 @@ export const trustedTypesChecks = createRule({
 function logDebugNewProgram(fileName: string, program: ts.Program) {
   const configFilePath = program.getCompilerOptions().configFilePath as string;
   if (configFilePath) {
-    logDebug(
+    Logger.debug(
       `New program used for processing ${fileName} from config at ${configFilePath}`,
     );
   } else {
-    logDebug(
+    Logger.debug(
       `New program used for processing ${fileName} using default project`,
     );
   }

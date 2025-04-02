@@ -60,5 +60,8 @@
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.3.3",
     "wireit": "^0.14.11"
+  },
+  "dependencies": {
+    "winston": "^3.17.0"
   }
 }
