@@ -18,14 +18,18 @@ import * as path from 'node:path';
 
 const SAFETY_WEB_RULE_NAME = 'safety-web/trusted-types-checks';
 const UNDEFINED_NUMBER = -1;
-export function createViolations(results: ESLint.LintResult[]): Violation[] {
+export function createViolations(
+  results: ESLint.LintResult[],
+  repoRootDir: string,
+): Violation[] {
   const allViolations: Array<Violation> = [];
   for (const fileResult of results) {
     for (const lintMessage of [
       ...fileResult.messages,
       ...fileResult.suppressedMessages,
     ]) {
-      const violation = createViolation(lintMessage, fileResult.filePath);
+      const relativeFilePath = path.relative(repoRootDir, fileResult.filePath);
+      const violation = createViolation(lintMessage, relativeFilePath);
       if (lintMessage.ruleId === SAFETY_WEB_RULE_NAME) {
         allViolations.push(violation);
       }
@@ -43,7 +47,7 @@ export function createViolation(
     confidence: ConfidenceLevel.VIOLATION, // TODO populate from the LintMessage
     category: 'TODO',
     location: {
-      filePath: path.normalize(filePath),
+      filePath: filePath,
       line: lintMessage.line,
       column: lintMessage.column,
       endLine: lintMessage.endLine || UNDEFINED_NUMBER,

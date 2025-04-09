@@ -65,9 +65,8 @@ export async function crawl(repoRootDir: string): Promise<Set<Package>> {
                 Logger.debug(`Found package at "${dir}"`);
                 packages.add({
                   name: packageJson.name ?? '__NAME_NOT_FOUND__',
-                  relativePath: nodePath.relative(
-                    repoRootDir,
-                    entry.parentPath,
+                  relativePath: nodePath.normalize(
+                    nodePath.relative(repoRootDir, entry.parentPath),
                   ),
                   version: packageJson.version ?? '__VERSION_NOT_FOUND__',
                 });

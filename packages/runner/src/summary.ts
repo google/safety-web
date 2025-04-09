@@ -41,7 +41,11 @@ export function createSummaries(
 }
 
 function addViolations(summary: PackageSummary, violations: Violation[]) {
-  const packagePath = path.normalize(summary.packagePath);
+  let packagePath = path.normalize(summary.packagePath);
+  // Special case for the current directory so that the prefix matches
+  if (packagePath === '.') {
+    packagePath = '';
+  }
   summary.violations = violations.filter((v) =>
     path.normalize(v.location!.filePath).startsWith(packagePath),
   );

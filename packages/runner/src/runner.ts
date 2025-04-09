@@ -74,6 +74,6 @@ export async function run(
     packages,
   };
   const results = await eslint.lintFiles(['**/*.js', '**/*.ts']);
-  const violations = createViolations(results);
+  const violations = createViolations(results, resolvedRootDir);
   return createSummaries(violations, repository);
 }
