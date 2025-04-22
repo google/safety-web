@@ -22,7 +22,7 @@
     "build": "wireit",
     "build:watch": "tsc -b ./tsconfig.json --watch",
     "lint": ":",
-    "test": "bash ./test.sh",
+    "test": "SAFETY_WEB_LOG_PATH=NONE bash ./test.sh",
     "test:watch": ":",
     "gen": "wireit"
   },

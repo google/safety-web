@@ -25,7 +25,10 @@
       "command": "eslint --version | grep 'v8' && eslint src/ --format json | yarn run expect-violations test ./expected_violations.json",
       "dependencies": [
         "../../test-helpers/expect-violations:build"
-      ]
+      ],
+      "env": {
+        "SAFETY_WEB_LOG_PATH": "NONE"
+      }
     }
   },
   "devDependencies": {
@@ -33,6 +36,7 @@
     "eslint": "^8.0.0",
     "expect-violations": "workspace:^",
     "typescript": "^5.5.0",
-    "typescript-eslint": "^8.0.0"
+    "typescript-eslint": "^8.0.0",
+    "wireit": "^0.14.12"
   }
 }

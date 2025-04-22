@@ -28,8 +28,8 @@
     "build": "wireit",
     "build:watch": "tsc --watch",
     "lint": "eslint .",
-    "test": "mocha test/**/*.ts",
-    "test:watch": "mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
+    "test": "SAFETY_WEB_LOG_PATH=NONE mocha test/**/*.ts",
+    "test:watch": "SAFETY_WEB_LOG_PATH=NONE mocha -r ts-node/register --watch --watch-files src/**/*.ts,test/**/*.ts"
   },
   "wireit": {
     "build": {

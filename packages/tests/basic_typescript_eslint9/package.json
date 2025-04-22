@@ -7,7 +7,7 @@
     "build": "wireit",
     "lint": "echo skip lint script for integration test case",
     "test": "wireit",
-    "update": "eslint --format json | yarn run expect-violations update ./expected_violations.json"
+    "update": "SAFETY_WEB_LOG_PATH=NONE eslint --format json | yarn run expect-violations update ./expected_violations.json"
   },
   "wireit": {
     "build": {
@@ -25,7 +25,10 @@
       "command": "eslint --version | grep 'v9' && eslint --format json | yarn run expect-violations test ./expected_violations.json",
       "dependencies": [
         "../../test-helpers/expect-violations:build"
-      ]
+      ],
+      "env": {
+        "SAFETY_WEB_LOG_PATH": "NONE"
+      }
     }
   },
   "devDependencies": {
@@ -33,6 +36,7 @@
     "eslint": "^9.6.0",
     "expect-violations": "workspace:^",
     "typescript": "^5.5.0",
-    "typescript-eslint": "^8.0.0"
+    "typescript-eslint": "^8.0.0",
+    "wireit": "^0.14.12"
   }
 }
