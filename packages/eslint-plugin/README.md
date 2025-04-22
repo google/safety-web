@@ -120,4 +120,6 @@ It uses the default Winston values, which include debug < info < error.
 
 When `NODE_ENV` is not `'production'`, logs are printed to the console with the configured verbosity. Logs are also stored in a safety-web.log file.
 
+The `SAFETY_WEB_LOG_PATH` env variable can be used to specify the path where to write the logs. The special value `NONE` can be used to disable writing logs on disk.
+
 Since this is an ESLint-plugin, you may also be interested in using the `DEBUG=` environment variable (from the [`debug`](https://www.npmjs.com/package/debug) package) to debug how ESLint is behaving.

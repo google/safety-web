@@ -21,11 +21,24 @@ import * as winston from 'winston';
 
 const SAFETY_WEB_LOG_ENV_NAME = 'SAFETY_WEB_LOG';
 const DEFAULT_LOG_LEVEL = 'info';
+const SAFETY_WEB_LOG_PATH_NAME = 'SAFETY_WEB_LOG_PATH';
+let safetyWebLogPath: string | undefined = 'safety-web.log';
+
+const envLogPath = process.env[SAFETY_WEB_LOG_PATH_NAME];
+if (envLogPath !== undefined) {
+  if (envLogPath === 'NONE') {
+    // Reserved name to disable logging
+    safetyWebLogPath = undefined;
+  }
+}
 
 const logger = winston.createLogger({
   level: getLoggingLevel(),
   format: winston.format.json(),
-  transports: [new winston.transports.File({filename: 'safety-web.log'})],
+  transports:
+    safetyWebLogPath !== undefined
+      ? [new winston.transports.File({filename: safetyWebLogPath})]
+      : undefined,
 });
 
 //
