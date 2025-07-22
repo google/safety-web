@@ -21,8 +21,8 @@ LOG_FILE="${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin/update_tsetse_logs.txt"
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf -- "$TMPDIR"' EXIT
 git clone https://github.com/google/tsec.git "${TMPDIR}"
-rm -rf "${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin/src/common"
-cp -r "${TMPDIR}/common/" "${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin/src/"
+rm -rf "${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin/src/vendors/tsec/common"
+cp -r "${TMPDIR}/common/" "${SAFETY_WEB_GIT_ROOT}/packages/eslint-plugin/src/vendors/tsec/"
 
 echo \
 "Most recent run of update_tsetse.sh: $(date)

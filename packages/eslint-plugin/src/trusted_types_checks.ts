@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import {ESLintUtils} from '@typescript-eslint/utils';
-import {getConfiguredChecker} from './common/configured_checker';
-import {Checker} from './common/third_party/tsetse/checker';
+import {getConfiguredChecker} from './vendors/tsec/common/configured_checker';
+import {Checker} from './vendors/tsec/common/third_party/tsetse/checker';
 import * as ts from 'typescript';
 import {tsetseMessageToMessageId, messageIdMap} from './tsetse_compat';
 import debug from 'debug';

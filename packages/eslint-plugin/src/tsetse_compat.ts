@@ -12,31 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Rule as banBaseHrefAssignments} from './common/rules/dom_security/ban_base_href_assignments';
-import {Rule as banDocumentExeccommand} from './common/rules/dom_security/ban_document_execcommand';
-import {Rule as banDocumentWriteCalls} from './common/rules/dom_security/ban_document_write_calls';
-import {Rule as banDocumentWritelnCalls} from './common/rules/dom_security/ban_document_writeln_calls';
-import {Rule as banDomparserParsefromstring} from './common/rules/dom_security/ban_domparser_parsefromstring';
-import {Rule as banElementInnerhtmlAssignments} from './common/rules/dom_security/ban_element_innerhtml_assignments';
-import {Rule as banElementInsertadjacenthtml} from './common/rules/dom_security/ban_element_insertadjacenthtml';
-import {Rule as banElementOuterhtmlAssignments} from './common/rules/dom_security/ban_element_outerhtml_assignments';
-import {Rule as banElementSetattribute} from './common/rules/dom_security/ban_element_setattribute';
-import {Rule as banEvalCalls} from './common/rules/dom_security/ban_eval_calls';
-import {Rule as banFunctionCalls} from './common/rules/dom_security/ban_function_calls';
-import {Rule as banIframeSrcdocAssignments} from './common/rules/dom_security/ban_iframe_srcdoc_assignments';
-import {Rule as banObjectDataAssignments} from './common/rules/dom_security/ban_object_data_assignments';
-import {Rule as banRangeCreatecontextualfragment} from './common/rules/dom_security/ban_range_createcontextualfragment';
-import {Rule as banScriptAppendchildCalls} from './common/rules/dom_security/ban_script_appendchild_calls';
-import {Rule as banScriptContentAssignments} from './common/rules/dom_security/ban_script_content_assignments';
-import {Rule as banScriptSrcAssignments} from './common/rules/dom_security/ban_script_src_assignments';
-import {Rule as banServiceworkercontainerRegister} from './common/rules/dom_security/ban_serviceworkercontainer_register';
-import {Rule as banSharedWorkerCalls} from './common/rules/dom_security/ban_shared_worker_calls';
-import {Rule as banTrustedtypesCreatepolicy} from './common/rules/dom_security/ban_trustedtypes_createpolicy';
-import {Rule as banWindowStringfunctiondef} from './common/rules/dom_security/ban_window_stringfunctiondef';
-import {Rule as banWorkerCalls} from './common/rules/dom_security/ban_worker_calls';
-import {Rule as banWorkerImportscripts} from './common/rules/dom_security/ban_worker_importscripts';
-import {Rule as banLegacyConversions} from './common/rules/unsafe/ban_legacy_conversions';
-import {Rule as banReviewedConversions} from './common/rules/unsafe/ban_reviewed_conversions';
+import {Rule as banBaseHrefAssignments} from './vendors/tsec/common/rules/dom_security/ban_base_href_assignments';
+import {Rule as banDocumentExeccommand} from './vendors/tsec/common/rules/dom_security/ban_document_execcommand';
+import {Rule as banDocumentWriteCalls} from './vendors/tsec/common/rules/dom_security/ban_document_write_calls';
+import {Rule as banDocumentWritelnCalls} from './vendors/tsec/common/rules/dom_security/ban_document_writeln_calls';
+import {Rule as banDomparserParsefromstring} from './vendors/tsec/common/rules/dom_security/ban_domparser_parsefromstring';
+import {Rule as banElementInnerhtmlAssignments} from './vendors/tsec/common/rules/dom_security/ban_element_innerhtml_assignments';
+import {Rule as banElementInsertadjacenthtml} from './vendors/tsec/common/rules/dom_security/ban_element_insertadjacenthtml';
+import {Rule as banElementOuterhtmlAssignments} from './vendors/tsec/common/rules/dom_security/ban_element_outerhtml_assignments';
+import {Rule as banElementSetattribute} from './vendors/tsec/common/rules/dom_security/ban_element_setattribute';
+import {Rule as banEvalCalls} from './vendors/tsec/common/rules/dom_security/ban_eval_calls';
+import {Rule as banFunctionCalls} from './vendors/tsec/common/rules/dom_security/ban_function_calls';
+import {Rule as banIframeSrcdocAssignments} from './vendors/tsec/common/rules/dom_security/ban_iframe_srcdoc_assignments';
+import {Rule as banObjectDataAssignments} from './vendors/tsec/common/rules/dom_security/ban_object_data_assignments';
+import {Rule as banRangeCreatecontextualfragment} from './vendors/tsec/common/rules/dom_security/ban_range_createcontextualfragment';
+import {Rule as banScriptAppendchildCalls} from './vendors/tsec/common/rules/dom_security/ban_script_appendchild_calls';
+import {Rule as banScriptContentAssignments} from './vendors/tsec/common/rules/dom_security/ban_script_content_assignments';
+import {Rule as banScriptSrcAssignments} from './vendors/tsec/common/rules/dom_security/ban_script_src_assignments';
+import {Rule as banServiceworkercontainerRegister} from './vendors/tsec/common/rules/dom_security/ban_serviceworkercontainer_register';
+import {Rule as banSharedWorkerCalls} from './vendors/tsec/common/rules/dom_security/ban_shared_worker_calls';
+import {Rule as banTrustedtypesCreatepolicy} from './vendors/tsec/common/rules/dom_security/ban_trustedtypes_createpolicy';
+import {Rule as banWindowStringfunctiondef} from './vendors/tsec/common/rules/dom_security/ban_window_stringfunctiondef';
+import {Rule as banWorkerCalls} from './vendors/tsec/common/rules/dom_security/ban_worker_calls';
+import {Rule as banWorkerImportscripts} from './vendors/tsec/common/rules/dom_security/ban_worker_importscripts';
+import {Rule as banLegacyConversions} from './vendors/tsec/common/rules/unsafe/ban_legacy_conversions';
+import {Rule as banReviewedConversions} from './vendors/tsec/common/rules/unsafe/ban_reviewed_conversions';
 
 export const messageIdMap = {
   ban_base_href_assignments: '{{ tsetseMessage }}',
