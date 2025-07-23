@@ -35,4 +35,10 @@ export default tseslint.config(
     ],
   },
   eslintPluginPrettierRecommended,
+  {
+  ignores: [
+      '**/.wireit/**', // Ignores directories named .wireit and their contents
+      '**/*.wireit.*',  // Ignores files like .something.wireit.js, etc.
+    ],
+  }
 );
