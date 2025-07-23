@@ -27,6 +27,9 @@
         "test/**/*.ts",
         "tsconfig.json"
       ],
+      "dependencies": [
+        "../types:build"
+      ],
       "output": [
         "lib/**"
       ]
