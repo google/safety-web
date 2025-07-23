@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "protoc": "^1.1.3",
-    "typescript": "^5.5.4",
+    "typescript": "^5.8.3",
     "wireit": "^0.14.11"
   }
 }

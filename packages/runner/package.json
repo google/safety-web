@@ -63,6 +63,6 @@
     "minimist": "^1.2.8",
     "mocha": "^10.7.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.8.3"
   }
 }

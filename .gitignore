@@ -14,3 +14,4 @@ packages/tests/*/lib/*
 packages/types/*.js
 packages/types/*.js.map
 .wireit
+*.tsbuildinfo
