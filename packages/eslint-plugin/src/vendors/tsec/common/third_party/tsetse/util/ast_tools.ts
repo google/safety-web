@@ -1,3 +1,17 @@
+// Copyright 2025 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 /**
  * @fileoverview This is a collection of smaller utility functions to operate on
  * a TypeScript AST, used by JSConformance rules and elsewhere.
@@ -13,14 +27,14 @@ let DEBUG = false;
 /**
  * Turns on or off logging for ConformancePatternRules.
  */
-export function setDebug(state: boolean) {
+export function setDebug(state: boolean): void {
   DEBUG = state;
 }
 
 /**
  * Debug helper.
  */
-export function debugLog(msg: () => string) {
+export function debugLog(msg: () => string): void {
   if (DEBUG) {
     console.log(msg());
   }
@@ -42,9 +56,11 @@ export function parents(n: ts.Node): ts.Node[] {
  * Searches for something satisfying the given test in `n` or its children.
  */
 export function findInChildren(
-    n: ts.Node, test: (n: ts.Node) => boolean): boolean {
+  n: ts.Node,
+  test: (n: ts.Node) => boolean,
+): boolean {
   let toExplore: ts.Node[] = [n];
-  let cur: ts.Node|undefined;
+  let cur: ts.Node | undefined;
   while ((cur = toExplore.pop())) {
     if (test(cur)) {
       return true;
@@ -56,18 +72,23 @@ export function findInChildren(
 }
 
 function isOperandOfInstanceOf(n: ts.Node) {
-  return ts.isBinaryExpression(n.parent) &&
-      n.parent.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword;
+  return (
+    ts.isBinaryExpression(n.parent) &&
+    n.parent.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword
+  );
 }
 
 /**
  * Returns true if the pattern-based Rule should look at that node and consider
  * warning there.
  */
-export function shouldExamineNode(n: ts.Node) {
+export function shouldExamineNode(n: ts.Node): boolean {
   return !(
-      (n.parent && ts.isTypeNode(n.parent)) || isOperandOfInstanceOf(n) ||
-      ts.isTypeOfExpression(n.parent) || isInStockLibraries(n));
+    (n.parent && ts.isTypeNode(n.parent)) ||
+    isOperandOfInstanceOf(n) ||
+    ts.isTypeOfExpression(n.parent) ||
+    isInStockLibraries(n)
+  );
 }
 
 /**
@@ -75,7 +96,7 @@ export function shouldExamineNode(n: ts.Node) {
  * We currently look for a node_modules/typescript/ prefix, but this could
  * be expanded if needed.
  */
-export function isInStockLibraries(n: ts.Node|ts.SourceFile): boolean {
+export function isInStockLibraries(n: ts.Node | ts.SourceFile): boolean {
   const sourceFile = ts.isSourceFile(n) ? n : n.getSourceFile();
   if (sourceFile) {
     return sourceFile.fileName.indexOf('node_modules/typescript/') !== -1;
@@ -88,16 +109,25 @@ export function isInStockLibraries(n: ts.Node|ts.SourceFile): boolean {
 
 /**
  * Turns the given Symbol into its non-aliased version (which could be itself).
- * Returns undefined if given an undefined Symbol (so you can call
+ * Returns undefined if unable to find the original un-aliased symbol or when
+ * given an undefined Symbol (so you can call
  * `dealias(typeChecker.getSymbolAtLocation(node))`).
  */
 export function dealias(
-    symbol: ts.Symbol|undefined, tc: ts.TypeChecker): ts.Symbol|undefined {
+  symbol: ts.Symbol | undefined,
+  tc: ts.TypeChecker,
+): ts.Symbol | undefined {
   if (!symbol) {
     return undefined;
   }
   if (symbol.getFlags() & ts.SymbolFlags.Alias) {
     // Note: something that has only TypeAlias is not acceptable here.
+    const aliasedSymbol = tc.getAliasedSymbol(symbol);
+    if (symbol === aliasedSymbol) {
+      // tc.getAliasedSymbol() traverses the alias chain. If we receive the same
+      // symbol back, it was unable to find the original symbol.
+      return undefined;
+    }
     return dealias(tc.getAliasedSymbol(symbol), tc);
   }
   return symbol;
@@ -106,43 +136,67 @@ export function dealias(
 /**
  * Returns whether `n`'s parents are something indicating a type.
  */
-export function isPartOfTypeDeclaration(n: ts.Node) {
+export function isPartOfTypeDeclaration(n: ts.Node): boolean {
   return [n, ...parents(n)].some(
-      p => p.kind === ts.SyntaxKind.TypeReference ||
-          p.kind === ts.SyntaxKind.TypeLiteral);
+    (p) =>
+      p.kind === ts.SyntaxKind.TypeReference ||
+      p.kind === ts.SyntaxKind.TypeLiteral,
+  );
 }
 
 /**
  * Returns whether `n` is a declared name on which we do not intend to emit
  * errors.
  */
-export function isAllowlistedNamedDeclaration(n: ts.Node):
-    n is ts.VariableDeclaration|ts.ClassDeclaration|ts.FunctionDeclaration|
-    ts.MethodDeclaration|ts.PropertyDeclaration|ts.InterfaceDeclaration|
-    ts.TypeAliasDeclaration|ts.EnumDeclaration|ts.ModuleDeclaration|
-    ts.ImportEqualsDeclaration|ts.ExportDeclaration|ts.MissingDeclaration|
-    ts.ImportClause|ts.ExportSpecifier|ts.ImportSpecifier {
-  return ts.isVariableDeclaration(n) || ts.isClassDeclaration(n) ||
-      ts.isFunctionDeclaration(n) || ts.isMethodDeclaration(n) ||
-      ts.isPropertyDeclaration(n) || ts.isInterfaceDeclaration(n) ||
-      ts.isTypeAliasDeclaration(n) || ts.isEnumDeclaration(n) ||
-      ts.isModuleDeclaration(n) || ts.isImportEqualsDeclaration(n) ||
-      ts.isExportDeclaration(n) || ts.isMissingDeclaration(n) ||
-      ts.isImportClause(n) || ts.isExportSpecifier(n) ||
-      ts.isImportSpecifier(n);
+export function isAllowlistedNamedDeclaration(
+  n: ts.Node,
+): n is
+  | ts.VariableDeclaration
+  | ts.ClassDeclaration
+  | ts.FunctionDeclaration
+  | ts.MethodDeclaration
+  | ts.PropertyDeclaration
+  | ts.InterfaceDeclaration
+  | ts.TypeAliasDeclaration
+  | ts.EnumDeclaration
+  | ts.ModuleDeclaration
+  | ts.ImportEqualsDeclaration
+  | ts.ExportDeclaration
+  | ts.MissingDeclaration
+  | ts.ImportClause
+  | ts.ExportSpecifier
+  | ts.ImportSpecifier {
+  return (
+    ts.isVariableDeclaration(n) ||
+    ts.isClassDeclaration(n) ||
+    ts.isFunctionDeclaration(n) ||
+    ts.isMethodDeclaration(n) ||
+    ts.isPropertyDeclaration(n) ||
+    ts.isInterfaceDeclaration(n) ||
+    ts.isTypeAliasDeclaration(n) ||
+    ts.isEnumDeclaration(n) ||
+    ts.isModuleDeclaration(n) ||
+    ts.isImportEqualsDeclaration(n) ||
+    ts.isExportDeclaration(n) ||
+    ts.isMissingDeclaration(n) ||
+    ts.isImportClause(n) ||
+    ts.isExportSpecifier(n) ||
+    ts.isImportSpecifier(n)
+  );
 }
 
 /**
  * If verbose, logs the given error that happened while walking n, with a
  * stacktrace.
  */
-export function logASTWalkError(verbose: boolean, n: ts.Node, e: Error) {
+export function logASTWalkError(verbose: boolean, n: ts.Node, e: Error): void {
   let nodeText = `[error getting name for ${JSON.stringify(n)}]`;
   try {
     nodeText = '"' + n.getFullText().trim() + '"';
-  } catch {
-  }
+  } catch {}
   debugLog(
-      () => `Walking node ${nodeText} failed with error ${e}.\n` +
-          `Stacktrace:\n${e.stack}`);
+    () =>
+      `Walking node ${nodeText} failed with error ${e}.\n` +
+      `Stacktrace:\n${e.stack}`,
+  );
 }

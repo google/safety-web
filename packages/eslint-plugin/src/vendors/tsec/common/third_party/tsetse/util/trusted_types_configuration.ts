@@ -1,5 +1,19 @@
+// Copyright 2025 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 /** Names of all Trusted Types */
-export type TrustedTypes = 'TrustedHTML'|'TrustedScript'|'TrustedScriptURL';
+export type TrustedTypes = 'TrustedHTML' | 'TrustedScript' | 'TrustedScriptURL';
 /**
  * Trusted Types configuration used to match Trusted values in the assignments
  * to sinks.
@@ -20,8 +34,9 @@ export interface TrustedTypesConfig {
 /**
  * Create `TrustedTypesConfig` for the given Trusted Type.
  */
-function createDefaultTrustedTypeConfig(type: TrustedTypes):
-    TrustedTypesConfig {
+function createDefaultTrustedTypeConfig(
+  type: TrustedTypes,
+): TrustedTypesConfig {
   const config = {
     allowAmbientTrustedTypesDeclaration: true,
     // the module path may look like
@@ -49,4 +64,4 @@ export const TRUSTED_SCRIPT = createDefaultTrustedTypeConfig('TrustedScript');
  * rule.
  */
 export const TRUSTED_SCRIPT_URL =
-    createDefaultTrustedTypeConfig('TrustedScriptURL');
+  createDefaultTrustedTypeConfig('TrustedScriptURL');

@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,10 @@ import {
   ErrorCode,
   PatternKind,
 } from '../../third_party/tsetse/rules/conformance_pattern_rule';
-import {overridePatternConfig} from '../../third_party/tsetse/util/pattern_config';
+import {
+  overridePatternConfig,
+  PropertyMatcherDescriptor,
+} from '../../third_party/tsetse/util/pattern_config';
 import {TRUSTED_SCRIPT} from '../../third_party/tsetse/util/trusted_types_configuration';
 
 import {RuleConfiguration} from '../../rule_configuration';
@@ -39,9 +42,13 @@ export class Rule extends ConformancePatternRule {
         errorMessage: errMsg,
         kind: PatternKind.BANNED_PROPERTY_WRITE,
         values: [
-          'HTMLScriptElement.prototype.innerText',
-          'HTMLScriptElement.prototype.text',
-          'HTMLScriptElement.prototype.textContent',
+          new PropertyMatcherDescriptor(
+            'HTMLScriptElement.prototype.innerText',
+          ),
+          new PropertyMatcherDescriptor('HTMLScriptElement.prototype.text'),
+          new PropertyMatcherDescriptor(
+            'HTMLScriptElement.prototype.textContent',
+          ),
         ],
         name: Rule.RULE_NAME,
         allowedTrustedType: TRUSTED_SCRIPT,

@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,7 @@ import {
   ErrorCode,
   PatternKind,
 } from '../../third_party/tsetse/rules/conformance_pattern_rule';
+import {PropertyMatcherDescriptor} from '../../third_party/tsetse/util/pattern_config';
 import {RuleConfiguration} from '../../rule_configuration';
 
 let errMsg =
@@ -35,7 +36,7 @@ export class Rule extends ConformancePatternRule {
       errorCode: ErrorCode.CONFORMANCE_PATTERN,
       errorMessage: errMsg,
       kind: PatternKind.BANNED_PROPERTY_WRITE,
-      values: ['HTMLBaseElement.prototype.href'],
+      values: [new PropertyMatcherDescriptor('HTMLBaseElement.prototype.href')],
       name: Rule.RULE_NAME,
       ...configuration,
     });

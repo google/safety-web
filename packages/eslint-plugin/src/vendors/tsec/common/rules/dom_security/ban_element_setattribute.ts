@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,23 +18,27 @@ import {ErrorCode} from '../../third_party/tsetse/error_code';
 import {AbstractRule} from '../../third_party/tsetse/rule';
 import {shouldExamineNode} from '../../third_party/tsetse/util/ast_tools';
 import {isLiteral} from '../../third_party/tsetse/util/is_literal';
-import {PropertyMatcher} from '../../third_party/tsetse/util/property_matcher';
+import {PropertyMatcherDescriptor} from '../../third_party/tsetse/util/pattern_config';
+import {
+  LegacyPropertyMatcher,
+  PropertyMatcher,
+} from '../../third_party/tsetse/util/property_matcher';
 import * as ts from 'typescript';
 
 import {RuleConfiguration} from '../../rule_configuration';
 
 const BANNED_APIS = [
-  'Element.prototype.setAttribute',
-  'Element.prototype.setAttributeNS',
-  'Element.prototype.setAttributeNode',
-  'Element.prototype.setAttributeNodeNS',
+  new PropertyMatcherDescriptor('Element.prototype.setAttribute'),
+  new PropertyMatcherDescriptor('Element.prototype.setAttributeNS'),
+  new PropertyMatcherDescriptor('Element.prototype.setAttributeNode'),
+  new PropertyMatcherDescriptor('Element.prototype.setAttributeNodeNS'),
 ];
 
 /**
  * Trusted Types related attribute names that should not be set through
  * `setAttribute` or similar functions.
  */
-export const TT_RELATED_ATTRIBUTES = new Set([
+export const TT_RELATED_ATTRIBUTES: Set<string> = new Set([
   'src',
   'srcdoc',
   'data',
@@ -43,14 +47,14 @@ export const TT_RELATED_ATTRIBUTES = new Set([
 
 /** A Rule that looks for use of Element#setAttribute and similar properties. */
 export abstract class BanSetAttributeRule extends AbstractRule {
-  readonly code = ErrorCode.CONFORMANCE_PATTERN;
+  readonly code: ErrorCode = ErrorCode.CONFORMANCE_PATTERN;
 
   private readonly propMatchers: readonly PropertyMatcher[];
   private readonly allowlist?: Allowlist;
 
   constructor(configuration: RuleConfiguration) {
     super();
-    this.propMatchers = BANNED_APIS.map(PropertyMatcher.fromSpec);
+    this.propMatchers = BANNED_APIS.map(LegacyPropertyMatcher.fromSpec);
     if (configuration.allowlistEntries) {
       this.allowlist = new Allowlist(configuration.allowlistEntries);
     }
@@ -135,7 +139,7 @@ export abstract class BanSetAttributeRule extends AbstractRule {
       return undefined;
     }
 
-    if (!matcher.typeMatches(tc.getTypeAtLocation(n.expression))) {
+    if (!matcher.typeMatches(tc.getTypeAtLocation(n.expression), tc)) {
       // Allowed: it is a different type.
       return undefined;
     }
@@ -178,7 +182,7 @@ export abstract class BanSetAttributeRule extends AbstractRule {
     return this.looseMatch ? n : undefined;
   }
 
-  register(checker: Checker) {
+  register(checker: Checker): void {
     for (const matcher of this.propMatchers) {
       checker.onNamedPropertyAccess(
         matcher.bannedProperty,
@@ -224,8 +228,8 @@ export class Rule extends BanSetAttributeRule {
 
   override readonly ruleName: string = Rule.RULE_NAME;
 
-  protected readonly errorMessage = errMsg;
-  protected isSecuritySensitiveAttrName = (attr: string) =>
+  protected readonly errorMessage: string = errMsg;
+  protected isSecuritySensitiveAttrName = (attr: string): boolean =>
     (attr.startsWith('on') && attr !== 'on') || TT_RELATED_ATTRIBUTES.has(attr);
   protected readonly looseMatch = true;
 

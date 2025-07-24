@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,7 +18,11 @@ import {ErrorCode} from '../../third_party/tsetse/error_code';
 import {AbstractRule} from '../../third_party/tsetse/rule';
 import {shouldExamineNode} from '../../third_party/tsetse/util/ast_tools';
 import {isLiteral} from '../../third_party/tsetse/util/is_literal';
-import {PropertyMatcher} from '../../third_party/tsetse/util/property_matcher';
+import {PropertyMatcherDescriptor} from '../../third_party/tsetse/util/pattern_config';
+import {
+  LegacyPropertyMatcher,
+  PropertyMatcher,
+} from '../../third_party/tsetse/util/property_matcher';
 import * as ts from 'typescript';
 
 import {RuleConfiguration} from '../../rule_configuration';
@@ -32,7 +36,7 @@ function matchNode(
   matcher: PropertyMatcher,
 ) {
   if (!shouldExamineNode(n)) return;
-  if (!matcher.typeMatches(tc.getTypeAtLocation(n.expression))) return;
+  if (!matcher.typeMatches(tc.getTypeAtLocation(n.expression), tc)) return;
 
   // Check if the matched node is a call to `execCommand` and if the command
   // name is a literal. We will skip matching if the command name is not in
@@ -58,23 +62,23 @@ function matchNode(
 export class Rule extends AbstractRule {
   static readonly RULE_NAME = 'ban-document-execcommand';
 
-  readonly ruleName = Rule.RULE_NAME;
-  readonly code = ErrorCode.CONFORMANCE_PATTERN;
+  readonly ruleName: string = Rule.RULE_NAME;
+  readonly code: ErrorCode = ErrorCode.CONFORMANCE_PATTERN;
 
   private readonly propMatcher: PropertyMatcher;
   private readonly allowlist?: Allowlist;
 
   constructor(configuration: RuleConfiguration = {}) {
     super();
-    this.propMatcher = PropertyMatcher.fromSpec(
-      'Document.prototype.execCommand',
+    this.propMatcher = LegacyPropertyMatcher.fromSpec(
+      new PropertyMatcherDescriptor('Document.prototype.execCommand'),
     );
     if (configuration.allowlistEntries) {
       this.allowlist = new Allowlist(configuration.allowlistEntries);
     }
   }
 
-  register(checker: Checker) {
+  register(checker: Checker): void {
     checker.onNamedPropertyAccess(
       this.propMatcher.bannedProperty,
       (c, n) => {

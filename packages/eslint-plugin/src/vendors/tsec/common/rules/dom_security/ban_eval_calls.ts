@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +17,11 @@ import {
   ErrorCode,
   PatternKind,
 } from '../../third_party/tsetse/rules/conformance_pattern_rule';
-import {overridePatternConfig} from '../../third_party/tsetse/util/pattern_config';
+import {
+  AnySymbolMatcherDescriptor,
+  GlobalMatcherDescriptor,
+  overridePatternConfig,
+} from '../../third_party/tsetse/util/pattern_config';
 import {TRUSTED_SCRIPT} from '../../third_party/tsetse/util/trusted_types_configuration';
 
 import {RuleConfiguration} from '../../rule_configuration';
@@ -25,7 +29,7 @@ import {RuleConfiguration} from '../../rule_configuration';
 let errMsg = 'Do not use eval, as this can lead to XSS.';
 
 const bannedValues = [
-  'GLOBAL|eval',
+  new GlobalMatcherDescriptor('eval'),
 ];
 
 /**

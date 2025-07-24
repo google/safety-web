@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,17 +30,31 @@ import {AbstractRule} from '../../third_party/tsetse/rule';
 import {AbsoluteMatcher} from '../../third_party/tsetse/util/absolute_matcher';
 import {shouldExamineNode} from '../../third_party/tsetse/util/ast_tools';
 import {isExpressionOfAllowedTrustedType} from '../../third_party/tsetse/util/is_trusted_type';
-import {PropertyMatcher} from '../../third_party/tsetse/util/property_matcher';
+import {
+  GlobalMatcherDescriptor,
+  PropertyMatcherDescriptor,
+} from '../../third_party/tsetse/util/pattern_config';
+import {
+  Match,
+  NameMatchConfidence,
+} from '../../third_party/tsetse/util/pattern_engines/match';
+import {
+  LegacyPropertyMatcher,
+  PropertyMatcher,
+} from '../../third_party/tsetse/util/property_matcher';
 import {TRUSTED_SCRIPT} from '../../third_party/tsetse/util/trusted_types_configuration';
 import * as ts from 'typescript';
 
 import {RuleConfiguration} from '../../rule_configuration';
 
-const BANNED_NAMES = ['GLOBAL|setInterval', 'GLOBAL|setTimeout'];
+const BANNED_NAMES = [
+  new GlobalMatcherDescriptor('setInterval'),
+  new GlobalMatcherDescriptor('setTimeout'),
+];
 
 const BANNED_PROPERTIES = [
-  'Window.prototype.setInterval',
-  'Window.prototype.setTimeout',
+  new PropertyMatcherDescriptor('Window.prototype.setInterval'),
+  new PropertyMatcherDescriptor('Window.prototype.setTimeout'),
 ];
 
 function formatErrorMessage(bannedEntity: string): string {
@@ -84,11 +98,24 @@ function isBannedStringLiteralAccess(
   propMatcher: PropertyMatcher,
 ) {
   const argExp = n.argumentExpression;
-  return (
-    propMatcher.typeMatches(tc.getTypeAtLocation(n.expression)) &&
+  if (
     ts.isStringLiteralLike(argExp) &&
     argExp.text === propMatcher.bannedProperty
-  );
+  ) {
+    const typeMatch = propMatcher.typeMatches(
+      tc.getTypeAtLocation(n.expression),
+      tc,
+    );
+    if (typeMatch === false) {
+      return;
+    }
+    return {
+      node: n,
+      typeMatch,
+      nameMatch: NameMatchConfidence.EXACT,
+    };
+  }
+  return;
 }
 
 /**
@@ -104,7 +131,7 @@ type NodeMatcher<T extends ts.Node> = T extends ts.Identifier
           matches: (
             n: ts.ElementAccessExpression,
             tc: ts.TypeChecker,
-          ) => boolean;
+          ) => Match<ts.ElementAccessExpression> | undefined;
         }
       : {matches: (n: ts.Node, tc: ts.TypeChecker) => never};
 
@@ -128,8 +155,8 @@ function checkNode<T extends ts.Node>(
  */
 export class Rule extends AbstractRule {
   static readonly RULE_NAME = 'ban-window-stringfunctiondef';
-  readonly ruleName = Rule.RULE_NAME;
-  readonly code = ErrorCode.CONFORMANCE_PATTERN;
+  readonly ruleName: string = Rule.RULE_NAME;
+  readonly code: ErrorCode = ErrorCode.CONFORMANCE_PATTERN;
 
   private readonly nameMatchers: readonly AbsoluteMatcher[];
   private readonly propMatchers: readonly PropertyMatcher[];
@@ -139,13 +166,13 @@ export class Rule extends AbstractRule {
   constructor(configuration: RuleConfiguration = {}) {
     super();
     this.nameMatchers = BANNED_NAMES.map((name) => new AbsoluteMatcher(name));
-    this.propMatchers = BANNED_PROPERTIES.map(PropertyMatcher.fromSpec);
+    this.propMatchers = BANNED_PROPERTIES.map(LegacyPropertyMatcher.fromSpec);
     if (configuration?.allowlistEntries) {
       this.allowlist = new Allowlist(configuration?.allowlistEntries);
     }
   }
 
-  register(checker: Checker) {
+  register(checker: Checker): void {
     // Check global names
     for (const nameMatcher of this.nameMatchers) {
       checker.onNamedIdentifier(

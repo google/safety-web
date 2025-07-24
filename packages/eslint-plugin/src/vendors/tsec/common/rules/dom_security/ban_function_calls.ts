@@ -1,10 +1,10 @@
-// Copyright 2020 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,6 +19,7 @@ import {AbstractRule} from '../../third_party/tsetse/rule';
 import {AbsoluteMatcher} from '../../third_party/tsetse/util/absolute_matcher';
 import {shouldExamineNode} from '../../third_party/tsetse/util/ast_tools';
 import {isExpressionOfAllowedTrustedType} from '../../third_party/tsetse/util/is_trusted_type';
+import {GlobalMatcherDescriptor} from '../../third_party/tsetse/util/pattern_config';
 import {TRUSTED_SCRIPT} from '../../third_party/tsetse/util/trusted_types_configuration';
 import * as ts from 'typescript';
 
@@ -32,8 +33,8 @@ let errMsg = 'Constructing functions from strings can lead to XSS.';
  */
 export class Rule extends AbstractRule {
   static readonly RULE_NAME = 'ban-function-calls';
-  readonly ruleName = Rule.RULE_NAME;
-  readonly code = ErrorCode.CONFORMANCE_PATTERN;
+  readonly ruleName: string = Rule.RULE_NAME;
+  readonly code: ErrorCode = ErrorCode.CONFORMANCE_PATTERN;
 
   private readonly allowTrustedTypes: boolean = true;
   private readonly nameMatcher: AbsoluteMatcher;
@@ -41,13 +42,15 @@ export class Rule extends AbstractRule {
 
   constructor(configuration: RuleConfiguration = {}) {
     super();
-    this.nameMatcher = new AbsoluteMatcher('GLOBAL|Function');
+    this.nameMatcher = new AbsoluteMatcher(
+      new GlobalMatcherDescriptor('Function'),
+    );
     if (configuration?.allowlistEntries) {
       this.allowlist = new Allowlist(configuration?.allowlistEntries);
     }
   }
 
-  register(checker: Checker) {
+  register(checker: Checker): void {
     const check = (c: Checker, n: ts.Node) => {
       const node = this.checkNode(c.typeChecker, n, this.nameMatcher);
       if (node) {
