@@ -31,13 +31,64 @@ const ruleTester = new RuleTester({
 });
 
 ruleTester.run('trusted-types-checks', trustedTypesChecks, {
-  valid: ['const x = 1;'],
+  valid: [
+    'const x = 1;',
+    // insertAdjacentHTML with TrustedHTML should be allowed
+    `
+      declare const policy: TrustedTypePolicy;
+      const el = document.createElement('div');
+      el.insertAdjacentHTML('beforeend', policy.createHTML('<span>safe</span>'));
+    `,
+    // Using a variable typed as TrustedHTML
+    `
+      declare const trustedHtml: TrustedHTML;
+      const el = document.createElement('div');
+      el.insertAdjacentHTML('afterbegin', trustedHtml);
+    `,
+  ],
   invalid: [
     {
       code: `document.createElement('script').innerHTML = 'foo';`,
       errors: [
         {
           messageId: 'ban_element_innerhtml_assignments',
+        },
+      ],
+    },
+    // insertAdjacentHTML with string should be blocked
+    {
+      code: `
+        const el = document.createElement('div');
+        el.insertAdjacentHTML('beforeend', '<span>unsafe</span>');
+      `,
+      errors: [
+        {
+          messageId: 'ban_element_insertadjacenthtml',
+        },
+      ],
+    },
+    // insertAdjacentHTML with string variable should be blocked
+    {
+      code: `
+        const el = document.createElement('div');
+        const html = '<span>unsafe</span>';
+        el.insertAdjacentHTML('beforeend', html);
+      `,
+      errors: [
+        {
+          messageId: 'ban_element_insertadjacenthtml',
+        },
+      ],
+    },
+    // insertAdjacentHTML accessed via bracket notation
+    {
+      code: `
+        const el = document.createElement('div');
+        el['insertAdjacentHTML']('beforeend', '<span>unsafe</span>');
+      `,
+      errors: [
+        {
+          messageId: 'ban_element_insertadjacenthtml',
         },
       ],
     },

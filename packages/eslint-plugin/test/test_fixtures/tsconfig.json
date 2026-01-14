@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["trusted-types"]
   },
   "include": ["file.ts", "react.tsx"]
 }

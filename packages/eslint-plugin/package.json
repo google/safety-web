@@ -47,6 +47,7 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.9",
+    "@types/trusted-types": "^2.0.7",
     "@typescript-eslint/rule-tester": "^8.0.0",
     "chai": "^5.1.1",
     "glob": "^11.0.1",
