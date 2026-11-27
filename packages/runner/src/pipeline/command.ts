@@ -12,13 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {$, ProcessOutput} from 'zx';
+import {$, type Options, ProcessOutput} from 'zx';
 import {Logger} from './logger.js';
 
 $.verbose = true;
 
 export class CommandRunner {
-  constructor(private readonly logger: Logger) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly options?: Partial<Options>,
+  ) {}
+
+  withOptions(options: Partial<Options>): CommandRunner {
+    return new CommandRunner(this.logger, {...this.options, ...options});
+  }
 
   /**
    * Small wrapper around zx's $ that also logs the result of the command and not
@@ -35,8 +42,9 @@ export class CommandRunner {
     }
     this.logger.log(command, {silent: true});
 
+    const shell = this.options ? $(this.options) : $;
     // Use .pipe to stream the command output to stdout in real time.
-    const output = await $(templateObj, ...rest)
+    const output = await shell(templateObj, ...rest)
       .pipe(process.stdout)
       .nothrow();
     const textOutput = output.text();

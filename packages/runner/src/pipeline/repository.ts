@@ -16,7 +16,7 @@ import * as nodePath from 'node:path';
 import {PackageJson} from './typing.js';
 import {Reader} from './reader.js';
 import * as semver from 'semver';
-import {$, cd, ProcessOutput} from 'zx';
+import {$, ProcessOutput} from 'zx';
 import {CommandRunner, hasSucceeded} from './command.js';
 import {PackageSummary, Repository} from '@safety-web/types';
 import {PackageManager} from '@safety-web/types/pipeline';
@@ -35,10 +35,33 @@ const knownPackageManagerVersions = {
   pnpm: ['8.15.9', '9.9.0'],
 };
 
-// Add local node module binaries to the PATH once and for all.
-$.env['PATH'] = './node_modules/.bin:' + $.env['PATH'];
 // Skip corepack prompts
 $.env['COREPACK_ENABLE_DOWNLOAD_PROMPT'] = '0';
+
+function buildSafeInstallEnv(): NodeJS.ProcessEnv {
+  const rawPath = $.env['PATH'] ?? process.env['PATH'] ?? '';
+  const sanitizedPath = rawPath
+    .split(nodePath.delimiter)
+    .filter((entry) => entry.length > 0 && nodePath.isAbsolute(entry))
+    .join(nodePath.delimiter);
+
+  return {
+    ...$.env,
+    PATH: sanitizedPath,
+    // Prevent interactive prompts, untrusted package.json mutations, and
+    // untrusted packageManager field overrides in the cloned repository.
+    COREPACK_ENABLE_DOWNLOAD_PROMPT: '0',
+    COREPACK_ENABLE_AUTO_PIN: '0',
+    COREPACK_ENABLE_PROJECT_SPEC: '0',
+    // Suppress lifecycle/build scripts and untrusted rc binary/plugin hooks
+    // across npm, pnpm, Yarn Classic, and Yarn Berry.
+    npm_config_ignore_scripts: 'true',
+    YARN_ENABLE_SCRIPTS: 'false',
+    YARN_IGNORE_PATH: 'true',
+    YARN_RC_FILENAME: '.safety-web-empty-yarnrc.yml',
+    YARN_NODE_LINKER: 'node-modules',
+  };
+}
 
 /**
  * A repository that can be cloned and processed by safety-web. Can be
@@ -85,7 +108,7 @@ export class RepositoryImpl implements Partial<Repository> {
     const repository = new RepositoryImpl(rootPath, url, reader, logger);
 
     const output = await repository.commandRunner
-      .run`GIT_TERMINAL_PROMPT=0 git clone ${url} ${rootPath}`;
+      .run`GIT_TERMINAL_PROMPT=0 git clone -- ${url} ${rootPath}`;
     if (!hasSucceeded(output)) {
       const errorMessage = `Failed to clone ${url} in ${baseDir}.`;
       repository.stepFailure = 'CLONE';
@@ -171,33 +194,52 @@ export class RepositoryImpl implements Partial<Repository> {
    */
   async install(): Promise<Error | undefined> {
     this.logger.log(`Installing...`);
+    const kind = this.packageManagerFound?.kind;
     const version =
-      this.packageManagerFound !== undefined
+      this.packageManagerFound !== undefined &&
+      kind !== undefined &&
+      kind !== 'UNKNOWN_KIND'
         ? this.tryResolvePackageManagerVersion(this.packageManagerFound)
-        : 'UNKOWN_VERSION';
-    cd(this.rootPath);
+        : undefined;
+
     $.verbose = true;
+    const installRunner = this.commandRunner.withOptions({
+      cwd: this.rootPath,
+      env: buildSafeInstallEnv(),
+    });
+
     let installOutput: ProcessOutput;
-    switch (this.packageManagerFound?.kind) {
-      case 'yarn':
-      case 'pnpm':
-      case 'npm':
-        if (version === undefined) {
-          this.logger.log(
-            `Defaulting to ${this.packageManagerFound.kind} latest...`,
-          );
-          installOutput = await this.commandRunner
-            .run`corepack use ${this.packageManagerFound.kind}`;
-        } else {
-          this.logger.log(
-            `Installing corepack use ${this.packageManagerFound.kind}@${version}`,
-          );
-          installOutput = await this.commandRunner
-            .run`corepack use ${this.packageManagerFound.kind}@${version}`;
-        }
+    switch (kind) {
+      case 'yarn': {
+        const descriptor =
+          version === undefined ? 'yarn@latest' : `yarn@${version}`;
+        const isYarnClassic =
+          version !== undefined && semver.major(version) === 1;
+        this.logger.log(`Installing dependencies with corepack ${descriptor}`);
+        installOutput = isYarnClassic
+          ? await installRunner.run`corepack ${descriptor} install --ignore-scripts`
+          : await installRunner.run`corepack ${descriptor} install --mode=skip-build`;
         break;
+      }
+      case 'pnpm': {
+        const descriptor =
+          version === undefined ? 'pnpm@latest' : `pnpm@${version}`;
+        this.logger.log(`Installing dependencies with corepack ${descriptor}`);
+        installOutput =
+          await installRunner.run`corepack ${descriptor} install --ignore-scripts --ignore-pnpmfile`;
+        break;
+      }
+      case 'npm': {
+        const descriptor =
+          version === undefined ? 'npm@latest' : `npm@${version}`;
+        this.logger.log(`Installing dependencies with corepack ${descriptor}`);
+        installOutput =
+          await installRunner.run`corepack ${descriptor} install --ignore-scripts`;
+        break;
+      }
       default:
-        installOutput = await this.commandRunner.run`corepack use npm`;
+        installOutput =
+          await installRunner.run`corepack npm@latest install --ignore-scripts`;
         break;
     }
     if (!hasSucceeded(installOutput)) {
@@ -215,7 +257,7 @@ export class RepositoryImpl implements Partial<Repository> {
       this.logger.log('Could not clean the directory. rootPath is undefined.');
       return;
     }
-    await this.commandRunner.run`rm -rf ${this.rootPath}`;
+    await this.commandRunner.run`rm -rf -- ${this.rootPath}`;
   }
 
   // By spec https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
@@ -229,13 +271,18 @@ export class RepositoryImpl implements Partial<Repository> {
    * @param manager a description of the package manager and semver contraints
    * @returns the version to use if successful, undefined otherwise.
    */
-  private tryResolvePackageManagerVersion(manager: PackageManager): string {
+  private tryResolvePackageManagerVersion(
+    manager: PackageManager,
+  ): string | undefined {
+    if (!manager.version || manager.version === 'UNKNOWN_VERSION') {
+      return undefined;
+    }
     // Matches a well formed and well defined semver version
-    if (manager.version?.match(this.SEMVER_STRING_REGEX)) {
+    if (manager.version.match(this.SEMVER_STRING_REGEX)) {
       this.logger.log(
         `Using explicit ${manager.kind} version "${manager.version}"`,
       );
-      return semver.clean(manager.version) || 'INVALID_VERSION';
+      return semver.clean(manager.version) ?? undefined;
     }
 
     // Otherwise we assume it's a version range that we need to resolve
@@ -248,6 +295,6 @@ export class RepositoryImpl implements Partial<Repository> {
     } else {
       this.logger.log(`Resolved ${manager.kind} version to "${maxVersion}"`);
     }
-    return maxVersion || 'COULD_NOT_RESOLVE_VERSION';
+    return maxVersion ?? undefined;
   }
 }
